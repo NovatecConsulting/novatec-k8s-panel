@@ -1,6 +1,7 @@
 import { PanelData } from '@grafana/data';
 import { position, getOverview } from '../CanvasObjects/Calculation'
-import { getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
+import { getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
+
 
 export function handler(width: number, height: number, levelOption: string, data: PanelData) {
     if (levelOption === 'Overview') {
@@ -13,14 +14,23 @@ export function handler(width: number, height: number, levelOption: string, data
         const containerCount = getContainerCount(data);
         return getOverview(width, namespaceCount, serviceCount, podCount, containerCount);
     } else if (levelOption === 'Namespace') {
-        return position(width, height, getNamespaceCount(data));
+        let allElements = position(width, height, getNamespaceCount(data));
+        allElements = getNamespaceInformation(data, allElements);
+        return allElements;
     } else if (levelOption === 'Service') {
-        return position(width, height, getServiceCount(data));
+        let allElements = position(width, height, getServiceCount(data));
+        allElements = getServiceInformation(data, allElements);
+        return allElements;
     }
     else if (levelOption === 'Pod') {
-        return position(width, height, getPodCount(data));
+
+        let allElements = position(width, height, getPodCount(data));
+        allElements = getPodInformation(data, allElements);
+        return allElements;
     } else if (levelOption === 'Container') {
-        return position(width, height, getContainerCount(data));
+        let allElements = position(width, height, getContainerCount(data));
+        allElements = getContainerInformation(data, allElements);
+        return allElements;
     }
     else {
         return position(width, height, 15);

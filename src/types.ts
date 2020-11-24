@@ -13,12 +13,30 @@ export interface Element {
   height: number;
   color: string;
   text: string;
+  elementInfo?: ElementInfo;
 }
-
 
 export interface Position {
 
   x: number;
   y: number;
 
+}
+
+export interface ElementInfo {
+  type: Types;
+  pod?: String;
+  namespace?: String;
+  container?: String;
+  node?: String;
+  service?: String;
+}
+
+
+export enum Types {
+  Namespace,
+  Service,
+  Pod,
+  Container,
+  Node
 }

@@ -21,10 +21,10 @@ export function getOverview(width: number, namespaceCount: number, serviceCount:
 
 export function position(width: number, height: number, count: number) {
 
-    const rectWidth = 70;
+    const rectWidth = 350;
     const rectHeight = 70;
 
-    let position: Position = { x: -70, y: 40 };
+    let position: Position = { x: -350, y: 40 };
     let oneRect: Element;
     let allRect: Element[] = new Array();
 
@@ -73,6 +73,8 @@ export function calcDropdownOptions() {
     }
     return options;
 }
+
+
 
 
 
