@@ -80,10 +80,11 @@ export function getContainerInformation(data: PanelData) {
 
 
 export function groupPodContainer(data: PanelData) {
-    
+
     let allElementInfo = getContainerInformation(data);
     for (let i = 0; i < allElementInfo.length; i++) {
         allElementInfo[i].pod = data.series[8].fields[16].values.get(i);
+        allElementInfo[i].namespace = data.series[8].fields[15].values.get(i);
     }
     return allElementInfo;
 
