@@ -29,13 +29,18 @@ export function position(width: number, height: number, count: number) {
     let allRect: Element[] = new Array();
 
 
-    
+
     for (let i = 0; i < count; i++) {
 
         // hier wird die Position berechnet
-        position = calculation(width, rectWidth, rectHeight, position);
-        oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "" }
-
+        if (count !== 1) {
+            position = calculation(width, rectWidth, rectHeight, position);
+            oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "" }
+        }
+        else {
+            position = { x: width / 2, y: height / 2 }
+            oneRect = { position, width: rectWidth + 30, height: rectHeight + 30, color: 'white', text: "" }
+        }
         allRect.push(oneRect);
     }
 

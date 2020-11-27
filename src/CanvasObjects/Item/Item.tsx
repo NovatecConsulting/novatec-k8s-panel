@@ -8,9 +8,10 @@ import { TextItem } from 'CanvasObjects/Item/TextItem';
 
 type Props = {
     allInfos: Element[],
+    setGroupedOptionHandler: (value: string | undefined) => void;
 }
 
-export const Item = ({ allInfos }: Props) => {
+export const Item = ({ allInfos, setGroupedOptionHandler }: Props) => {
 
     return (
         <Layer>
@@ -20,6 +21,8 @@ export const Item = ({ allInfos }: Props) => {
                     width={info.width}
                     height={info.height}
                     color={info.color}
+                    option={info.text}
+                    setGroupedOption={setGroupedOptionHandler}
                 />
             ))}
             {allInfos.map((info) => (

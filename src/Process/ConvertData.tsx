@@ -1,5 +1,5 @@
 import { PanelData } from "@grafana/data";
-import { Element, Types } from 'types';
+import { Types } from 'types';
 
 
 // Count
@@ -25,51 +25,52 @@ export function getServiceCount(data: PanelData) {
 
 // Name
 // Namespace
-export function getNamespaceInformation(data: PanelData, allElements: Element[]) {
+export function getNamespaceInformation(data: PanelData) {
 
     const allNames = data.series[6].fields[1].values;
+    let allElementInfo = new Array();
+
     for (let i = 0; i < allNames.length; i++) {
         let elementInfo = { type: Types.Namespace, container: "", pod: "", namespace: allNames.get(i), node: "", service: "" }
-        allElements[i].elementInfo = elementInfo;
-        allElements[i].text = allNames.get(i);
+        allElementInfo.push(elementInfo);
     }
-    return allElements;
+    return allElementInfo;
 }
 
 // Service
-export function getServiceInformation(data: PanelData, allElements: Element[]) {
+export function getServiceInformation(data: PanelData) {
 
     const allNames = data.series[7].fields[1].values;
+    let allElementInfo = new Array();
     for (let i = 0; i < allNames.length; i++) {
         let elementInfo = { type: Types.Service, container: "", pod: "", namespace: "", node: "", service: allNames.get(i) }
-        allElements[i].elementInfo = elementInfo;
-        allElements[i].text = allNames.get(i);
+        allElementInfo.push(elementInfo);
     }
-    return allElements;
+    return allElementInfo;
 }
 
 
 
 // Pod
-export function getPodInformation(data: PanelData, allElements: Element[]) {
+export function getPodInformation(data: PanelData) {
 
     const allNames = data.series[4].fields[1].values;
+    let allElementInfo = new Array();
     for (let i = 0; i < allNames.length; i++) {
         let elementInfo = { type: Types.Pod, container: "", pod: allNames.get(i), namespace: "", node: "", service: "" }
-        allElements[i].elementInfo = elementInfo;
-        allElements[i].text = allNames.get(i);
+        allElementInfo.push(elementInfo);
     }
-    return allElements;
+    return allElementInfo;
 }
 
 // Container
-export function getContainerInformation(data: PanelData, allElements: Element[]) {
+export function getContainerInformation(data: PanelData) {
 
     const allNames = data.series[5].fields[1].values;
+    let allElementInfo = new Array();
     for (let i = 0; i < allNames.length; i++) {
         let elementInfo = { type: Types.Container, container: allNames.get(i), pod: "", namespace: "", node: "", service: "" }
-        allElements[i].elementInfo = elementInfo;
-        allElements[i].text = allNames.get(i);
+        allElementInfo.push(elementInfo);
     }
-    return allElements;
+    return allElementInfo;
 }

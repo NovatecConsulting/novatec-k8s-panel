@@ -6,10 +6,12 @@ type Props = {
     position: Position;
     width: number;
     height: number;
-    color: string
+    color: string;
+    option: string;
+    setGroupedOption: (value: string | undefined) => void;
 }
 
-export const RectItem = ({ position, width, height, color }: Props) => {
+export const RectItem = ({ position, width, height, color, option, setGroupedOption }: Props) => {
 
     return (
         <Rect
@@ -19,6 +21,7 @@ export const RectItem = ({ position, width, height, color }: Props) => {
             height={height}
             fill={color}
             shadowBlur={5}
+            onClick={(e) => setGroupedOption(option)}
         />
     );
 }
