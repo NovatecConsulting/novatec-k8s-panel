@@ -4,6 +4,7 @@ import { Stage } from 'react-konva';
 import { Element } from 'types';
 import { Overview } from 'CanvasObjects/Overview/Overview';
 import { Item } from 'CanvasObjects/Item/Item';
+import { SelectableValue } from '@grafana/data';
 
 
 interface StageProps {
@@ -12,7 +13,7 @@ interface StageProps {
     allRect: Element[];
     levelOption: string;
     setLevelOptionHandler: (value: string | undefined) => void;
-    setGroupedOptionHandler: (value: string | undefined) => void;
+    setGroupedOptionHandler: (value: SelectableValue) => void;
 }
 
 export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler }: StageProps) => {

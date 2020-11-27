@@ -1,6 +1,7 @@
 import React from 'react';
-import { Position } from 'types';
+import { Position, Types } from 'types';
 import { Rect } from 'react-konva';
+import { SelectableValue } from '@grafana/data';
 
 type Props = {
     position: Position;
@@ -8,10 +9,18 @@ type Props = {
     height: number;
     color: string;
     option: string;
-    setGroupedOption: (value: string | undefined) => void;
+    setGroupedOption: (value: SelectableValue) => void;
+    type: Types | undefined;
 }
 
-export const RectItem = ({ position, width, height, color, option, setGroupedOption }: Props) => {
+export const RectItem = ({ position, width, height, color, option, setGroupedOption, type }: Props) => {
+
+    let option1: SelectableValue;
+    if (type != undefined) {
+        option1 = { label: option, description: type.toString() };
+    } else {
+        option1 = { label: option }
+    }
 
     return (
         <Rect
@@ -21,7 +30,7 @@ export const RectItem = ({ position, width, height, color, option, setGroupedOpt
             height={height}
             fill={color}
             shadowBlur={5}
-            onClick={(e) => setGroupedOption(option)}
+            onClick={(e) => setGroupedOption(option1)}
         />
     );
 }

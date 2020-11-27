@@ -34,9 +34,9 @@ export interface ElementInfo {
 
 
 export enum Types {
-  Namespace,
-  Service,
-  Pod,
-  Container,
-  Node
+  Namespace = "Namespace",
+  Service = "Service",
+  Pod = "Pod",
+  Container = "Container",
+  Node = "Node"
 }

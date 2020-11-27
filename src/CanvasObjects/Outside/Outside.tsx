@@ -3,8 +3,8 @@ import { Element } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectItem } from 'CanvasObjects/Item/RectItem';
-import { TextItem } from 'CanvasObjects/Item/TextItem';
+import { RectOutside } from 'CanvasObjects/Outside/RectOutside';
+import { TextOutside } from 'CanvasObjects/Outside/TextOutside';
 import { SelectableValue } from '@grafana/data';
 
 type Props = {
@@ -17,18 +17,15 @@ export const Item = ({ allInfos, setGroupedOptionHandler }: Props) => {
     return (
         <Layer>
             {allInfos.map((info) => (
-                <RectItem
+                <RectOutside
                     position={info.position}
                     width={info.width}
                     height={info.height}
                     color={info.color}
-                    option={info.text}
-                    setGroupedOption={setGroupedOptionHandler}
-                    type={info.elementInfo?.type}
                 />
             ))}
             {allInfos.map((info) => (
-                <TextItem
+                <TextOutside
                     position={info.position}
                     text={info.text}
                 />

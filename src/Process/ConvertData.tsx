@@ -74,3 +74,17 @@ export function getContainerInformation(data: PanelData) {
     }
     return allElementInfo;
 }
+
+
+
+
+
+export function groupPodContainer(data: PanelData) {
+    
+    let allElementInfo = getContainerInformation(data);
+    for (let i = 0; i < allElementInfo.length; i++) {
+        allElementInfo[i].pod = data.series[8].fields[16].values.get(i);
+    }
+    return allElementInfo;
+
+}

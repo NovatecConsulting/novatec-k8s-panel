@@ -1,12 +1,10 @@
-import { PanelData } from '@grafana/data';
+import { PanelData, SelectableValue } from '@grafana/data';
 import { position, getOverview } from '../CanvasObjects/Calculation'
-import { getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
+import { groupPodContainer, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
 import { Element } from 'types';
 
 
 export function handler(width: number, height: number, levelOption: string, data: PanelData) {
-
-
 
     if (levelOption === 'Overview') {
         // Overview
@@ -60,12 +58,12 @@ export function handler(width: number, height: number, levelOption: string, data
 
 
 
-export function handlerGrouped(width: number, height: number, groupedOption: string, data: PanelData, allElements: Element[]) {
+export function handlerDetail(width: number, height: number, groupedOption: SelectableValue, data: PanelData, allElements: Element[]) {
 
     let groupedElement: Element[] = new Array()
 
     for (let i = 0; i < allElements.length; i++) {
-        if (groupedOption === allElements[i].text) {
+        if (groupedOption.label === allElements[i].text) {
             groupedElement.push(allElements[i])
         }
     }
@@ -86,6 +84,42 @@ export function handlerGrouped(width: number, height: number, groupedOption: str
 
 
 
-export function handlerGrouped2(levelOption: string, groupedOption: string) {
+export function handlerGrouped(levelOption: string, groupedOption: SelectableValue, data: PanelData) {
+
+
+    const allElementInfo = groupPodContainer(data);
+
+    let outside = new Array();
+    let inside = new Array();
+
+
+    if (levelOption === "Pod" && groupedOption.description === "Container") {
+
+        for (let i = 0; i < allElementInfo.length; i++) {
+
+            if (allElementInfo[i].container === groupedOption.label) {
+                inside = allElementInfo[i].container;
+                outside = allElementInfo[i].pod;
+            }
+        }
+
+        console.log("inside");
+        console.log(inside);
+
+        console.log("outside");
+        console.log(outside);
+
+
+
+        // zeichne außen 
+
+
+        // zeichne innen
+
+    }
+
+
+
+
 
 }

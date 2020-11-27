@@ -64,7 +64,6 @@ export function newTest(data: PanelData) {
     let item = getNamespaceInformation(data);
 
     for (let i = 0; i < item.length; i++) {
-        console.log(item);
         let element: SelectableValue = {};
         element.label = item[i].namespace;
         element.description = "Namespace";

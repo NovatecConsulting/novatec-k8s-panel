@@ -2,6 +2,7 @@ import React from 'react';
 import { LegacyForms} from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
 
+
 const { Select } = LegacyForms;
 
 interface SelectProps {
@@ -24,6 +25,29 @@ export const DropdownUI = ({ id, options, onChange, value }: SelectProps) => {
                 onChange={item=> onChange(item.label)}
                 value = {value1}
 
+            />
+        </div>
+    )
+}
+
+
+interface SelectPropsGrouped {
+    id: string;
+    options: Array<SelectableValue>;
+    onChange: (value: SelectableValue) => void;
+    value: SelectableValue;
+}
+
+export const DropdownGrouped = ({ id, options, onChange, value }: SelectPropsGrouped) => {
+    return (
+        <div>
+            <Select
+                key={id}
+                placeholder="-"
+                isSearchable={true}
+                options={options}
+                onChange={item=> onChange(item)}
+                value = {value}
             />
         </div>
     )
