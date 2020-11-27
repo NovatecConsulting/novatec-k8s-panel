@@ -12,8 +12,10 @@ export const TextOutside = ({ position, text }: Props) => {
     return (
         <Text
             x={position.x}
-            y={position.y}
+            y={position.y - 30}
             text={text}
+            fill={"#33B5E5"}
+            fontSize={20}
         />
     );
 }

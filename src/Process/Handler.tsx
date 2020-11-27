@@ -102,7 +102,7 @@ export function handlerGrouped(levelOption: string, groupedOption: SelectableVal
         // inside
         let insidePosition: Position[] = positionGrouped(width, height, inside.length);
         for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350, height: 70, color: "white", text: inside[i].container, outside: false }
+            let element: Element = { position: insidePosition[i], width: 350*3, height: 70*3, color: "white", text: inside[i].container, outside: false }
             allElements.push(element)
         }
         //outside
@@ -111,5 +111,35 @@ export function handlerGrouped(levelOption: string, groupedOption: SelectableVal
         outsideElement.text = inside[0].pod;
         allElements.push(outsideElement);
     }
+
+
+    if(levelOption === "Container" && groupedOption.description ==="Pod"){
+
+
+        for(let i=0; i< allElementInfo.length; i++){
+
+            if(allElementInfo[i].pod === groupedOption.label){
+                inside.push(allElementInfo[i]);
+            }
+        }
+
+        // inside 
+        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
+        for (let i = 0; i < insidePosition.length; i++) {
+            let element: Element = { position: insidePosition[i], width: 350*3, height: 70*3, color: "white", text: inside[i].container, outside: false }
+            allElements.push(element)
+        }
+        
+        // outside
+        let outsideElement = positionOutside(allElements);
+        outsideElement.outside = true;
+        outsideElement.text = inside[0].pod;
+        allElements.push(outsideElement);
+
+
+    }
+
+
+
     return allElements;
 }

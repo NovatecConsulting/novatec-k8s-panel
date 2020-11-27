@@ -6,6 +6,7 @@ import { Layer } from 'react-konva';
 import { RectOutside } from 'CanvasObjects/Outside/RectOutside';
 import { RectItem } from 'CanvasObjects/Item/RectItem';
 import { TextOutside } from 'CanvasObjects/Outside/TextOutside';
+import { TextItem } from 'CanvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
 
 type Props = {
@@ -34,12 +35,19 @@ export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
                     setGroupedOption={setGroupedOptionHandler}
                     type={info.elementInfo?.type}
                 />
+
             ))}
-            {allInfos.map((info) => (
+            {allInfos.map((info) => (info.outside ? (
                 <TextOutside
                     position={info.position}
                     text={info.text}
                 />
+            ) : (
+                    <TextItem
+                        position={info.position}
+                        text={info.text}
+                    />
+                )
             ))}
         </Layer>
     );

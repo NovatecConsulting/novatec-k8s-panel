@@ -20,8 +20,8 @@ export const RectOutside = ({ position, width, height, color }: Props) => {
             height={height}
             fill={"transparent"}
             shadowBlur={5}
-            strokeWidth={1}
-            stroke={"red"}
+            strokeWidth={4}
+            stroke={"#33B5E5"}
         />
     );
 }

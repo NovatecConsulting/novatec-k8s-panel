@@ -87,10 +87,10 @@ export function calcDropdownOptions() {
 
 export function positionGrouped(width: number, height: number, count: number) {
 
-    const rectWidth = 350;
-    const rectHeight = 70;
+    const rectWidth = 350*3;
+    const rectHeight = 70*3;
 
-    let position: Position = { x: -100, y: 40 };
+    let position: Position = { x: -850, y: 70 };
     let allPosition: Position[] = new Array();
 
     for (let i = 0; i < count; i++) {
@@ -117,8 +117,8 @@ export function positionOutside(insideElements: Element[]) {
             maxHeight = insideElements[i].position.y;
         }
     }
-    const width = maxWidth + 370 - insideElements[0].position.x;
-    const height = maxHeight + 90 - insideElements[0].position.y
+    const width = maxWidth + (350*3) - insideElements[0].position.x +20;
+    const height = maxHeight + (70*3) - insideElements[0].position.y +20;
     let outsideRect: Element = { position: { x: insideElements[0].position.x - 10, y: insideElements[0].position.y - 10 }, width: width, height: height, color: "transparent", text: "" }
     return outsideRect;
 
