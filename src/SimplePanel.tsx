@@ -19,10 +19,12 @@ interface Props extends PanelProps<SimpleOptions> { }
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) => {
 
   let firstGroupedOption: SelectableValue = { label: "-", description: "Overview" };
-
   const [levelOption, setLevelOption] = useState("Overview");
   const [groupedOption, setGroupedOption] = useState(firstGroupedOption);
   const [metricOption, setMetricOption] = useState("-");
+
+  let grouped = false;
+
 
   const setLevelOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
@@ -51,11 +53,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   //call handler to get 
   let allElements = handler(width, height, levelOption, data);
   let showElements = allElements;
+  grouped =false;
   if (groupedOption.label !== "-") {
     if (groupedOption.description === levelOption) {
       showElements = handlerDetail(width, height, groupedOption, data, allElements);
+      grouped = false;
     } else {
-      handlerGrouped(levelOption, groupedOption, data);
+      showElements = handlerGrouped(levelOption, groupedOption, data, width, height);
+      grouped = true;
     }
   }
 
@@ -75,7 +80,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
           <div><DropdownUI id={"right"} options={dropdownOptions(metricOptions, metricOption)} onChange={setMetricOptionHandler} value={metricOption} /></div>
         </div>
       </div>
-      <Canvas width={width} height={height} allRect={showElements} levelOption={levelOption} setLevelOptionHandler={setLevelOptionHandler} setGroupedOptionHandler={setGroupedOptionHandler} />
+      <Canvas width={width} height={height} allRect={showElements} levelOption={levelOption} setLevelOptionHandler={setLevelOptionHandler} setGroupedOptionHandler={setGroupedOptionHandler} grouped={grouped}/>
     </div>
   )
 

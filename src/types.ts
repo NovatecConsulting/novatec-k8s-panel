@@ -14,6 +14,7 @@ export interface Element {
   color: string;
   text: string;
   elementInfo?: ElementInfo;
+  outside?: Boolean;
 }
 
 export interface Position {
@@ -25,11 +26,11 @@ export interface Position {
 
 export interface ElementInfo {
   type: Types;
-  pod?: String;
-  namespace?: String;
-  container?: String;
-  node?: String;
-  service?: String;
+  pod?: string;
+  namespace?: string;
+  container?: string;
+  node?: string;
+  service?: string;
 }
 
 

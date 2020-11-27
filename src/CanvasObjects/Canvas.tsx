@@ -4,6 +4,7 @@ import { Stage } from 'react-konva';
 import { Element } from 'types';
 import { Overview } from 'CanvasObjects/Overview/Overview';
 import { Item } from 'CanvasObjects/Item/Item';
+import { Outside } from 'CanvasObjects/Outside/Outside'
 import { SelectableValue } from '@grafana/data';
 
 
@@ -14,9 +15,10 @@ interface StageProps {
     levelOption: string;
     setLevelOptionHandler: (value: string | undefined) => void;
     setGroupedOptionHandler: (value: SelectableValue) => void;
+    grouped: Boolean;
 }
 
-export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler }: StageProps) => {
+export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler, grouped }: StageProps) => {
 
     const [stageScale, setStageScale] = useState(1);
     const [stageX, setStageX] = useState(0);
@@ -49,14 +51,19 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
             y={stageY}
             draggable={true}
             style={{ background: '#30343a' }} >
-            {levelOption === 'Overview' ? (< Overview
+            {levelOption === 'Overview' && !grouped ? (< Overview
                 allInfos={allRect}
                 setLevelOptionHandler={setLevelOptionHandler}
             />)
-                : (<Item
+                : !grouped ? (<Item
                     allInfos={allRect}
                     setGroupedOptionHandler={setGroupedOptionHandler}
-                />)}
+                />) :
+                    (<Outside
+                        allInfos={allRect}
+                        setGroupedOptionHandler={setGroupedOptionHandler}
+                    />
+                    )}
         </Stage>
     )
 }

@@ -1,7 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { position, getOverview } from '../CanvasObjects/Calculation'
+import { positionOutside, positionGrouped, position, getOverview } from '../CanvasObjects/Calculation'
 import { groupPodContainer, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
-import { Element } from 'types';
+import { Element, Position } from 'types';
 
 
 export function handler(width: number, height: number, levelOption: string, data: PanelData) {
@@ -84,42 +84,32 @@ export function handlerDetail(width: number, height: number, groupedOption: Sele
 
 
 
-export function handlerGrouped(levelOption: string, groupedOption: SelectableValue, data: PanelData) {
+export function handlerGrouped(levelOption: string, groupedOption: SelectableValue, data: PanelData, width: number, height: number) {
 
 
     const allElementInfo = groupPodContainer(data);
+    let inside: any[] = new Array();
+    let allElements: Element[] = new Array();
 
-    let outside = new Array();
-    let inside = new Array();
-
-
+    // level: pod  Grouped by:  Container X
     if (levelOption === "Pod" && groupedOption.description === "Container") {
 
         for (let i = 0; i < allElementInfo.length; i++) {
-
             if (allElementInfo[i].container === groupedOption.label) {
-                inside = allElementInfo[i].container;
-                outside = allElementInfo[i].pod;
+                inside.push(allElementInfo[i]);
             }
         }
-
-        console.log("inside");
-        console.log(inside);
-
-        console.log("outside");
-        console.log(outside);
-
-
-
-        // zeichne außen 
-
-
-        // zeichne innen
-
+        // inside
+        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
+        for (let i = 0; i < insidePosition.length; i++) {
+            let element: Element = { position: insidePosition[i], width: 350, height: 70, color: "white", text: inside[i].container, outside: false }
+            allElements.push(element)
+        }
+        //outside
+        let outsideElement = positionOutside(allElements);
+        outsideElement.outside = true;
+        outsideElement.text = inside[0].pod;
+        allElements.push(outsideElement);
     }
-
-
-
-
-
+    return allElements;
 }
