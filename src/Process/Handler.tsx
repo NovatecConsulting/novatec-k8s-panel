@@ -1,9 +1,10 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOutside, positionGrouped, position, getOverview } from '../CanvasObjects/Calculation'
-import { groupPodContainer, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
+import { getAllElementInfo, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
 import { Element, Position } from 'types';
 
 
+// Returns the elements considering the level.
 export function handler(width: number, height: number, levelOption: string, data: PanelData) {
 
     if (levelOption === 'Overview') {
@@ -58,6 +59,76 @@ export function handler(width: number, height: number, levelOption: string, data
 
 
 
+export function filterHandler(width: number, height: number, allElements: Element[], levelOption: string, filterOption: SelectableValue, data: PanelData) {
+
+    let filterElement: Element[] = new Array();
+
+    // focus one
+    if (levelOption === filterOption.description) {
+
+        for (let i = 0; i < allElements.length; i++) {
+            if (allElements[i].text === filterOption.label) {
+                filterElement.push(allElements[i]);
+            }
+        }
+    } else {
+        let filterInfo = filterDiffLevel(data, levelOption, filterOption);
+        filterElement = position(width, height, filterInfo.length);
+
+        for (let i = 0; i < filterElement.length; i++) {
+            filterElement[i].text = "" + filterInfo[i];
+        }
+    }
+    return filterElement;
+}
+
+
+
+// Filter with diffrent Level
+export function filterDiffLevel(data: PanelData, levelOption: string, filterOption: SelectableValue) {
+
+    let allElementInfo = getAllElementInfo(data);
+    let filterElements: any[] = new Array();
+
+    for (let i = 0; i < allElementInfo.length; i++) {
+        if (filterOption.description === "Namespace") {
+            if (allElementInfo[i].namespace === filterOption.label) {
+                filterElements.push(allElementInfo[i]);
+            }
+        } else if (filterOption.description === "Pod") {
+            if (allElementInfo[i].pod === filterOption.label) {
+                filterElements.push(allElementInfo[i]);
+            }
+
+        } else if (filterOption.description === "Container") {
+            if (allElementInfo[i].container === filterOption.label) {
+                filterElements.push(allElementInfo[i]);
+            }
+
+        }
+    }
+    let filterToLevel = new Set();
+
+    for (let i = 0; i < filterElements.length; i++) {
+
+        if (levelOption === "Namespace") {
+            filterToLevel.add(filterElements[i].namespace);
+        } else if (levelOption === "Pod") {
+            filterToLevel.add(filterElements[i].pod);
+        } else if (levelOption === "Container") {
+            filterToLevel.add(filterElements[i].container);
+        }
+    }
+    return Array.from(filterToLevel);
+}
+
+
+
+
+
+
+
+
 export function handlerDetail(width: number, height: number, groupedOption: SelectableValue, data: PanelData, allElements: Element[]) {
 
     let groupedElement: Element[] = new Array()
@@ -82,7 +153,7 @@ export function handlerDetail(width: number, height: number, groupedOption: Sele
 
 
 
-
+/*
 
 export function handlerGrouped(levelOption: string, groupedOption: SelectableValue, data: PanelData, width: number, height: number) {
 
@@ -121,7 +192,7 @@ export function handlerGrouped(levelOption: string, groupedOption: SelectableVal
             }
         }
 
-        // inside 
+        // inside
         let insidePosition: Position[] = positionGrouped(width, height, inside.length);
         for (let i = 0; i < insidePosition.length; i++) {
             let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].container, outside: false }
@@ -233,3 +304,5 @@ export function handlerGrouped(levelOption: string, groupedOption: SelectableVal
 
     return allElements;
 }
+
+*/

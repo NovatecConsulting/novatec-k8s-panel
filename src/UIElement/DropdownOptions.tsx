@@ -1,5 +1,4 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { Element } from 'types';
 
 import { getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, } from '../Process/ConvertData'
 
@@ -25,7 +24,7 @@ export function dropdownOptions(allOptions: string[], value: string) {
 }
 
 
-
+/*
 export function dropdownOptionsGrouped(allElements: Element[], value: string, levelOption: string) {
 
 
@@ -48,11 +47,11 @@ export function dropdownOptionsGrouped(allElements: Element[], value: string, le
 
     return option;
 }
+*/
 
 
 
-
-export function newTest(data: PanelData) {
+export function dropdownOptionsFilter(data: PanelData) {
 
     let option: Array<SelectableValue> = [];
     let firstElement: SelectableValue = {};

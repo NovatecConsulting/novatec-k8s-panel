@@ -5,12 +5,13 @@ import { SimpleOptions } from 'types';
 // import { stylesFactory, useTheme } from '@grafana/ui';
 
 import { Canvas } from 'CanvasObjects/Canvas';
-import { DropdownUI, DropdownGrouped } from 'UIElement/Dropdown';
-import { dropdownOptions, newTest } from 'UIElement/DropdownOptions';
+import { DropdownUI, DropdownFilter } from 'UIElement/Dropdown';
+import { dropdownOptions, dropdownOptionsFilter } from 'UIElement/DropdownOptions';
 import 'Style/SimplePanel.css';
-import { handler, handlerDetail, handlerGrouped } from 'Process/Handler';
+import { handler, filterHandler } from 'Process/Handler';
 
 const levelOptions = ["Overview", "Namespace", "Service", "Pod", "Container"];
+const groupedOptions = ["Namespace", "Service", "Pod", "Container"]
 const metricOptions = ["-", "CPU Nutzung", "Speicher Nutzung", "CPU Limits", "Memory Limits", "CPU Requests", "Memory Requests"];
 
 interface Props extends PanelProps<SimpleOptions> { }
@@ -18,14 +19,16 @@ interface Props extends PanelProps<SimpleOptions> { }
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) => {
 
-  let firstGroupedOption: SelectableValue = { label: "-", description: "Overview" };
+  let firstFilterOption: SelectableValue = { label: "-", description: "Overview" };
   const [levelOption, setLevelOption] = useState("Overview");
-  const [groupedOption, setGroupedOption] = useState(firstGroupedOption);
+  const [filterOption, setFilterOption] = useState(firstFilterOption)
+  const [groupedOption, setGroupedOption] = useState("-");
   const [metricOption, setMetricOption] = useState("-");
 
-  let grouped = false;
+  // Todo
+  const grouped = false;
 
-
+  // Dropdown Handler
   const setLevelOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       try {
@@ -37,9 +40,15 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
     }
   }
 
-  const setGroupedOptionHandler = (option: SelectableValue) => {
+  const setFilterOptionHandler = (option: SelectableValue) => {
     if (option.label !== undefined) {
-      setGroupedOption(option);
+      setFilterOption(option);
+    }
+  }
+
+  const setGroupedOptionHandler = (label: string | undefined) => {
+    if (label !== undefined) {
+      setGroupedOption(label);
     }
   }
 
@@ -50,19 +59,64 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   }
 
 
-  //call handler to get 
+
+
+
+  //call handler to get the level elements
+
+
   let allElements = handler(width, height, levelOption, data);
   let showElements = allElements;
-  grouped =false;
-  if (groupedOption.label !== "-") {
-    if (groupedOption.description === levelOption) {
-      showElements = handlerDetail(width, height, groupedOption, data, allElements);
-      grouped = false;
-    } else {
-      showElements = handlerGrouped(levelOption, groupedOption, data, width, height);
-      grouped = true;
-    }
+
+  // call filter handler to get f
+  if (filterOption.label !== "-") {
+    showElements = filterHandler(width, height, allElements, levelOption, filterOption, data);
   }
+
+
+  /*
+  
+    let grouped = false;
+    const setLevelOptionHandler = (label: string | undefined) => {
+      if (label !== undefined) {
+        try {
+          setLevelOption(label.split(' ')[0]);
+        } catch {
+          setLevelOption(label);
+        }
+  
+      }
+    }
+  
+    const setGroupedOptionHandler = (option: SelectableValue) => {
+      if (option.label !== undefined) {
+        setGroupedOption(option);
+      }
+    }
+  
+    const setMetricOptionHandler = (label: string | undefined) => {
+      if (label !== undefined) {
+        setMetricOption(label);
+      }
+    }
+  
+  
+    //call handler to get 
+    let allElements = handler(width, height, levelOption, data);
+    let showElements = allElements;
+    grouped =false;
+    if (groupedOption.label !== "-") {
+      if (groupedOption.description === levelOption) {
+        showElements = handlerDetail(width, height, groupedOption, data, allElements);
+        grouped = false;
+      } else {
+        showElements = handlerGrouped(levelOption, groupedOption, data, width, height);
+        grouped = true;
+      }
+    }
+  
+    */
+
 
   return (
     <div>
@@ -72,16 +126,22 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
           <div><DropdownUI id={"left"} options={dropdownOptions(levelOptions, levelOption)} onChange={setLevelOptionHandler} value={levelOption} /></div>
         </div>
         <div className="test">
+          <label>Filter:</label>
+          <div><DropdownFilter id={"center-left"} options={dropdownOptionsFilter(data)} onChange={setFilterOptionHandler} value={filterOption} /></div>
+        </div>
+        <div className="test">
           <label>Grouped by:</label>
-          <div><DropdownGrouped id={"center"} options={newTest(data)} onChange={setGroupedOptionHandler} value={groupedOption} /></div>
+          <div><DropdownUI id={"center-right"} options={dropdownOptions(groupedOptions, groupedOption)} onChange={setGroupedOptionHandler} value={groupedOption} /></div>
         </div>
         <div className="test">
           <label>Metric:</label>
           <div><DropdownUI id={"right"} options={dropdownOptions(metricOptions, metricOption)} onChange={setMetricOptionHandler} value={metricOption} /></div>
         </div>
       </div>
-      <Canvas width={width} height={height} allRect={showElements} levelOption={levelOption} setLevelOptionHandler={setLevelOptionHandler} setGroupedOptionHandler={setGroupedOptionHandler} grouped={grouped}/>
+      <Canvas width={width} height={height} allRect={showElements} levelOption={levelOption} setLevelOptionHandler={setLevelOptionHandler} setGroupedOptionHandler={setFilterOptionHandler} grouped={grouped} />
     </div>
   )
+
+
 
 }

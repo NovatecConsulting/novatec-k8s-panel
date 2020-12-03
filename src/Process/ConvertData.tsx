@@ -79,12 +79,16 @@ export function getContainerInformation(data: PanelData) {
 
 
 
-export function groupPodContainer(data: PanelData) {
+export function getAllElementInfo(data: PanelData) {
 
-    let allElementInfo = getContainerInformation(data);
-    for (let i = 0; i < allElementInfo.length; i++) {
-        allElementInfo[i].pod = data.series[8].fields[16].values.get(i);
-        allElementInfo[i].namespace = data.series[8].fields[15].values.get(i);
+    let allElementInfo = new Array();
+    for (let i = 0; i < data.series[8].fields[5].values.length; i++) {
+        let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", service: "" };
+        
+        elementInfo.container = data.series[8].fields[5].values.get(i);
+        elementInfo.pod = data.series[8].fields[16].values.get(i);
+        elementInfo.namespace = data.series[8].fields[15].values.get(i);
+        allElementInfo.push(elementInfo);
     }
     return allElementInfo;
 

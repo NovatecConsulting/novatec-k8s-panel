@@ -31,6 +31,8 @@ export const DropdownUI = ({ id, options, onChange, value }: SelectProps) => {
 }
 
 
+// Dropdown Filter has its own object
+
 interface SelectPropsGrouped {
     id: string;
     options: Array<SelectableValue>;
@@ -38,7 +40,7 @@ interface SelectPropsGrouped {
     value: SelectableValue;
 }
 
-export const DropdownGrouped = ({ id, options, onChange, value }: SelectPropsGrouped) => {
+export const DropdownFilter = ({ id, options, onChange, value }: SelectPropsGrouped) => {
     return (
         <div>
             <Select
