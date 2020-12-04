@@ -1,5 +1,5 @@
 import { PanelData } from "@grafana/data";
-import { Types } from 'types';
+import { Types, Container, Pod, Namespace } from 'types';
 
 
 // Count
@@ -84,12 +84,71 @@ export function getAllElementInfo(data: PanelData) {
     let allElementInfo = new Array();
     for (let i = 0; i < data.series[8].fields[5].values.length; i++) {
         let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", service: "" };
-        
+
         elementInfo.container = data.series[8].fields[5].values.get(i);
         elementInfo.pod = data.series[8].fields[16].values.get(i);
         elementInfo.namespace = data.series[8].fields[15].values.get(i);
         allElementInfo.push(elementInfo);
     }
     return allElementInfo;
+
+}
+
+
+
+export function getAllElementInfo2(data: PanelData) {
+
+
+    let allElementInfo = new Array();
+
+    for (let i = 0; i < data.series[8].fields[5].values.length; i++) {
+        let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", service: "" };
+
+        elementInfo.container = data.series[8].fields[5].values.get(i);
+        elementInfo.pod = data.series[8].fields[16].values.get(i);
+        elementInfo.namespace = data.series[8].fields[15].values.get(i);
+        allElementInfo.push(elementInfo);
+    }
+
+
+    let allContainers: Container[] = [];
+
+    for (let i = 0; i < allElementInfo.length; i++) {
+        let container: Container = { Name: allElementInfo[i].container, Pod: allElementInfo[i].pod, Namespace: allElementInfo[i].namespace };
+        allContainers.push(container)
+    }
+
+    let allPods: Pod[] = [];
+
+    let allElementPod = getPodInformation(data);
+    for (let i = 0; i < allElementPod.length; i++) {
+        let pod: Pod = { Name: allElementPod[i].pod, Container: [], Namespace: "" }
+        for (let l = 0; l < allContainers.length; l++) {
+            if (allContainers[l].Pod === pod.Name) {
+                pod.Container.push(allContainers[l]);
+                pod.Namespace = allContainers[l].Namespace
+            }
+        }
+        allPods.push(pod);
+    }
+
+
+    let allNamespaces: Namespace[] = [];
+
+    let allElementNamespace = getNamespaceInformation(data);
+
+
+    for (let i = 0; i < allElementNamespace.length; i++) {
+        let namespace: Namespace = { Name: allElementNamespace[i].namespace, Pod: [] }
+        for (let l = 0; l < allPods.length; l++) {
+            if (allPods[l].Namespace === namespace.Name) {
+                namespace.Pod.push(allPods[l])
+            }
+        }
+        allNamespaces.push(namespace);
+    }
+
+
+    return allNamespaces;
 
 }

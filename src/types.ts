@@ -41,3 +41,38 @@ export enum Types {
   Container = "Container",
   Node = "Node"
 }
+
+
+
+
+
+
+// new:
+
+
+export interface Container {
+
+  Name: string;
+  Pod: string;
+  Namespace: string;
+}
+
+
+
+export interface Pod {
+
+  Name: string;
+  Container: Container[];
+  Namespace: string;
+
+
+}
+
+
+export interface Namespace {
+
+  Name: string;
+  Pod: Pod[];
+  
+
+}

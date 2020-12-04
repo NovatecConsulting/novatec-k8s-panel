@@ -24,6 +24,37 @@ export function dropdownOptions(allOptions: string[], value: string) {
 }
 
 
+
+
+export function dropdownGroupedOptions(allOptions: string[], value: string, levelOption: string) {
+
+    let options: string[] = new Array();
+
+    if(value!== "-"){
+        options.push("-");
+    }
+
+    for (let i = 0; i < allOptions.length; i++) {
+
+        if (allOptions[i] === levelOption) {
+            break;
+        } else {
+            options.push(allOptions[i]);
+        }
+    }
+
+    let test: Array<SelectableValue> = [];
+    for (let i = 0; i < options.length; i++) {
+        let element: SelectableValue = {};
+        element.label = options[i];
+        test.push(element);
+    }
+
+    return test;
+
+}
+
+
 /*
 export function dropdownOptionsGrouped(allElements: Element[], value: string, levelOption: string) {
 

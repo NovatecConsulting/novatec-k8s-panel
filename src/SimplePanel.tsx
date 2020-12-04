@@ -6,9 +6,9 @@ import { SimpleOptions } from 'types';
 
 import { Canvas } from 'CanvasObjects/Canvas';
 import { DropdownUI, DropdownFilter } from 'UIElement/Dropdown';
-import { dropdownOptions, dropdownOptionsFilter } from 'UIElement/DropdownOptions';
+import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'UIElement/DropdownOptions';
 import 'Style/SimplePanel.css';
-import { handler, filterHandler } from 'Process/Handler';
+import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'Process/Handler';
 
 const levelOptions = ["Overview", "Namespace", "Service", "Pod", "Container"];
 const groupedOptions = ["Namespace", "Service", "Pod", "Container"]
@@ -73,6 +73,13 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
     showElements = filterHandler(width, height, allElements, levelOption, filterOption, data);
   }
 
+  if (groupedOption !== "-" && filterOption.label === "-") {
+    groupedHandler2(data, levelOption, groupedOption);
+  } else if (groupedOption !== "-") {
+    groupedHandler(showElements, levelOption, groupedOption, data);
+  }
+
+
 
   /*
   
@@ -131,7 +138,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
         </div>
         <div className="test">
           <label>Grouped by:</label>
-          <div><DropdownUI id={"center-right"} options={dropdownOptions(groupedOptions, groupedOption)} onChange={setGroupedOptionHandler} value={groupedOption} /></div>
+          <div><DropdownUI id={"center-right"} options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)} onChange={setGroupedOptionHandler} value={groupedOption} /></div>
         </div>
         <div className="test">
           <label>Metric:</label>
