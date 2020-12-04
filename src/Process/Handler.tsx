@@ -178,54 +178,42 @@ export function groupedHandler(showElements: Element[], levelOption: string, gro
 
 export function groupedHandler2(data: PanelData, levelOption: string, groupedOption: string) {
 
-    let allInformation = getAllElementInfo2(data);
-
+    const allInformation = getAllElementInfo2(data);
     let tuple = new Array();
+    let insideElements: string[] = [];
 
-
-
-    if (levelOption === "Container" && groupedOption === "Namespace") {
-
-        for (let i = 0; i < allInformation.length; i++) {
-            let allContainers: string[] = [];
-            for (let l = 0; l < allInformation[i].Pod.length; l++) {
-                for (let j = 0; j < allInformation[i].Pod[l].Container.length; j++) {
-                    allContainers.push(allInformation[i].Pod[l].Container[j].Name);
+    for (let i = 0; i < allInformation.length; i++) {
+        if (levelOption === "Container" && groupedOption === "Namespace") {
+            insideElements = [];
+        }
+        if (levelOption === "Pod" && groupedOption === "Namespace") {
+            insideElements = [];
+        }
+        for (let l = 0; l < allInformation[i].Pod.length; l++) {
+            if (levelOption === "Container" && groupedOption === "Pod") {
+                insideElements = [];
+            }
+            if (levelOption === "Pod") {
+                insideElements.push(allInformation[i].Pod[l].Name);
+            }
+            for (let j = 0; j < allInformation[i].Pod[l].Container.length; j++) {
+                if (levelOption === "Container") {
+                    insideElements.push(allInformation[i].Pod[l].Container[j].Name);
                 }
+
             }
-            tuple.push({ outside: allInformation[i].Name, inside: allContainers })
-        }
-    }
-
-
-    if (levelOption === "Container" && groupedOption === "Pod") {
-
-        for (let i = 0; i < allInformation.length; i++) {
-
-            for (let l = 0; l < allInformation[i].Pod.length; l++) {
-                let allContainers: string[] = [];
-                for (let j = 0; j < allInformation[i].Pod[l].Container.length; j++) {
-                    allContainers.push(allInformation[i].Pod[l].Container[j].Name);
-                }
-                tuple.push({ outside: allInformation[i].Pod[l].Name, inside: allContainers })
+            if (levelOption === "Container" && groupedOption === "Pod") {
+                tuple.push({ outside: allInformation[i].Pod[l].Name, inside: insideElements })
             }
         }
-    }
-
-
-    if (levelOption === "Pod" && groupedOption === "Namespace") {
-        for (let i = 0; i < allInformation.length; i++) {
-            let allPods: string[] = [];
-            for (let l = 0; l < allInformation[i].Pod.length; l++) {
-                allPods.push(allInformation[i].Pod[l].Name);
-            }
-            tuple.push({ outside: allInformation[i], inside: allPods })
+        if (levelOption === "Pod") {
+            tuple.push({ outside: allInformation[i], inside: insideElements })
+        }
+        if (levelOption === "Container" && groupedOption === "Namespace") {
+            tuple.push({ outside: allInformation[i].Name, inside: insideElements })
         }
     }
-
-
     console.log(tuple);
-
 }
 
 
