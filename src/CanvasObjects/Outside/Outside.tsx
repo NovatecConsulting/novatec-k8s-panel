@@ -1,5 +1,5 @@
 import React from 'react';
-import { Element } from 'types';
+import { Tuple } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
@@ -10,7 +10,7 @@ import { TextItem } from 'CanvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
 
 type Props = {
-    allInfos: Element[],
+    allInfos: Tuple,
     setGroupedOptionHandler: (value: SelectableValue) => void;
 }
 
@@ -18,14 +18,19 @@ export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
 
     return (
         <Layer>
-            {allInfos.map((info) => (info.outside ? (
+            {allInfos !== undefined ? (
                 <RectOutside
-                    position={info.position}
-                    width={info.width}
-                    height={info.height}
-                    color={info.color}
+                    position={allInfos.outside!.position}
+                    width={allInfos.outside!.width}
+                    height={allInfos.outside!.height}
+                    color={allInfos.outside!.color}
                 />
-            ) :
+            ) : null}
+            <TextOutside
+                position={allInfos.outside!.position}
+                text={allInfos.outside!.text}
+            />
+            {allInfos.inside.map((info) => (
                 <RectItem
                     position={info.position}
                     width={info.width}
@@ -35,19 +40,13 @@ export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
                     setGroupedOption={setGroupedOptionHandler}
                     type={info.elementInfo?.type}
                 />
-
             ))}
-            {allInfos.map((info) => (info.outside ? (
-                <TextOutside
+
+            {allInfos.inside.map((info) => (
+                <TextItem
                     position={info.position}
                     text={info.text}
                 />
-            ) : (
-                    <TextItem
-                        position={info.position}
-                        text={info.text}
-                    />
-                )
             ))}
         </Layer>
     );

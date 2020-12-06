@@ -1,12 +1,14 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { positionOutside, positionGrouped, position, getOverview } from '../CanvasObjects/Calculation'
+import { positionTest, position, getOverview, positionOutside2 } from '../CanvasObjects/Calculation'
 import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
-import { Element, Position, Container } from 'types';
+import { Element, Tuple } from 'types';
 
 
 
 // Returns the elements considering the level.
 export function handler(width: number, height: number, levelOption: string, data: PanelData) {
+
+    let allElements: Element[] = new Array();
 
     if (levelOption === 'Overview') {
         // Overview
@@ -17,52 +19,48 @@ export function handler(width: number, height: number, levelOption: string, data
         return getOverview(width, namespaceCount, serviceCount, podCount, containerCount);
     } else if (levelOption === 'Namespace') {
         //Namespace
-        let allElements = position(width, height, getNamespaceCount(data));
+        allElements = position(width, height, getNamespaceCount(data));
         const allElementInfo = getNamespaceInformation(data);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].namespace;
         }
-        return allElements;
     } else if (levelOption === 'Service') {
         // Service
-        let allElements = position(width, height, getServiceCount(data));
+        allElements = position(width, height, getServiceCount(data));
         const allElementInfo = getServiceInformation(data);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].service;
         }
-        return allElements;
     }
     else if (levelOption === 'Pod') {
         // Pod
-        let allElements = position(width, height, getPodCount(data));
+        allElements = position(width, height, getPodCount(data));
         const allElementInfo = getPodInformation(data);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].pod;
         }
-        return allElements;
+
     } else if (levelOption === 'Container') {
         //Container
-        let allElements = position(width, height, getContainerCount(data));
+        allElements = position(width, height, getContainerCount(data));
         const allElementInfo = getContainerInformation(data);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].container;
         }
-        return allElements;
     }
-    else {
-        return position(width, height, 15);
-    }
+    const tuple: Tuple = { outside: undefined, inside: allElements }
+    return tuple;
 }
 
 
-
-export function filterHandler(width: number, height: number, allElements: Element[], levelOption: string, filterOption: SelectableValue, data: PanelData) {
+export function filterHandler(width: number, height: number, allInfo: Tuple, levelOption: string, filterOption: SelectableValue, data: PanelData) {
 
     let filterElement: Element[] = new Array();
+    const allElements = allInfo.inside;
 
     // focus one
     if (levelOption === filterOption.description) {
@@ -80,7 +78,8 @@ export function filterHandler(width: number, height: number, allElements: Elemen
             filterElement[i].text = "" + filterInfo[i];
         }
     }
-    return filterElement;
+    const tuple: Tuple = { outside: undefined, inside: filterElement }
+    return tuple;
 }
 
 
@@ -125,20 +124,17 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
 
 
 
-export function groupedHandler(showElements: Element[], levelOption: string, groupedOption: string, data: PanelData) {
-
-
+export function groupedHandler(showInfo: Tuple, levelOption: string, groupedOption: string, data: PanelData) {
 
     let allElementInfo = getAllElementInfo(data);
-
-    let result: string = "";
-
+    let outside: string = "";
+    const showElements = showInfo.inside;
 
     if (levelOption === "Pod" && groupedOption === "Namespace") {
         for (let i = 0; i < showElements.length; i++) {
             for (let l = 0; l < allElementInfo.length; l++) {
                 if (allElementInfo[l].pod === showElements[i].text) {
-                    result = allElementInfo[l].namespace;
+                    outside = allElementInfo[l].namespace;
 
                 }
             }
@@ -149,7 +145,7 @@ export function groupedHandler(showElements: Element[], levelOption: string, gro
         for (let i = 0; i < showElements.length; i++) {
             for (let l = 0; l < allElementInfo.length; l++) {
                 if (allElementInfo[l].container === showElements[i].text) {
-                    result = allElementInfo[l].namespace;
+                    outside = allElementInfo[l].namespace;
 
                 }
             }
@@ -160,23 +156,22 @@ export function groupedHandler(showElements: Element[], levelOption: string, gro
         for (let i = 0; i < showElements.length; i++) {
             for (let l = 0; l < allElementInfo.length; l++) {
                 if (allElementInfo[l].container === showElements[i].text) {
-                    result = allElementInfo[l].pod;
+                    outside = allElementInfo[l].pod;
                 }
             }
         }
 
     }
-    // outside
 
+    const outsideInfo = positionOutside2(showElements);
+    const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green" }
 
-    // muss zurückgeben
-    console.log(result);
+    const tuple: Tuple = { outside: outsideElement, inside: showElements };
+    return tuple;
 }
 
 
-
-
-export function groupedHandler2(data: PanelData, levelOption: string, groupedOption: string) {
+export function groupedHandler2(data: PanelData, levelOption: string, groupedOption: string, width: number, height: number) {
 
     const allInformation = getAllElementInfo2(data);
     let tuple = new Array();
@@ -214,192 +209,8 @@ export function groupedHandler2(data: PanelData, levelOption: string, groupedOpt
         }
     }
     console.log(tuple);
+
+    return positionTest(tuple, width, height);
+
+
 }
-
-
-
-
-
-
-
-
-
-/*
-
-export function handlerDetail(width: number, height: number, groupedOption: SelectableValue, data: PanelData, allElements: Element[]) {
-
-    let groupedElement: Element[] = new Array()
-
-    for (let i = 0; i < allElements.length; i++) {
-        if (groupedOption.label === allElements[i].text) {
-            groupedElement.push(allElements[i])
-        }
-    }
-
-    if (groupedElement.length === 1) {
-        groupedElement[0].width *= 3;
-        groupedElement[0].height *= 3;
-        const elementWidth = groupedElement[0].width;
-        const elementHeight = groupedElement[0].height;
-        groupedElement[0].position = { x: width / 2 - (elementWidth / 2), y: height / 2 - (elementHeight / 2) }
-
-
-    }
-    return groupedElement;
-}
-
-*/
-
-/*
-
-export function handlerGrouped(levelOption: string, groupedOption: SelectableValue, data: PanelData, width: number, height: number) {
-
-
-    const allElementInfo = groupPodContainer(data);
-    let inside: any[] = new Array();
-    let allElements: Element[] = new Array();
-
-    // level: pod  Grouped by:  Container X
-    if (levelOption === "Pod" && groupedOption.description === "Container") {
-
-        for (let i = 0; i < allElementInfo.length; i++) {
-            if (allElementInfo[i].container === groupedOption.label) {
-                inside.push(allElementInfo[i]);
-            }
-        }
-        // inside
-        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
-        for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].container, outside: false }
-            allElements.push(element)
-        }
-        //outside
-        let outsideElement = positionOutside(allElements);
-        outsideElement.outside = true;
-        outsideElement.text = inside[0].pod;
-        allElements.push(outsideElement);
-    }
-
-    // level: container Grouped by: Pod X
-    if (levelOption === "Container" && groupedOption.description === "Pod") {
-
-        for (let i = 0; i < allElementInfo.length; i++) {
-            if (allElementInfo[i].pod === groupedOption.label) {
-                inside.push(allElementInfo[i]);
-            }
-        }
-
-        // inside
-        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
-        for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].container, outside: false }
-            allElements.push(element)
-        }
-
-        // outside
-        let outsideElement = positionOutside(allElements);
-        outsideElement.outside = true;
-        outsideElement.text = inside[0].pod;
-        allElements.push(outsideElement);
-    }
-
-
-
-    // level Namespace Grouped by Pod:
-    if (levelOption === "Namespace" && groupedOption.description === "Pod") {
-
-        for (let i = 0; i < allElementInfo.length; i++) {
-            if (allElementInfo[i].pod === groupedOption.label) {
-                inside.push(allElementInfo[i]);
-            }
-        }
-
-        // inside
-        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
-        for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].pod, outside: false }
-            allElements.push(element)
-        }
-
-        // outside
-        let outsideElement = positionOutside(allElements);
-        outsideElement.outside = true;
-        outsideElement.text = inside[0].namespace;
-        allElements.push(outsideElement);
-    }
-
-
-    // level Pod grouped by Namespace
-    if (levelOption === "Pod" && groupedOption.description === "Namespace") {
-
-        for (let i = 0; i < allElementInfo.length; i++) {
-            if (allElementInfo[i].namespace === groupedOption.label) {
-                inside.push(allElementInfo[i]);
-            }
-        }
-        // inside
-        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
-
-        for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].pod, outside: false }
-            allElements.push(element)
-        }
-        // outside
-        let outsideElement = positionOutside(allElements);
-        outsideElement.outside = true;
-        outsideElement.text = inside[0].namespace;
-        allElements.push(outsideElement);
-
-    }
-
-
-    // level Namespace Grouped Container :
-    if (levelOption === "Namespace" && groupedOption.description === "Container") {
-
-        for (let i = 0; i < allElementInfo.length; i++) {
-            if (allElementInfo[i].container === groupedOption.label) {
-                inside.push(allElementInfo[i]);
-            }
-        }
-
-        // inside
-        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
-        for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].container, outside: false }
-            allElements.push(element)
-        }
-
-        // outside
-        let outsideElement = positionOutside(allElements);
-        outsideElement.outside = true;
-        outsideElement.text = inside[0].namespace;
-        allElements.push(outsideElement);
-    }
-
-    if (levelOption === "Container" && groupedOption.description === "Namespace") {
-
-        for (let i = 0; i < allElementInfo.length; i++) {
-            if (allElementInfo[i].namespace === groupedOption.label) {
-                inside.push(allElementInfo[i]);
-            }
-        }
-
-        // inside
-        let insidePosition: Position[] = positionGrouped(width, height, inside.length);
-        for (let i = 0; i < insidePosition.length; i++) {
-            let element: Element = { position: insidePosition[i], width: 350 * 3, height: 70 * 3, color: "white", text: inside[i].container, outside: false }
-            allElements.push(element)
-        }
-
-        // outside
-        let outsideElement = positionOutside(allElements);
-        outsideElement.outside = true;
-        outsideElement.text = inside[0].namespace;
-        allElements.push(outsideElement);
-    }
-
-
-    return allElements;
-}
-
-*/

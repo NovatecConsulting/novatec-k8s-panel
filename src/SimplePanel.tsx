@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
-import { SimpleOptions } from 'types';
+import { SimpleOptions, Tuple } from 'types';
 // import { css, cx } from 'emotion';
 // import { stylesFactory, useTheme } from '@grafana/ui';
 
@@ -65,7 +65,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   //call handler to get the level elements
 
 
-  let allElements = handler(width, height, levelOption, data);
+  let allElements: Tuple = handler(width, height, levelOption, data);
   let showElements = allElements;
 
   // call filter handler to get f
@@ -74,56 +74,10 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   }
 
   if (groupedOption !== "-" && filterOption.label === "-") {
-    groupedHandler2(data, levelOption, groupedOption);
+    showElements = groupedHandler2(data, levelOption, groupedOption, width, height);
   } else if (groupedOption !== "-") {
-    groupedHandler(showElements, levelOption, groupedOption, data);
+    showElements = groupedHandler(showElements, levelOption, groupedOption, data);
   }
-
-
-
-  /*
-  
-    let grouped = false;
-    const setLevelOptionHandler = (label: string | undefined) => {
-      if (label !== undefined) {
-        try {
-          setLevelOption(label.split(' ')[0]);
-        } catch {
-          setLevelOption(label);
-        }
-  
-      }
-    }
-  
-    const setGroupedOptionHandler = (option: SelectableValue) => {
-      if (option.label !== undefined) {
-        setGroupedOption(option);
-      }
-    }
-  
-    const setMetricOptionHandler = (label: string | undefined) => {
-      if (label !== undefined) {
-        setMetricOption(label);
-      }
-    }
-  
-  
-    //call handler to get 
-    let allElements = handler(width, height, levelOption, data);
-    let showElements = allElements;
-    grouped =false;
-    if (groupedOption.label !== "-") {
-      if (groupedOption.description === levelOption) {
-        showElements = handlerDetail(width, height, groupedOption, data, allElements);
-        grouped = false;
-      } else {
-        showElements = handlerGrouped(levelOption, groupedOption, data, width, height);
-        grouped = true;
-      }
-    }
-  
-    */
-
 
   return (
     <div>

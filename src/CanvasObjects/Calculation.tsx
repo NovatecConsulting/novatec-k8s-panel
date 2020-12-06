@@ -1,4 +1,4 @@
-import { Element, Position } from 'types';
+import { Element, Position, Tuple } from 'types';
 import { SelectableValue } from '@grafana/data';
 
 
@@ -16,7 +16,8 @@ export function getOverview(width: number, namespaceCount: number, serviceCount:
     allRect.push(podRect);
     allRect.push(containerRect);
 
-    return allRect;
+    const tuple: Tuple = { outside: undefined, inside: allRect }
+    return tuple;
 }
 
 export function position(width: number, height: number, count: number) {
@@ -87,8 +88,8 @@ export function calcDropdownOptions() {
 
 export function positionGrouped(width: number, height: number, count: number) {
 
-    const rectWidth = 350*3;
-    const rectHeight = 70*3;
+    const rectWidth = 350 * 3;
+    const rectHeight = 70 * 3;
 
     let position: Position = { x: -850, y: 70 };
     let allPosition: Position[] = new Array();
@@ -117,12 +118,122 @@ export function positionOutside(insideElements: Element[]) {
             maxHeight = insideElements[i].position.y;
         }
     }
-    const width = maxWidth + (350*3) - insideElements[0].position.x +20;
-    const height = maxHeight + (70*3) - insideElements[0].position.y +20;
+    const width = maxWidth + (350 * 3) - insideElements[0].position.x + 20;
+    const height = maxHeight + (70 * 3) - insideElements[0].position.y + 20;
     let outsideRect: Element = { position: { x: insideElements[0].position.x - 10, y: insideElements[0].position.y - 10 }, width: width, height: height, color: "transparent", text: "" }
     return outsideRect;
 
 }
+
+
+export function positionOutside2(insideElements: Element[]) {
+
+    let xMin = 500;
+    let yMin = 500;
+    let xMax = -10;
+    let yMax = -10;
+
+    for (let i = 0; i < insideElements.length; i++) {
+
+        if (xMin > insideElements[i].position.x) {
+            xMin = insideElements[i].position.x;
+        }
+
+        if (xMax < insideElements[i].position.x) {
+            xMax = insideElements[i].position.x
+        }
+
+        if (yMin > insideElements[i].position.y) {
+            yMin = insideElements[i].position.y;
+        }
+
+        if (yMax < insideElements[i].position.y) {
+            yMax = insideElements[i].position.y;
+        }
+    }
+
+    xMax += insideElements[0].width;
+    yMax += insideElements[0].height;
+
+    let outisdePosition: Position = { x: (xMin - 10), y: (yMin - 10) }
+
+    let width = xMax - outisdePosition.x + 10;
+    let height = yMax - outisdePosition.y + 10;
+
+    return { outisdePosition, width, height }
+
+}
+
+
+
+// new
+export function positionTest(allInfos: any[], width: number, height: number) {
+
+    let test = new Array();
+    let insidePosition = new Array();
+    const distance = 100;
+    for (let i = 0; i < allInfos.length; i++) {
+        if (allInfos[i].inside.length !== 0) {
+            test.push(allInfos[i]);
+        }
+    }
+
+    for (let i = 0; i < test.length; i++) {
+
+        let element = position(width, height, test[i].inside.length);
+
+        for (let l = 0; l < test[i].inside.length; l++) {
+            element[l].text = test[i].inside[l];
+        }
+
+        insidePosition.push(element);
+    }
+
+    for (let i = 0; i < insidePosition.length; i++) {
+        if (i !== 0) {
+            let highestY = insidePosition[i - 1][(insidePosition[i - 1].length - 1)].position.y;
+            highestY += distance;
+            for (let l = 0; l < insidePosition[i].length; l++) {
+                insidePosition[i][l].position.y = insidePosition[i][l].position.y + highestY;
+            }
+        }
+    }
+
+    console.log("Hey hey");
+    console.log(test);
+    let outside = new Array();
+    for (let i = 0; i < test.length; i++) {
+        let outsideInfo = positionOutside2(insidePosition[i]);
+        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: test[i].outside, color: "green" }
+        outside.push(outsideElement);
+    }
+
+    //alles zusammenbauen 
+    let allInside = new Array();
+
+    for (let i = 0; i < insidePosition.length; i++) {
+        for (let l = 0; l < insidePosition[i].length; l++) {
+            allInside.push(insidePosition[i][l]);
+        }
+
+    }
+
+    let tuple: Tuple = { outside: outside[1], inside: allInside };
+    return tuple;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

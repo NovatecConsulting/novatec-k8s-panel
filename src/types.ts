@@ -73,6 +73,12 @@ export interface Namespace {
 
   Name: string;
   Pod: Pod[];
-  
 
+
+}
+
+
+export interface Tuple {
+  inside: Element[];
+  outside?: Element;
 }
