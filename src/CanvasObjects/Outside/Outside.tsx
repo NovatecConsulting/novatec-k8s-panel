@@ -15,21 +15,26 @@ type Props = {
 }
 
 export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
+    console.log("Ich werde aufgerufen");
+    console.log(allInfos)
 
     return (
         <Layer>
-            {allInfos !== undefined ? (
+
+            { allInfos.outside!.map((info) => (
                 <RectOutside
-                    position={allInfos.outside!.position}
-                    width={allInfos.outside!.width}
-                    height={allInfos.outside!.height}
-                    color={allInfos.outside!.color}
+                    position={info.position}
+                    width={info.width}
+                    height={info.height}
+                    color={info.color}
                 />
-            ) : null}
-            <TextOutside
-                position={allInfos.outside!.position}
-                text={allInfos.outside!.text}
-            />
+            ))}
+            { allInfos.outside!.map((info) => (
+                <TextOutside
+                    position={info.position}
+                    text={info.text}
+                />
+            ))}
             {allInfos.inside.map((info) => (
                 <RectItem
                     position={info.position}

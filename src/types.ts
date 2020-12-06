@@ -80,5 +80,5 @@ export interface Namespace {
 
 export interface Tuple {
   inside: Element[];
-  outside?: Element;
+  outside?: Element [];
 }

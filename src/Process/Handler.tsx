@@ -166,7 +166,9 @@ export function groupedHandler(showInfo: Tuple, levelOption: string, groupedOpti
     const outsideInfo = positionOutside2(showElements);
     const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green" }
 
-    const tuple: Tuple = { outside: outsideElement, inside: showElements };
+    let allOutside = new Array();
+    allOutside.push(outsideElement);
+    const tuple: Tuple = { outside: allOutside, inside: showElements };
     return tuple;
 }
 

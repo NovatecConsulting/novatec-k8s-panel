@@ -77,6 +77,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
     showElements = groupedHandler2(data, levelOption, groupedOption, width, height);
   } else if (groupedOption !== "-") {
     showElements = groupedHandler(showElements, levelOption, groupedOption, data);
+    console.log("Hello World");
+    console.log(showElements);
   }
 
   return (

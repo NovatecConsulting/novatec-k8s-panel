@@ -218,7 +218,7 @@ export function positionTest(allInfos: any[], width: number, height: number) {
 
     }
 
-    let tuple: Tuple = { outside: outside[1], inside: allInside };
+    let tuple: Tuple = { outside: outside, inside: allInside };
     return tuple;
 
 }
