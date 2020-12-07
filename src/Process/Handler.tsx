@@ -1,5 +1,5 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { positionTest, position, getOverview, positionOutside2 } from '../CanvasObjects/Calculation'
+import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../CanvasObjects/Calculation'
 import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
 import { Element, Tuple } from 'types';
 
@@ -218,5 +218,5 @@ export function groupedHandler2(data: PanelData, levelOption: string, groupedOpt
             tuple.push({ outside: allInformation[i].Name, inside: insideElements })
         }
     }
-    return positionTest(tuple, width, height);
+    return positionOnlyGrupped(tuple, width, height);
 }

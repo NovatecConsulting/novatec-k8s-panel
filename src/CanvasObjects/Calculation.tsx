@@ -32,16 +32,8 @@ export function position(width: number, height: number, count: number) {
 
 
     for (let i = 0; i < count; i++) {
-
-        // hier wird die Position berechnet
-        if (count !== 1) {
-            position = calculation(width, rectWidth, rectHeight, position);
-            oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "" }
-        }
-        else {
-            position = { x: width / 2, y: height / 2 }
-            oneRect = { position, width: rectWidth + 30, height: rectHeight + 30, color: 'white', text: "" }
-        }
+        position = calculation(width, rectWidth, rectHeight, position);
+        oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "" }
         allRect.push(oneRect);
     }
 
@@ -85,7 +77,7 @@ export function calcDropdownOptions() {
 
 
 
-
+/*
 export function positionGrouped(width: number, height: number, count: number) {
 
     const rectWidth = 350 * 3;
@@ -102,9 +94,9 @@ export function positionGrouped(width: number, height: number, count: number) {
     }
     return allPosition;
 }
+*/
 
-
-
+/*
 export function positionOutside(insideElements: Element[]) {
 
     let maxWidth = -100;
@@ -124,6 +116,7 @@ export function positionOutside(insideElements: Element[]) {
     return outsideRect;
 
 }
+*/
 
 /**
  * Calculates position outside level and grouped.
@@ -175,9 +168,8 @@ export function positionOutside2(insideElements: Element[]) {
  * @param width 
  * @param height 
  */
-export function positionTest(allInfos: any[], width: number, height: number) {
+export function positionOnlyGrupped(allInfos: any[], width: number, height: number) {
 
-    console.log("ich werde aufgerufen");
     let test = new Array();
     let insidePosition = new Array();
     const distance = 100;
