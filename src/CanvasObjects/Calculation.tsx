@@ -166,7 +166,12 @@ export function positionOutside2(insideElements: Element[]) {
 
 
 
-// new
+/**
+ * Defines the position for grouping when the filter is not triggered. Returns a tuple of elements.
+ * @param allInfos 
+ * @param width 
+ * @param height 
+ */
 export function positionTest(allInfos: any[], width: number, height: number) {
 
     let test = new Array();
@@ -214,8 +219,6 @@ export function positionTest(allInfos: any[], width: number, height: number) {
     }
 
     let tuple: Tuple = { outside: outside, inside: allInside };
-    console.log("Hello World");
-    console.log(tuple);
     return tuple;
 
 }

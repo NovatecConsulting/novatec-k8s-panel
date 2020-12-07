@@ -84,13 +84,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
    * Calls the matching handlers.
    */
   const callHandlers = (level: string, filter: SelectableValue, grouped: string) => {
-
-    console.log("call handler");
-
     let allElements: Tuple = handler(width, height, level, data);
     setShowElements(allElements);
-
-    // call filter handler to get f
     if (filter.label !== "-") {
       setShowElements(filterHandler(width, height, allElements, level, filter, data));
     }

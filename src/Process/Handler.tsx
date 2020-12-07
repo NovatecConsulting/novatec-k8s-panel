@@ -173,6 +173,14 @@ export function groupedHandler(showInfo: Tuple, levelOption: string, groupedOpti
 }
 
 
+/**
+ * Grouping if filter is not set.
+ * @param data 
+ * @param levelOption 
+ * @param groupedOption 
+ * @param width 
+ * @param height 
+ */
 export function groupedHandler2(data: PanelData, levelOption: string, groupedOption: string, width: number, height: number) {
 
     const allInformation = getAllElementInfo2(data);
@@ -204,15 +212,11 @@ export function groupedHandler2(data: PanelData, levelOption: string, groupedOpt
             }
         }
         if (levelOption === "Pod") {
-            tuple.push({ outside: allInformation[i], inside: insideElements })
+            tuple.push({ outside: allInformation[i].Name, inside: insideElements })
         }
         if (levelOption === "Container" && groupedOption === "Namespace") {
             tuple.push({ outside: allInformation[i].Name, inside: insideElements })
         }
     }
-    console.log(tuple);
-
     return positionTest(tuple, width, height);
-
-
 }
