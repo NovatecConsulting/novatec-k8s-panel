@@ -179,9 +179,7 @@ export function positionTest(allInfos: any[], width: number, height: number) {
     }
 
     for (let i = 0; i < test.length; i++) {
-
         let element = position(width, height, test[i].inside.length);
-
         for (let l = 0; l < test[i].inside.length; l++) {
             element[l].text = test[i].inside[l];
         }
@@ -198,9 +196,6 @@ export function positionTest(allInfos: any[], width: number, height: number) {
             }
         }
     }
-
-    console.log("Hey hey");
-    console.log(test);
     let outside = new Array();
     for (let i = 0; i < test.length; i++) {
         let outsideInfo = positionOutside2(insidePosition[i]);
@@ -219,6 +214,8 @@ export function positionTest(allInfos: any[], width: number, height: number) {
     }
 
     let tuple: Tuple = { outside: outside, inside: allInside };
+    console.log("Hello World");
+    console.log(tuple);
     return tuple;
 
 }

@@ -15,10 +15,9 @@ interface StageProps {
     levelOption: string;
     setLevelOptionHandler: (value: string | undefined) => void;
     setGroupedOptionHandler: (value: SelectableValue) => void;
-    grouped: Boolean;
 }
 
-export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler, grouped }: StageProps) => {
+export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler }: StageProps) => {
 
     const [stageScale, setStageScale] = useState(1);
     const [stageX, setStageX] = useState(0);
@@ -40,6 +39,7 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
         setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
     };
+
     return (
         <Stage width={width - 20}
             height={height - 40}

@@ -15,9 +15,6 @@ type Props = {
 }
 
 export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
-    console.log("Ich werde aufgerufen");
-    console.log(allInfos)
-
     return (
         <Layer>
 
