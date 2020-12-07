@@ -1,7 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../CanvasObjects/Calculation'
 import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
-import { Element, Tuple } from 'types';
+import { Element, Namespace, Tuple } from 'types';
 
 
 
@@ -123,53 +123,93 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
 }
 
 
+/**
+ * Is called if all dropdowns have a value.
+ * @param showInfo 
+ * @param levelOption 
+ * @param groupedOption 
+ * @param data 
+ */
+export function groupedHandler(showInfo: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, data: PanelData, width: number, height: number) {
 
-export function groupedHandler(showInfo: Tuple, levelOption: string, groupedOption: string, data: PanelData) {
+    if (hasHigherLevel(filterOption, groupedOption)) {
+        return groupedHandler2(data, levelOption, filterOption, groupedOption, width, height, true)
+    } else {
+        let allElementInfo = getAllElementInfo(data);
+        let outside: string = "";
+        const showElements = showInfo.inside;
 
-    let allElementInfo = getAllElementInfo(data);
-    let outside: string = "";
-    const showElements = showInfo.inside;
+        if (levelOption === "Pod" && groupedOption === "Namespace") {
+            for (let i = 0; i < showElements.length; i++) {
+                for (let l = 0; l < allElementInfo.length; l++) {
+                    if (allElementInfo[l].pod === showElements[i].text) {
+                        outside = allElementInfo[l].namespace;
 
-    if (levelOption === "Pod" && groupedOption === "Namespace") {
-        for (let i = 0; i < showElements.length; i++) {
-            for (let l = 0; l < allElementInfo.length; l++) {
-                if (allElementInfo[l].pod === showElements[i].text) {
-                    outside = allElementInfo[l].namespace;
-
-                }
-            }
-        }
-    }
-
-    if (levelOption === "Container" && groupedOption === "Namespace") {
-        for (let i = 0; i < showElements.length; i++) {
-            for (let l = 0; l < allElementInfo.length; l++) {
-                if (allElementInfo[l].container === showElements[i].text) {
-                    outside = allElementInfo[l].namespace;
-
-                }
-            }
-        }
-    }
-
-    if (levelOption === "Container" && groupedOption === "Pod") {
-        for (let i = 0; i < showElements.length; i++) {
-            for (let l = 0; l < allElementInfo.length; l++) {
-                if (allElementInfo[l].container === showElements[i].text) {
-                    outside = allElementInfo[l].pod;
+                    }
                 }
             }
         }
 
+        if (levelOption === "Container" && groupedOption === "Namespace") {
+            for (let i = 0; i < showElements.length; i++) {
+                for (let l = 0; l < allElementInfo.length; l++) {
+                    if (allElementInfo[l].container === showElements[i].text) {
+                        outside = allElementInfo[l].namespace;
+
+                    }
+                }
+            }
+        }
+
+        if (levelOption === "Container" && groupedOption === "Pod") {
+            for (let i = 0; i < showElements.length; i++) {
+                for (let l = 0; l < allElementInfo.length; l++) {
+                    if (allElementInfo[l].container === showElements[i].text) {
+                        outside = allElementInfo[l].pod;
+                    }
+                }
+            }
+
+        }
+
+        const outsideInfo = positionOutside2(showElements);
+        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green" }
+
+        let allOutside = new Array();
+        allOutside.push(outsideElement);
+        const tuple: Tuple = { outside: allOutside, inside: showElements };
+        return tuple;
+
     }
 
-    const outsideInfo = positionOutside2(showElements);
-    const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green" }
 
-    let allOutside = new Array();
-    allOutside.push(outsideElement);
-    const tuple: Tuple = { outside: allOutside, inside: showElements };
-    return tuple;
+
+}
+
+
+/**
+ * Calculates if the filter has a higher level than the grouping.
+ * @param filterOption 
+ * @param groupedOption 
+ */
+function hasHigherLevel(filterOption: SelectableValue, groupedOption: string) {
+
+    const ref = ["Container", "Pod", "Service", "Namespace"];
+    let filterNumber = -1;
+    let groupedNumber = -1;
+    for (let i = 0; i < ref.length; i++) {
+        if (filterOption.description === ref[i]) {
+            filterNumber = i;
+        }
+        if (groupedOption === ref[i]) {
+            groupedNumber = i;
+        }
+    }
+    if (filterNumber > groupedNumber) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -181,11 +221,27 @@ export function groupedHandler(showInfo: Tuple, levelOption: string, groupedOpti
  * @param width 
  * @param height 
  */
-export function groupedHandler2(data: PanelData, levelOption: string, groupedOption: string, width: number, height: number) {
+export function groupedHandler2(data: PanelData, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
 
-    const allInformation = getAllElementInfo2(data);
+    let allInformation = getAllElementInfo2(data);
     let tuple = new Array();
     let insideElements: string[] = [];
+
+    // if filter has higher leven than grouped by
+    if (filter) {
+        let remember: Namespace[] = new Array();
+        if (filterOption.description === "Namespace") {
+            for (let i = 0; i < allInformation.length; i++) {
+                if (allInformation[i].Name === filterOption.label) {
+                    remember.push(allInformation[i]);
+                }
+            }
+        }
+        allInformation = [];
+        for (let i = 0; i < remember.length; i++) {
+            allInformation.push(remember[i])
+        }
+    }
 
     for (let i = 0; i < allInformation.length; i++) {
         if (levelOption === "Container" && groupedOption === "Namespace") {

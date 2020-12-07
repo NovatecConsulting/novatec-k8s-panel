@@ -91,9 +91,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
     }
     if (grouped !== "-" && filter.label === "-") {
 
-      setShowElements(groupedHandler2(data, level, grouped, width, height));
+      setShowElements(groupedHandler2(data, level,filter, grouped, width, height, false));
     } else if (grouped !== "-") {
-      setShowElements(groupedHandler(showElements, level, grouped, data));
+      setShowElements(groupedHandler(showElements, level, filter, grouped, data, width, height));
     }
 
   }
