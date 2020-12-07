@@ -125,11 +125,14 @@ export function positionOutside(insideElements: Element[]) {
 
 }
 
-
+/**
+ * Calculates position outside level and grouped.
+ * @param insideElements 
+ */
 export function positionOutside2(insideElements: Element[]) {
 
-    let xMin = 500;
-    let yMin = 500;
+    let xMin = 9007199254740990;
+    let yMin = 9007199254740990;
     let xMax = -10;
     let yMax = -10;
 
@@ -174,6 +177,7 @@ export function positionOutside2(insideElements: Element[]) {
  */
 export function positionTest(allInfos: any[], width: number, height: number) {
 
+    console.log("ich werde aufgerufen");
     let test = new Array();
     let insidePosition = new Array();
     const distance = 100;

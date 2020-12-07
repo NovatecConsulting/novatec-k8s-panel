@@ -17,6 +17,7 @@ export const RectOverview = ({ position, width, height, color, option, setLevelO
 
     return (
         <Rect
+            perfectDrawEnabled ={false}
             x={position.x}
             y={position.y}
             width={width}

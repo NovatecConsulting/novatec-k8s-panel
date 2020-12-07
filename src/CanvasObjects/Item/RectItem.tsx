@@ -24,6 +24,7 @@ export const RectItem = ({ position, width, height, color, option, setGroupedOpt
 
     return (
         <Rect
+            perfectDrawEnabled={false}
             x={position.x}
             y={position.y}
             width={width}

@@ -14,6 +14,7 @@ export const RectOutside = ({ position, width, height, color }: Props) => {
 
     return (
         <Rect
+            perfectDrawEnabled={false}
             x={position.x}
             y={position.y}
             width={width}
