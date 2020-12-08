@@ -1,5 +1,6 @@
 import { Element, Position, Tuple } from 'types';
 import { SelectableValue } from '@grafana/data';
+var _ = require('lodash');
 
 
 
@@ -78,29 +79,21 @@ export function calcDropdownOptions() {
  */
 export function positionOutside2(insideElements: Element[]) {
 
-    let xMin = 9007199254740990;
-    let yMin = 9007199254740990;
-    let xMax = -10;
-    let yMax = -10;
+    let xMax = _.maxBy(insideElements, function (o: Element) {
+        return o.position.x
+    }).position.x;
 
-    for (let i = 0; i < insideElements.length; i++) {
+    let yMax = _.maxBy(insideElements, function (o: Element) {
+        return o.position.y
+    }).position.y;
 
-        if (xMin > insideElements[i].position.x) {
-            xMin = insideElements[i].position.x;
-        }
+    let xMin = _.minBy(insideElements, function (o: Element) {
+        return o.position.x
+    }).position.x;
 
-        if (xMax < insideElements[i].position.x) {
-            xMax = insideElements[i].position.x
-        }
-
-        if (yMin > insideElements[i].position.y) {
-            yMin = insideElements[i].position.y;
-        }
-
-        if (yMax < insideElements[i].position.y) {
-            yMax = insideElements[i].position.y;
-        }
-    }
+    let yMin = _.minBy(insideElements, function (o: Element) {
+        return o.position.y
+    }).position.y;
 
     xMax += insideElements[0].width;
     yMax += insideElements[0].height;

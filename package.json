@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "konva": "^7.1.4",
+    "lodash": "^4.17.20",
     "primereact": "^5.0.1",
     "react-konva": "16.13.0-6"
   }
