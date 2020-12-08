@@ -1,9 +1,5 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-
-import { getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, } from '../Process/ConvertData'
-
-
-
+import { getNamespaceInformation, getDeploymentInformation, getContainerInformation, getPodInformation, } from '../Process/ConvertData'
 
 export function dropdownOptions(allOptions: string[], value: string) {
 
@@ -24,22 +20,22 @@ export function dropdownOptions(allOptions: string[], value: string) {
 }
 
 
-
-
 export function dropdownGroupedOptions(allOptions: string[], value: string, levelOption: string) {
 
     let options: string[] = new Array();
 
-    if(value!== "-"){
+    if (value !== "-") {
         options.push("-");
     }
 
-    for (let i = 0; i < allOptions.length; i++) {
+    if (levelOption !== "Overview") {
+        for (let i = 0; i < allOptions.length; i++) {
 
-        if (allOptions[i] === levelOption) {
-            break;
-        } else {
-            options.push(allOptions[i]);
+            if (allOptions[i] === levelOption) {
+                break;
+            } else {
+                options.push(allOptions[i]);
+            }
         }
     }
 
@@ -51,83 +47,58 @@ export function dropdownGroupedOptions(allOptions: string[], value: string, leve
     }
 
     return test;
-
 }
 
 
-/*
-export function dropdownOptionsGrouped(allElements: Element[], value: string, levelOption: string) {
-
+export function dropdownOptionsFilter(data: PanelData, value: string | undefined, levelOption: String) {
 
     let option: Array<SelectableValue> = [];
     let firstElement: SelectableValue = {};
-    firstElement.label = "-";
-    option.push(firstElement);
-    for (let i = 0; i < allElements.length; i++) {
-        let element: SelectableValue = {};
-        element.label = allElements[i].text;
-        element.description = levelOption;
-        option.push(element);
+
+    if (value !== "-") {
+        firstElement.label = "-";
+        option.push(firstElement);
     }
 
-    for (let i = 0; i < option.length; i++) {
-        if (option[i].label === value) {
-            option.splice(i, 1);
+    if (levelOption !== "Overview") {
+        //all Namespaces
+        let item = getNamespaceInformation(data);
+
+        for (let i = 0; i < item.length; i++) {
+            let element: SelectableValue = {};
+            element.label = item[i].namespace;
+            element.description = "Namespace";
+            option.push(element);
         }
-    }
 
-    return option;
-}
-*/
+        //all Services
+        item = getDeploymentInformation(data);
 
+        for (let i = 0; i < item.length; i++) {
+            let element: SelectableValue = {};
+            element.label = item[i].deployment;
+            element.description = "Deployment";
+            option.push(element);
+        }
+        //all Pods
+        item = getPodInformation(data);
 
+        for (let i = 0; i < item.length; i++) {
+            let element: SelectableValue = {};
+            element.label = item[i].pod;
+            element.description = "Pod";
+            option.push(element);
+        }
 
-export function dropdownOptionsFilter(data: PanelData) {
+        //all Containers
+        item = getContainerInformation(data);
 
-    let option: Array<SelectableValue> = [];
-    let firstElement: SelectableValue = {};
-    firstElement.label = "-";
-    option.push(firstElement);
-
-
-    //all Namespaces
-    let item = getNamespaceInformation(data);
-
-    for (let i = 0; i < item.length; i++) {
-        let element: SelectableValue = {};
-        element.label = item[i].namespace;
-        element.description = "Namespace";
-        option.push(element);
-    }
-
-
-    //all Services
-    item = getServiceInformation(data);
-
-    for (let i = 0; i < item.length; i++) {
-        let element: SelectableValue = {};
-        element.label = item[i].service;
-        element.description = "Service";
-        option.push(element);
-    }
-    //all Pods
-    item = getPodInformation(data);
-
-    for (let i = 0; i < item.length; i++) {
-        let element: SelectableValue = {};
-        element.label = item[i].pod;
-        element.description = "Pod";
-        option.push(element);
-    }
-
-    //all Containers
-    item = getContainerInformation(data);
-
-    for (let i = 0; i < item.length; i++) {
-        let element: SelectableValue = {};
-        element.label = item[i].container
-        element.description = "Container";
-        option.push(element);
+        for (let i = 0; i < item.length; i++) {
+            let element: SelectableValue = {};
+            element.label = item[i].container
+            element.description = "Container";
+            option.push(element);
+        }
     }
     return option;
 }

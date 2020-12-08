@@ -11,8 +11,8 @@ export const TextItem = ({ position, text }: Props) => {
 
     return (
         <Text
-            x={position.x}
-            y={position.y}
+            x={position.x+10}
+            y={position.y+10}
             text={text}
         />
     );

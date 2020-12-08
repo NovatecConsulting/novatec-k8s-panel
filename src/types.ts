@@ -30,13 +30,13 @@ export interface ElementInfo {
   namespace?: string;
   container?: string;
   node?: string;
-  service?: string;
+  deployment?: string;
 }
 
 
 export enum Types {
   Namespace = "Namespace",
-  Service = "Service",
+  Deployment = "Deployment",
   Pod = "Pod",
   Container = "Container",
   Node = "Node"

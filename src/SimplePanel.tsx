@@ -10,8 +10,8 @@ import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from '
 import 'Style/SimplePanel.css';
 import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'Process/Handler';
 
-const levelOptions = ["Overview", "Namespace", "Service", "Pod", "Container"];
-const groupedOptions = ["Namespace", "Service", "Pod", "Container"]
+const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
+const groupedOptions = ["Namespace", "Deployment", "Pod", "Container"]
 const metricOptions = ["-", "CPU Nutzung", "Speicher Nutzung", "CPU Limits", "Memory Limits", "CPU Requests", "Memory Requests"];
 
 interface Props extends PanelProps<SimpleOptions> { }
@@ -35,8 +35,16 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   const setLevelOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       try {
-        setLevelOption(label.split(' ')[0]);
-        callHandlers(label.split(' ')[0], filterOption, groupedOption);
+        let value = label.split(' ')[0];
+        setLevelOption(value);
+
+        if (value === "Overview") {
+          setFilterOption({ label: "-" });
+          setGroupedOption("-")
+          callHandlers(value, { label: "-" }, "-")
+        } else {
+          callHandlers(value, filterOption, groupedOption);
+        }
       } catch {
         setLevelOption(label);
         callHandlers(label, filterOption, groupedOption);
@@ -91,7 +99,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
     }
     if (grouped !== "-" && filter.label === "-") {
 
-      setShowElements(groupedHandler2(data, level,filter, grouped, width, height, false));
+      setShowElements(groupedHandler2(data, level, filter, grouped, width, height, false));
     } else if (grouped !== "-") {
       setShowElements(groupedHandler(showElements, level, filter, grouped, data, width, height));
     }
@@ -107,7 +115,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
         </div>
         <div className="test">
           <label>Filter:</label>
-          <div><DropdownFilter id={"center-left"} options={dropdownOptionsFilter(data)} onChange={setFilterOptionHandler} value={filterOption} /></div>
+          <div><DropdownFilter id={"center-left"} options={dropdownOptionsFilter(data,filterOption.label, levelOption)} onChange={setFilterOptionHandler} value={filterOption} /></div>
         </div>
         <div className="test">
           <label>Grouped by:</label>

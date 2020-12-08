@@ -1,6 +1,6 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../CanvasObjects/Calculation'
-import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getServiceInformation, getContainerInformation, getPodInformation, getNamespaceCount, getServiceCount, getPodCount, getContainerCount } from './ConvertData'
+import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getDeploymentInformation, getContainerInformation, getPodInformation, getNamespaceCount, getDeploymentCount, getPodCount, getContainerCount } from './ConvertData'
 import { Element, Namespace, Tuple } from 'types';
 
 
@@ -13,10 +13,10 @@ export function handler(width: number, height: number, levelOption: string, data
     if (levelOption === 'Overview') {
         // Overview
         const namespaceCount = getNamespaceCount(data);
-        const serviceCount = getServiceCount(data);
+        const deploymentCount = getDeploymentCount(data);
         const podCount = getPodCount(data);
         const containerCount = getContainerCount(data);
-        return getOverview(width, namespaceCount, serviceCount, podCount, containerCount);
+        return getOverview(width, namespaceCount, deploymentCount, podCount, containerCount);
     } else if (levelOption === 'Namespace') {
         //Namespace
         allElements = position(width, height, getNamespaceCount(data));
@@ -25,13 +25,13 @@ export function handler(width: number, height: number, levelOption: string, data
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].namespace;
         }
-    } else if (levelOption === 'Service') {
-        // Service
-        allElements = position(width, height, getServiceCount(data));
-        const allElementInfo = getServiceInformation(data);
+    } else if (levelOption === 'Deployment') {
+        // Deployment
+        allElements = position(width, height, getDeploymentCount(data));
+        const allElementInfo = getDeploymentInformation(data);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
-            allElements[i].text = allElementInfo[i].service;
+            allElements[i].text = allElementInfo[i].deployment;
         }
     }
     else if (levelOption === 'Pod') {
@@ -194,7 +194,7 @@ export function groupedHandler(showInfo: Tuple, levelOption: string, filterOptio
  */
 function hasHigherLevel(filterOption: SelectableValue, groupedOption: string) {
 
-    const ref = ["Container", "Pod", "Service", "Namespace"];
+    const ref = ["Container", "Pod", "Deployment", "Namespace"];
     let filterNumber = -1;
     let groupedNumber = -1;
     for (let i = 0; i < ref.length; i++) {
@@ -227,7 +227,7 @@ export function groupedHandler2(data: PanelData, levelOption: string, filterOpti
     let tuple = new Array();
     let insideElements: string[] = [];
 
-    // if filter has higher leven than grouped by
+    // if filter has higher level than grouped by
     if (filter) {
         let remember: Namespace[] = new Array();
         if (filterOption.description === "Namespace") {

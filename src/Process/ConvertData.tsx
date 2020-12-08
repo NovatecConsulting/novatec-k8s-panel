@@ -15,10 +15,11 @@ export function getNamespaceCount(data: PanelData) {
     return data.series[2].fields[1].values.get(0);;
 }
 
-export function getServiceCount(data: PanelData) {
+
+export function getDeploymentCount(data: PanelData) {
+
     return data.series[3].fields[1].values.get(0);
 }
-
 
 
 
@@ -31,24 +32,23 @@ export function getNamespaceInformation(data: PanelData) {
     let allElementInfo = new Array();
 
     for (let i = 0; i < allNames.length; i++) {
-        let elementInfo = { type: Types.Namespace, container: "", pod: "", namespace: allNames.get(i), node: "", service: "" }
+        let elementInfo = { type: Types.Namespace, container: "", pod: "", namespace: allNames.get(i), node: "", deployment: "" }
         allElementInfo.push(elementInfo);
     }
     return allElementInfo;
 }
 
-// Service
-export function getServiceInformation(data: PanelData) {
 
+// Deployment
+export function getDeploymentInformation(data: PanelData) {
     const allNames = data.series[7].fields[1].values;
     let allElementInfo = new Array();
     for (let i = 0; i < allNames.length; i++) {
-        let elementInfo = { type: Types.Service, container: "", pod: "", namespace: "", node: "", service: allNames.get(i) }
+        let elementInfo = { type: Types.Deployment, container: "", pod: "", namespace: "", node: "", deployment: allNames.get(i) }
         allElementInfo.push(elementInfo);
     }
-    return allElementInfo;
+    return allElementInfo
 }
-
 
 
 // Pod
@@ -57,7 +57,7 @@ export function getPodInformation(data: PanelData) {
     const allNames = data.series[4].fields[1].values;
     let allElementInfo = new Array();
     for (let i = 0; i < allNames.length; i++) {
-        let elementInfo = { type: Types.Pod, container: "", pod: allNames.get(i), namespace: "", node: "", service: "" }
+        let elementInfo = { type: Types.Pod, container: "", pod: allNames.get(i), namespace: "", node: "", deployment: "" }
         allElementInfo.push(elementInfo);
     }
     return allElementInfo;
@@ -69,7 +69,7 @@ export function getContainerInformation(data: PanelData) {
     const allNames = data.series[5].fields[1].values;
     let allElementInfo = new Array();
     for (let i = 0; i < allNames.length; i++) {
-        let elementInfo = { type: Types.Container, container: allNames.get(i), pod: "", namespace: "", node: "", service: "" }
+        let elementInfo = { type: Types.Container, container: allNames.get(i), pod: "", namespace: "", node: "", deployment: "" }
         allElementInfo.push(elementInfo);
     }
     return allElementInfo;
@@ -83,7 +83,7 @@ export function getAllElementInfo(data: PanelData) {
 
     let allElementInfo = new Array();
     for (let i = 0; i < data.series[8].fields[5].values.length; i++) {
-        let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", service: "" };
+        let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", deployment: "" };
 
         elementInfo.container = data.series[8].fields[5].values.get(i);
         elementInfo.pod = data.series[8].fields[16].values.get(i);
@@ -102,7 +102,7 @@ export function getAllElementInfo2(data: PanelData) {
     let allElementInfo = new Array();
 
     for (let i = 0; i < data.series[8].fields[5].values.length; i++) {
-        let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", service: "" };
+        let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", deployment: "" };
 
         elementInfo.container = data.series[8].fields[5].values.get(i);
         elementInfo.pod = data.series[8].fields[16].values.get(i);

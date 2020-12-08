@@ -22,7 +22,7 @@ export const RectOverview = ({ position, width, height, color, option, setLevelO
             y={position.y}
             width={width}
             height={height}
-            fill={color}
+            fill={"#cfe2e6"}
             shadowBlur={5}
             onClick={(e) => setLevelOptionHandler(option)}
         />

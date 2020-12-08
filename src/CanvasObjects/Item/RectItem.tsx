@@ -29,7 +29,7 @@ export const RectItem = ({ position, width, height, color, option, setGroupedOpt
             y={position.y}
             width={width}
             height={height}
-            fill={color}
+            fill={"#cfe2e6"}
             shadowBlur={5}
             onClick={(e) => setGroupedOption(option1)}
         />

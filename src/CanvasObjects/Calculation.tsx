@@ -5,18 +5,18 @@ import { SelectableValue } from '@grafana/data';
 
 export function getOverview(width: number, namespaceCount: number, serviceCount: number, podCount: number, containerCount: number) {
 
-    let allRect: Element[] = new Array();
+    let element: Element[] = new Array();
     const namespaceRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 10 }, width: width / 2, height: 80, color: 'white', text: "Namespace Count:" + namespaceCount };
-    const serviceRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 100 }, width: width / 2, height: 80, color: 'white', text: "Service Count:" + serviceCount };
+    const deploymentElement = { position: { x: (width / 2) - ((width / 2) / 2), y: 100 }, width: width / 2, height: 80, color: 'white', text: "Deployment Count:" + serviceCount };
     const podRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 190 }, width: width / 2, height: 80, color: 'white', text: "Pod Count: " + podCount };
     const containerRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 280 }, width: width / 2, height: 80, color: 'white', text: "Container Count:" + containerCount };
 
-    allRect.push(namespaceRect);
-    allRect.push(serviceRect);
-    allRect.push(podRect);
-    allRect.push(containerRect);
+    element.push(namespaceRect);
+    element.push(deploymentElement);
+    element.push(podRect);
+    element.push(containerRect);
 
-    const tuple: Tuple = { outside: undefined, inside: allRect }
+    const tuple: Tuple = { outside: undefined, inside: element }
     return tuple;
 }
 
@@ -71,52 +71,6 @@ export function calcDropdownOptions() {
     }
     return options;
 }
-
-
-
-
-
-
-/*
-export function positionGrouped(width: number, height: number, count: number) {
-
-    const rectWidth = 350 * 3;
-    const rectHeight = 70 * 3;
-
-    let position: Position = { x: -850, y: 70 };
-    let allPosition: Position[] = new Array();
-
-    for (let i = 0; i < count; i++) {
-        position = calculation(width, rectWidth, rectHeight, position);
-        allPosition.push(position);
-        //oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "Hello" }
-        //allRect.push(oneRect);
-    }
-    return allPosition;
-}
-*/
-
-/*
-export function positionOutside(insideElements: Element[]) {
-
-    let maxWidth = -100;
-    let maxHeight = -100;
-
-    for (let i = 0; i < insideElements.length; i++) {
-        if (maxWidth < insideElements[i].position.x) {
-            maxWidth = insideElements[i].position.x;
-        }
-        if (maxHeight < insideElements[i].position.y) {
-            maxHeight = insideElements[i].position.y;
-        }
-    }
-    const width = maxWidth + (350 * 3) - insideElements[0].position.x + 20;
-    const height = maxHeight + (70 * 3) - insideElements[0].position.y + 20;
-    let outsideRect: Element = { position: { x: insideElements[0].position.x - 10, y: insideElements[0].position.y - 10 }, width: width, height: height, color: "transparent", text: "" }
-    return outsideRect;
-
-}
-*/
 
 /**
  * Calculates position outside level and grouped.
