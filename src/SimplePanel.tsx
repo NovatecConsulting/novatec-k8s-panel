@@ -4,11 +4,12 @@ import { SimpleOptions, Tuple } from 'types';
 // import { css, cx } from 'emotion';
 // import { stylesFactory, useTheme } from '@grafana/ui';
 
-import { Canvas } from 'CanvasObjects/Canvas';
-import { DropdownUI, DropdownFilter } from 'UIElement/Dropdown';
-import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'UIElement/DropdownOptions';
-import 'Style/SimplePanel.css';
-import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'Process/Handler';
+import { Canvas } from 'canvasObjects/Canvas';
+import { DropdownUI, DropdownFilter } from 'uiElement/Dropdown';
+import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'uiElement/DropdownOptions';
+import 'style/SimplePanel.css';
+import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'processMetric/Handler';
+import { Element } from 'types';
 
 const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
 const groupedOptions = ["Namespace", "Deployment", "Pod", "Container"]
@@ -106,27 +107,66 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
 
   }
 
+  /**
+   * 
+   */
+  const itemSelectHandler = (item: Element) => {
+  }
+
   return (
     <div>
       <div className="header">
         <div className="test">
           <label>Level:</label>
-          <div><DropdownUI id={"left"} options={dropdownOptions(levelOptions, levelOption)} onChange={setLevelOptionHandler} value={levelOption} /></div>
+          <div>
+            <DropdownUI
+              id={"left"}
+              options={dropdownOptions(levelOptions, levelOption)}
+              onChange={setLevelOptionHandler}
+              value={levelOption} />
+          </div>
         </div>
         <div className="test">
           <label>Filter:</label>
-          <div><DropdownFilter id={"center-left"} options={dropdownOptionsFilter(data,filterOption.label, levelOption)} onChange={setFilterOptionHandler} value={filterOption} /></div>
+          <div>
+            <DropdownFilter
+              id={"center-left"}
+              options={dropdownOptionsFilter(data, filterOption.label, levelOption)}
+              onChange={setFilterOptionHandler}
+              value={filterOption} />
+          </div>
         </div>
         <div className="test">
           <label>Grouped by:</label>
-          <div><DropdownUI id={"center-right"} options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)} onChange={setGroupedOptionHandler} value={groupedOption} /></div>
+          <div>
+            <DropdownUI
+              id={"center-right"}
+              options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)}
+              onChange={setGroupedOptionHandler}
+              value={groupedOption} />
+          </div>
         </div>
         <div className="test">
           <label>Metric:</label>
-          <div><DropdownUI id={"right"} options={dropdownOptions(metricOptions, metricOption)} onChange={setMetricOptionHandler} value={metricOption} /></div>
+          <div>
+            <DropdownUI
+              id={"right"}
+              options={dropdownOptions(metricOptions, metricOption)}
+              onChange={setMetricOptionHandler}
+              value={metricOption}
+            />
+          </div>
         </div>
       </div>
-      <Canvas width={width} height={height} allRect={showElements} levelOption={levelOption} setLevelOptionHandler={setLevelOptionHandler} setGroupedOptionHandler={setFilterOptionHandler} />
+      <Canvas
+        width={width}
+        height={height}
+        allRect={showElements}
+        levelOption={levelOption}
+        setLevelOptionHandler={setLevelOptionHandler}
+        setGroupedOptionHandler={setFilterOptionHandler}
+        itemSelectHandler={itemSelectHandler}
+      />
     </div>
   )
 }

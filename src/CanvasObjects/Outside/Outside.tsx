@@ -3,10 +3,10 @@ import { Tuple } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectOutside } from 'CanvasObjects/Outside/RectOutside';
-import { RectItem } from 'CanvasObjects/Item/RectItem';
-import { TextOutside } from 'CanvasObjects/Outside/TextOutside';
-import { TextItem } from 'CanvasObjects/Item/TextItem';
+import { RectOutside } from 'canvasObjects/Outside/RectOutside';
+import { RectItem } from 'canvasObjects/Item/RectItem';
+import { TextOutside } from 'canvasObjects/Outside/TextOutside';
+import { TextItem } from 'canvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
 
 type Props = {

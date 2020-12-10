@@ -1,5 +1,5 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../CanvasObjects/Calculation'
+import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../canvasObjects/Calculation'
 import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getDeploymentInformation, getContainerInformation, getPodInformation, getNamespaceCount, getDeploymentCount, getPodCount, getContainerCount } from './ConvertData'
 import { Element, Namespace, Tuple } from 'types';
 

@@ -3,8 +3,8 @@ import { Element } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectOverview } from 'CanvasObjects/Overview/RectOverview';
-import { TextOverview } from 'CanvasObjects/Overview/TextOverview';
+import { RectOverview } from 'canvasObjects/Overview/RectOverview';
+import { TextOverview } from 'canvasObjects/Overview/TextOverview';
 
 type Props = {
     allInfos: Element[],

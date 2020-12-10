@@ -3,17 +3,18 @@ import { Element } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectItem } from 'CanvasObjects/Item/RectItem';
-import { TextItem } from 'CanvasObjects/Item/TextItem';
+import { RectItem } from 'canvasObjects/Item/RectItem';
+import { TextItem } from 'canvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
-import { MetricImgae } from 'CanvasObjects/Item/MetricImage'
+import { MetricImage } from 'canvasObjects/Item/MetricImage'
 
 type Props = {
     allInfos: Element[],
     setGroupedOptionHandler: (value: SelectableValue) => void;
+    itemSelectHandler: (item: Element) => void;
 }
 
-export const Item = ({ allInfos, setGroupedOptionHandler }: Props) => {
+export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: Props) => {
 
     return (
         <Layer>
@@ -34,7 +35,14 @@ export const Item = ({ allInfos, setGroupedOptionHandler }: Props) => {
                     text={info.text}
                 />
             ))}
-            <MetricImgae />
+            {allInfos.map((info) => (
+                <MetricImage
+                    position={info.position}
+                    itemWidth={info.width}
+                    item={info}
+                    itemSelectHandler={itemSelectHandler}
+                />
+            ))}
         </Layer>
     );
 }

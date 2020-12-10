@@ -1,5 +1,5 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { getNamespaceInformation, getDeploymentInformation, getContainerInformation, getPodInformation, } from '../Process/ConvertData'
+import { getNamespaceInformation, getDeploymentInformation, getContainerInformation, getPodInformation, } from '../processMetric/ConvertData'
 
 export function dropdownOptions(allOptions: string[], value: string) {
 
