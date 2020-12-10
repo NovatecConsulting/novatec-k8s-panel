@@ -6,6 +6,7 @@ import { Layer } from 'react-konva';
 import { RectItem } from 'CanvasObjects/Item/RectItem';
 import { TextItem } from 'CanvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
+import { MetricImgae } from 'CanvasObjects/Item/MetricImage'
 
 type Props = {
     allInfos: Element[],
@@ -33,6 +34,7 @@ export const Item = ({ allInfos, setGroupedOptionHandler }: Props) => {
                     text={info.text}
                 />
             ))}
+            <MetricImgae />
         </Layer>
     );
 }
