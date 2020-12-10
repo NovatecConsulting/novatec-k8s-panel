@@ -8,6 +8,29 @@
 }
 
 
+.drilldown {
+    background: red;
+}
+
+
+
+
+
+
+.alert-enter {
+    opacity: 0;
+    transform: width;
+  }
+  .alert-enter-active {
+    opacity: 1;
+    transform: width;
+    transition: opacity 300ms, transform 300ms;
+  }
+
+
+
+
+
 
 
 

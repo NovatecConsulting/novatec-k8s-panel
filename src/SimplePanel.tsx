@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { SimpleOptions, Tuple } from 'types';
+import { CSSTransition } from 'react-transition-group';
 // import { css, cx } from 'emotion';
 // import { stylesFactory, useTheme } from '@grafana/ui';
 
@@ -27,6 +28,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   const [metricOption, setMetricOption] = useState("-");
   const [showElements, setShowElements] = useState(handler(width, height, "Overview", data));
 
+  const [aaa, setAaa] = useState(false);
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -111,6 +113,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
    * 
    */
   const itemSelectHandler = (item: Element) => {
+    console.log("call");
+    setAaa(true);
   }
 
   return (
@@ -167,6 +171,18 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
         setGroupedOptionHandler={setFilterOptionHandler}
         itemSelectHandler={itemSelectHandler}
       />
+      <div>
+        <CSSTransition
+              in={aaa}
+              timeout={3000}
+              classNames="alert"
+              unmountOnExit
+        >
+          <div className="drilldown">
+            Hello World
+          </div>
+        </CSSTransition>
+      </div>
     </div>
   )
 }
