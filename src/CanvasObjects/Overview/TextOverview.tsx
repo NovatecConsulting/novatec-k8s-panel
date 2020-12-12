@@ -12,10 +12,12 @@ export const TextOverview = ({ position, text, width }: Props) => {
 
     return (
         <Text
-            x={position.x+ width/2 -55}
+            x={position.x}
             y={position.y+30}
             text={text}
             fontSize={15}
+            width= {width}
+            align={"center"}
         />
     );
 }

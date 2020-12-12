@@ -6,7 +6,8 @@ import { Layer } from 'react-konva';
 import { RectItem } from 'canvasObjects/Item/RectItem';
 import { TextItem } from 'canvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
-import { MetricImage } from 'canvasObjects/Item/MetricImage'
+import { MetricImage } from 'canvasObjects/Item/MetricImage';
+
 
 type Props = {
     allInfos: Element[],
@@ -16,7 +17,9 @@ type Props = {
 
 export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: Props) => {
 
+    
     return (
+    
         <Layer>
             {allInfos.map((info) => (
                 <RectItem

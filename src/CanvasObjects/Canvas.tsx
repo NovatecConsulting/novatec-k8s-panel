@@ -42,30 +42,38 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
     };
 
+
     return (
-        <Stage width={width - 20}
-            height={height - 40}
-            onWheel={handleWheel}
-            scaleX={stageScale}
-            scaleY={stageScale}
-            x={stageX}
-            y={stageY}
-            draggable={true}
-            style={{ background: '#30343a' }} >
-            {levelOption === 'Overview' ? (< Overview
-                allInfos={allRect.inside}
-                setLevelOptionHandler={setLevelOptionHandler}
-            />)
-                : allRect.outside === undefined ? (<Item
+
+
+        <div>
+            <Stage width={width - 20}
+                height={height - 40}
+                onWheel={handleWheel}
+                scaleX={stageScale}
+                scaleY={stageScale}
+                x={stageX}
+                y={stageY}
+                draggable={true}
+                style={{ background: '#30343a' }} >
+
+                {levelOption === 'Overview' ? (< Overview
                     allInfos={allRect.inside}
-                    setGroupedOptionHandler={setGroupedOptionHandler}
-                    itemSelectHandler={itemSelectHandler}
-                />) :
-                    (<Outside
-                        allInfos={allRect}
+                    setLevelOptionHandler={setLevelOptionHandler}
+                />)
+                    : allRect.outside === undefined ? (<Item
+                        allInfos={allRect.inside}
                         setGroupedOptionHandler={setGroupedOptionHandler}
-                    />
-                    )}
-        </Stage>
+                        itemSelectHandler={itemSelectHandler}
+                    />) :
+                        (<Outside
+                            allInfos={allRect}
+                            setGroupedOptionHandler={setGroupedOptionHandler}
+                        />
+                        )}
+
+            </Stage>
+        </div>
+
     )
 }

@@ -8,24 +8,25 @@
 }
 
 
-.drilldown {
-    background: red;
+
+
+.drilldown{
+    
+    position: absolute;
+    width: 35rem;
+    height: 88%;
+    margin-top: 3.8rem;
+    background-color: #30343a;
+     z-index: 9;
+     border-right: 1px solid black;
+    
+}
+.canvas {
+    z-index: -4;
 }
 
 
-
-
-
-
-.alert-enter {
-    opacity: 0;
-    transform: width;
-  }
-  .alert-enter-active {
-    opacity: 1;
-    transform: width;
-    transition: opacity 300ms, transform 300ms;
-  }
+  
 
 
 
