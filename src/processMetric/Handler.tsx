@@ -1,7 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../canvasObjects/Calculation'
-import { getAllElementInfo2, getAllElementInfo, getNamespaceInformation, getDeploymentInformation, getContainerInformation, getPodInformation, getNamespaceCount, getDeploymentCount, getPodCount, getContainerCount } from './ConvertData'
-import { Element, Namespace, Tuple } from 'types';
+import { getAllElementInfo2, getAllElementInfo, getDeploymentInformation, getNamespaceCount, getDeploymentCount, getPodCount, getContainerCount } from './ConvertData'
+import { Element, Namespace, Tuple, Types } from 'types';
 
 
 
@@ -20,10 +20,17 @@ export function handler(width: number, height: number, levelOption: string, data
     } else if (levelOption === 'Namespace') {
         //Namespace
         allElements = position(width, height, getNamespaceCount(data));
-        const allElementInfo = getNamespaceInformation(data);
+        const allElementInfo = getAllElementInfo2(data);
         for (let i = 0; i < allElementInfo.length; i++) {
-            allElements[i].elementInfo = allElementInfo[i];
-            allElements[i].text = allElementInfo[i].namespace;
+            allElements[i].elementInfo.namespace = allElementInfo[i].Name;
+            allElements[i].text = allElementInfo[i].Name;
+            allElements[i].elementInfo.pod = "Count: " + allElementInfo[i].Pod.length;
+
+            let podcount = 0;
+            for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
+                podcount += allElementInfo[i].Pod[l].Container.length;
+            }
+            allElements[i].elementInfo.container = "Count: " + podcount;
         }
     } else if (levelOption === 'Deployment') {
         // Deployment
@@ -37,20 +44,45 @@ export function handler(width: number, height: number, levelOption: string, data
     else if (levelOption === 'Pod') {
         // Pod
         allElements = position(width, height, getPodCount(data));
-        const allElementInfo = getPodInformation(data);
+        const allElementInfo = getAllElementInfo2(data);
+
+        let temp = 0;
         for (let i = 0; i < allElementInfo.length; i++) {
-            allElements[i].elementInfo = allElementInfo[i];
-            allElements[i].text = allElementInfo[i].pod;
+            for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
+                allElements[temp].text = allElementInfo[i].Pod[l].Name;
+                allElements[temp].elementInfo.pod = allElementInfo[i].Pod[l].Name;
+                allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Namespace;
+                allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Pod[l].Container.length;
+                temp += 1;
+
+            }
         }
 
     } else if (levelOption === 'Container') {
         //Container
         allElements = position(width, height, getContainerCount(data));
-        const allElementInfo = getContainerInformation(data);
+
+        const allElementInfo = getAllElementInfo2(data);
+        let temp = 0;
         for (let i = 0; i < allElementInfo.length; i++) {
-            allElements[i].elementInfo = allElementInfo[i];
-            allElements[i].text = allElementInfo[i].container;
+            for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
+                for (let j = 0; j < allElementInfo[i].Pod[l].Container.length; j++) {
+                    allElements[temp].text = allElementInfo[i].Pod[l].Container[j].Name;
+                    allElements[temp].elementInfo.pod = allElementInfo[i].Pod[l].Container[j].Pod;
+                    allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Container[j].Namespace;
+                    allElements[temp].elementInfo.container = allElementInfo[i].Pod[l].Container[j].Name;
+                    temp += 1;
+                }
+            }
         }
+
+        /* 
+         const allElementInfo = getContainerInformation(data);
+         for (let i = 0; i < allElementInfo.length; i++) {
+             allElements[i].elementInfo = allElementInfo[i];
+             allElements[i].text = allElementInfo[i].container;
+         }
+         */
     }
     const tuple: Tuple = { outside: undefined, inside: allElements }
     return tuple;
@@ -173,7 +205,7 @@ export function groupedHandler(showInfo: Tuple, levelOption: string, filterOptio
         }
 
         const outsideInfo = positionOutside2(showElements);
-        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green" }
+        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green", elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } }
 
         let allOutside = new Array();
         allOutside.push(outsideElement);

@@ -1,4 +1,4 @@
-import { Element, Position, Tuple } from 'types';
+import { Element, Position, Tuple, Types } from 'types';
 import { SelectableValue } from '@grafana/data';
 var _ = require('lodash');
 
@@ -7,10 +7,10 @@ var _ = require('lodash');
 export function getOverview(width: number, namespaceCount: number, serviceCount: number, podCount: number, containerCount: number) {
 
     let element: Element[] = new Array();
-    const namespaceRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 10 }, width: width / 2, height: 80, color: 'white', text: "Namespace Count:" + namespaceCount };
-    const deploymentElement = { position: { x: (width / 2) - ((width / 2) / 2), y: 100 }, width: width / 2, height: 80, color: 'white', text: "Deployment Count:" + serviceCount };
-    const podRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 190 }, width: width / 2, height: 80, color: 'white', text: "Pod Count: " + podCount };
-    const containerRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 280 }, width: width / 2, height: 80, color: 'white', text: "Container Count:" + containerCount };
+    const namespaceRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 10 }, width: width / 2, height: 80, color: 'white', text: "Namespace Count:" + namespaceCount, elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } };
+    const deploymentElement = { position: { x: (width / 2) - ((width / 2) / 2), y: 100 }, width: width / 2, height: 80, color: 'white', text: "Deployment Count:" + serviceCount, elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } };
+    const podRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 190 }, width: width / 2, height: 80, color: 'white', text: "Pod Count: " + podCount, elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } };
+    const containerRect = { position: { x: (width / 2) - ((width / 2) / 2), y: 280 }, width: width / 2, height: 80, color: 'white', text: "Container Count:" + containerCount, elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } };
 
     element.push(namespaceRect);
     element.push(deploymentElement);
@@ -34,7 +34,7 @@ export function position(width: number, height: number, count: number) {
 
     for (let i = 0; i < count; i++) {
         position = calculation(width, rectWidth, rectHeight, position);
-        oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "" }
+        oneRect = { position, width: rectWidth, height: rectHeight, color: 'white', text: "", elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } }
         allRect.push(oneRect);
     }
 
@@ -147,7 +147,7 @@ export function positionOnlyGrupped(allInfos: any[], width: number, height: numb
     let outside = new Array();
     for (let i = 0; i < test.length; i++) {
         let outsideInfo = positionOutside2(insidePosition[i]);
-        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: test[i].outside, color: "green" }
+        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: test[i].outside, color: "green", elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } }
         outside.push(outsideElement);
     }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
-import { SimpleOptions, Tuple } from 'types';
+import { SimpleOptions, Tuple, Types } from 'types';
 // import { css, cx } from 'emotion';
 // import { stylesFactory, useTheme } from '@grafana/ui';
 
@@ -10,7 +10,7 @@ import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from '
 import 'style/SimplePanel.css';
 import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'processMetric/Handler';
 import { Element } from 'types';
-import{ Drilldown} from './uiElement/Drilddown'
+import { Drilldown } from './uiElement/Drilddown'
 
 
 const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
@@ -28,8 +28,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
   const [groupedOption, setGroupedOption] = useState("-");
   const [metricOption, setMetricOption] = useState("-");
   const [showElements, setShowElements] = useState(handler(width, height, "Overview", data));
-
-  const [aaa, setAaa] = useState(true);
+  const [showDrilldown, setShowDrilldown] = useState(false);
+  const [drilldownItem, setDrilldownItem] = useState({ position: { x: 0, y: 0 }, width: 0, height: 0, color: "", text: "-", elementInfo: { type: Types.Namespace } });
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -114,8 +114,13 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
    * 
    */
   const itemSelectHandler = (item: Element) => {
-    console.log("call");
-    setAaa(true);
+    setShowDrilldown(true);
+    setDrilldownItem(item);
+  }
+
+
+  const closeDrilldown = () => {
+    setShowDrilldown(false);
   }
 
   return (
@@ -162,9 +167,13 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
             />
           </div>
         </div>
-        {aaa ? (
+        {showDrilldown ? (
           <div className="drilldown">
-            <Drilldown />
+            <Drilldown
+              closeDrilldown={closeDrilldown}
+              drilldownItem={drilldownItem}
+
+            />
           </div>) : null}
       </div>
       <Canvas

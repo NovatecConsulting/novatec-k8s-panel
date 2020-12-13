@@ -1,19 +1,22 @@
 import React from 'react';
+import { Element } from '../types'
 
 type Props = {
 
+    closeDrilldown: () => void;
+    drilldownItem: Element;
 
 }
-export const Drilldown = ({ }: Props) => {
+export const Drilldown = ({ closeDrilldown, drilldownItem }: Props) => {
 
 
     return (
         <div style={{ textAlign: "center" }}>
-            <div style={{width: "99%", paddingTop:"1rem"}}>
-                <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/back2.png" style={{ width: "25px", height: "25px" , float:"right", marginRight: "1rem"}} />
+            <div style={{ width: "99%", paddingTop: "1rem" }}>
+                <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/back2.png" onClick={closeDrilldown} style={{ width: "25px", height: "25px", float: "right", marginRight: "1rem" }} />
             </div>
-            <label style={{ color: "white", fontSize: 17, paddingTop: "1.5rem" }}>Container</label>
-            <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/metrics.png" style={{width: "25px", height: "25px", marginLeft:"1rem", marginBottom: "0.55rem"}}/>
+    <label style={{ color: "white", fontSize: 17, paddingTop: "1.5rem" }}>{drilldownItem.text}</label>
+            <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/metricsWhite.png" style={{ width: "25px", height: "25px", marginLeft: "1rem", marginBottom: "0.55rem" }} />
             <hr style={{ borderTop: "1px solid black", width: "75%", marginTop: "-0.1rem" }}></hr>
             <table style={{ width: "99%" }}>
                 <tr style={{ borderTop: "1px solid black", borderBottom: "1px solid black", backgroundColor: "#505050", color: "#33b5e5" }}>
@@ -25,7 +28,7 @@ export const Drilldown = ({ }: Props) => {
                         Namespace
                     </td>
                     <td style={{ padding: "5px 5px", borderBottom: "1px solid black" }}>
-                        -
+                        {drilldownItem.elementInfo.namespace}
                     </td>
                 </tr>
                 <tr style={{ textAlign: "left" }}>
@@ -33,7 +36,7 @@ export const Drilldown = ({ }: Props) => {
                         Deployment
                     </td>
                     <td style={{ padding: "5px 5px", borderBottom: "1px solid black" }}>
-                        -
+                        {drilldownItem.elementInfo.deployment}
                     </td>
                 </tr>
                 <tr style={{ textAlign: "left" }}>
@@ -41,7 +44,7 @@ export const Drilldown = ({ }: Props) => {
                         Pod
                     </td>
                     <td style={{ padding: "5px 5px", borderBottom: "1px solid black" }}>
-                        -
+                        {drilldownItem.elementInfo.pod}
                     </td>
                 </tr>
                 <tr style={{ textAlign: "left" }}>
@@ -49,7 +52,7 @@ export const Drilldown = ({ }: Props) => {
                         Container
                     </td>
                     <td style={{ padding: "5px 5px", borderBottom: "1px solid black" }}>
-                        -
+                        {drilldownItem.elementInfo.container}
                     </td>
                 </tr>
                 <tr style={{ textAlign: "left" }}>
@@ -57,7 +60,7 @@ export const Drilldown = ({ }: Props) => {
                         Node
                     </td>
                     <td style={{ padding: "5px 5px", borderBottom: "1px solid black" }}>
-                        -
+                        {drilldownItem.elementInfo.node}
                     </td>
                 </tr>
             </table>

@@ -13,7 +13,7 @@ export interface Element {
   height: number;
   color: string;
   text: string;
-  elementInfo?: ElementInfo;
+  elementInfo: ElementInfo;
   outside?: Boolean;
 }
 
