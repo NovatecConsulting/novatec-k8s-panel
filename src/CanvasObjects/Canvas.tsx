@@ -19,7 +19,7 @@ interface StageProps {
     itemSelectHandler: (item: Element) => void;
 }
 
-export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler, itemSelectHandler }: StageProps) => {
+export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler, itemSelectHandler}: StageProps) => {
 
     const [stageScale, setStageScale] = useState(1);
     const [stageX, setStageX] = useState(0);

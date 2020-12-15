@@ -17,7 +17,6 @@ type Props = {
 
 export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: Props) => {
 
-    
     return (
     
         <Layer>

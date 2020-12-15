@@ -10,7 +10,7 @@ import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from '
 import 'style/SimplePanel.css';
 import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'processMetric/Handler';
 import { Element } from 'types';
-import { Drilldown } from './uiElement/Drilddown'
+import { Drilldown } from './uiElement/Drilddown';
 
 
 const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
@@ -21,6 +21,8 @@ interface Props extends PanelProps<SimpleOptions> { }
 
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) => {
+
+  // const hey = true;
 
   let firstFilterOption: SelectableValue = { label: "-", description: "Overview" };
   const [levelOption, setLevelOption] = useState("Overview");
@@ -55,7 +57,6 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
       }
 
     }
-
   }
 
   /**
@@ -64,11 +65,12 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
    * For reasons of asynchrony the handler is not called with the state.
    */
   const setFilterOptionHandler = (option: SelectableValue) => {
+    console.log("huhu");
+    console.log(option);
     if (option.label !== undefined) {
       setFilterOption(option);
       callHandlers(levelOption, option, groupedOption);
     }
-
   }
 
   /**
@@ -81,9 +83,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
       setGroupedOption(label);
       callHandlers(levelOption, filterOption, label);
     }
-
   }
-
 
   const setMetricOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
@@ -125,66 +125,68 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
 
   return (
     <div>
-      <div className="header">
-        <div className="test">
-          <label>Level:</label>
-          <div>
-            <DropdownUI
-              id={"left"}
-              options={dropdownOptions(levelOptions, levelOption)}
-              onChange={setLevelOptionHandler}
-              value={levelOption} />
+      <div>
+        <div className="header">
+          <div className="test">
+            <label>Level:</label>
+            <div>
+              <DropdownUI
+                id={"left"}
+                options={dropdownOptions(levelOptions, levelOption)}
+                onChange={setLevelOptionHandler}
+                value={levelOption} />
+            </div>
           </div>
-        </div>
-        <div className="test">
-          <label>Filter:</label>
-          <div>
-            <DropdownFilter
-              id={"center-left"}
-              options={dropdownOptionsFilter(data, filterOption.label, levelOption)}
-              onChange={setFilterOptionHandler}
-              value={filterOption} />
+          <div className="test">
+            <label>Filter:</label>
+            <div>
+              <DropdownFilter
+                id={"center-left"}
+                options={dropdownOptionsFilter(data, filterOption.label, levelOption)}
+                onChange={setFilterOptionHandler}
+                value={filterOption} />
+            </div>
           </div>
-        </div>
-        <div className="test">
-          <label>Grouped by:</label>
-          <div>
-            <DropdownUI
-              id={"center-right"}
-              options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)}
-              onChange={setGroupedOptionHandler}
-              value={groupedOption} />
+          <div className="test">
+            <label>Grouped by:</label>
+            <div>
+              <DropdownUI
+                id={"center-right"}
+                options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)}
+                onChange={setGroupedOptionHandler}
+                value={groupedOption} />
+            </div>
           </div>
-        </div>
-        <div className="test">
-          <label>Metric:</label>
-          <div>
-            <DropdownUI
-              id={"right"}
-              options={dropdownOptions(metricOptions, metricOption)}
-              onChange={setMetricOptionHandler}
-              value={metricOption}
-            />
+          <div className="test">
+            <label>Metric:</label>
+            <div>
+              <DropdownUI
+                id={"right"}
+                options={dropdownOptions(metricOptions, metricOption)}
+                onChange={setMetricOptionHandler}
+                value={metricOption}
+              />
+            </div>
           </div>
-        </div>
-        {showDrilldown ? (
-          <div className="drilldown">
-            <Drilldown
-              closeDrilldown={closeDrilldown}
-              drilldownItem={drilldownItem}
+          {showDrilldown ? (
+            <div className="drilldown">
+              <Drilldown
+                closeDrilldown={closeDrilldown}
+                drilldownItem={drilldownItem}
 
-            />
-          </div>) : null}
+              />
+            </div>) : null}
+        </div>
+        <Canvas
+          width={width}
+          height={height}
+          allRect={showElements}
+          levelOption={levelOption}
+          setLevelOptionHandler={setLevelOptionHandler}
+          setGroupedOptionHandler={setFilterOptionHandler}
+          itemSelectHandler={itemSelectHandler}
+        />
       </div>
-      <Canvas
-        width={width}
-        height={height}
-        allRect={showElements}
-        levelOption={levelOption}
-        setLevelOptionHandler={setLevelOptionHandler}
-        setGroupedOptionHandler={setFilterOptionHandler}
-        itemSelectHandler={itemSelectHandler}
-      />
     </div>
   )
 }

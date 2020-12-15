@@ -25,6 +25,7 @@ export function handler(width: number, height: number, levelOption: string, data
             allElements[i].elementInfo.namespace = allElementInfo[i].Name;
             allElements[i].text = allElementInfo[i].Name;
             allElements[i].elementInfo.pod = "Count: " + allElementInfo[i].Pod.length;
+            allElements[i].elementInfo.type = Types.Namespace;
 
             let podcount = 0;
             for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
@@ -39,6 +40,7 @@ export function handler(width: number, height: number, levelOption: string, data
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].deployment;
+            allElements[i].elementInfo.type = Types.Deployment;
         }
     }
     else if (levelOption === 'Pod') {
@@ -53,6 +55,7 @@ export function handler(width: number, height: number, levelOption: string, data
                 allElements[temp].elementInfo.pod = allElementInfo[i].Pod[l].Name;
                 allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Namespace;
                 allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Pod[l].Container.length;
+                allElements[i].elementInfo.type = Types.Pod;
                 temp += 1;
 
             }
@@ -71,6 +74,7 @@ export function handler(width: number, height: number, levelOption: string, data
                     allElements[temp].elementInfo.pod = allElementInfo[i].Pod[l].Container[j].Pod;
                     allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Container[j].Namespace;
                     allElements[temp].elementInfo.container = allElementInfo[i].Pod[l].Container[j].Name;
+                    allElements[i].elementInfo.type = Types.Container;
                     temp += 1;
                 }
             }
@@ -93,10 +97,9 @@ export function filterHandler(width: number, height: number, allInfo: Tuple, lev
 
     let filterElement: Element[] = new Array();
     const allElements = allInfo.inside;
-
     // focus one
     if (levelOption === filterOption.description) {
-
+        
         for (let i = 0; i < allElements.length; i++) {
             if (allElements[i].text === filterOption.label) {
                 filterElement.push(allElements[i]);
