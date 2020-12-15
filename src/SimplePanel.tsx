@@ -12,6 +12,8 @@ import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'process
 import { Element } from 'types';
 import { Drilldown } from './uiElement/Drilddown';
 
+import { GraphUI } from './GraphUI';
+
 
 const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
 const groupedOptions = ["Namespace", "Deployment", "Pod", "Container"]
@@ -20,9 +22,9 @@ const metricOptions = ["-", "CPU Nutzung", "Speicher Nutzung", "CPU Limits", "Me
 interface Props extends PanelProps<SimpleOptions> { }
 
 
-export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) => {
+export const SimplePanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
 
-  // const hey = true;
+  const hey = false;
 
   let firstFilterOption: SelectableValue = { label: "-", description: "Overview" };
   const [levelOption, setLevelOption] = useState("Overview");
@@ -125,7 +127,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
 
   return (
     <div>
-      <div>
+      {hey ? (<div>
         <div className="header">
           <div className="test">
             <label>Level:</label>
@@ -186,7 +188,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, }) 
           setGroupedOptionHandler={setFilterOptionHandler}
           itemSelectHandler={itemSelectHandler}
         />
-      </div>
+      </div>) :
+        <GraphUI
+          width={width}
+          height={height}
+          data={data}
+          timeRange={timeRange}
+        />}
+
     </div>
   )
 }

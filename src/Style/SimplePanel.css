@@ -26,7 +26,36 @@
 }
 
 
-  
+
+.graph {
+    margin: auto;
+    width: 50%;
+
+}
+
+.graphName{
+    width: 100%;
+    text-align: center;
+    font-size: 25px;
+}
+
+
+.graphHeader {
+    color: #33B5E5;
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+}
+.infrastructureDropdown{
+    width: 30%;
+}
+
+.graphHr {
+
+    border-top: 2px solid black;
+    width: 100%;
+}
+
 
 
 
