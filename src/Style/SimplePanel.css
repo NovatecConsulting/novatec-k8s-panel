@@ -33,6 +33,11 @@
 
 }
 
+.graphBack{
+    width: 25px;
+    height: 25px;
+}
+
 .graphName{
     width: 100%;
     text-align: center;

@@ -22,6 +22,9 @@ export const RectItem = ({ position, width, height, color, option, setGroupedOpt
         option1 = { label: option }
     }
 
+    console.log("test test test");
+    console.log(option1)
+
     return (
         <Rect
             perfectDrawEnabled={false}

@@ -24,8 +24,6 @@ interface Props extends PanelProps<SimpleOptions> { }
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
 
-  const hey = false;
-
   let firstFilterOption: SelectableValue = { label: "-", description: "Overview" };
   const [levelOption, setLevelOption] = useState("Overview");
   const [filterOption, setFilterOption] = useState(firstFilterOption)
@@ -34,6 +32,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const [showElements, setShowElements] = useState(handler(width, height, "Overview", data));
   const [showDrilldown, setShowDrilldown] = useState(false);
   const [drilldownItem, setDrilldownItem] = useState({ position: { x: 0, y: 0 }, width: 0, height: 0, color: "", text: "-", elementInfo: { type: Types.Namespace } });
+  const [showGraph, setShowGraph] = useState(false)
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -127,7 +126,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
 
   return (
     <div>
-      {hey ? (<div>
+      {!showGraph ? (<div>
         <div className="header">
           <div className="test">
             <label>Level:</label>
@@ -175,6 +174,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
               <Drilldown
                 closeDrilldown={closeDrilldown}
                 drilldownItem={drilldownItem}
+                setShowGraph={setShowGraph}
 
               />
             </div>) : null}
@@ -194,6 +194,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
           height={height}
           data={data}
           timeRange={timeRange}
+          setShowGraph={setShowGraph}
+          focusItem={drilldownItem}
         />}
 
     </div>

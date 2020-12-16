@@ -55,7 +55,7 @@ export function handler(width: number, height: number, levelOption: string, data
                 allElements[temp].elementInfo.pod = allElementInfo[i].Pod[l].Name;
                 allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Namespace;
                 allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Pod[l].Container.length;
-                allElements[i].elementInfo.type = Types.Pod;
+                allElements[temp].elementInfo.type = Types.Pod;
                 temp += 1;
 
             }
@@ -74,7 +74,7 @@ export function handler(width: number, height: number, levelOption: string, data
                     allElements[temp].elementInfo.pod = allElementInfo[i].Pod[l].Container[j].Pod;
                     allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Container[j].Namespace;
                     allElements[temp].elementInfo.container = allElementInfo[i].Pod[l].Container[j].Name;
-                    allElements[i].elementInfo.type = Types.Container;
+                    allElements[temp].elementInfo.type = Types.Container;
                     temp += 1;
                 }
             }

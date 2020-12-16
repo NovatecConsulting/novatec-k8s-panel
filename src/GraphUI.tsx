@@ -1,62 +1,46 @@
 import React from 'react';
 
 import { Graph } from '@grafana/ui'
-import { PanelData, GraphSeriesXY, TimeRange, GraphSeriesValue } from '@grafana/data';
+import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { DropdownUI } from 'uiElement/Dropdown';
+import { getSeries } from './processMetric/ConvertGraphData'
+import { Element } from './types'
+
 
 // import { stylesFactory, useTheme } from '@grafana/ui';
 
 
 type Props = {
-    width: number,
-    height: number,
-    data: PanelData
-    timeRange: TimeRange
+    width: number;
+    height: number;
+    data: PanelData;
+    timeRange: TimeRange;
+    setShowGraph: (value: boolean) => void;
+    focusItem: Element;
 
 }
 
-export const GraphUI = ({ width, height, data, timeRange }: Props) => {
+export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem }: Props) => {
 
-    let ser_ind: number = 0;
+    let series: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text);
 
-    let series: GraphSeriesXY[] = [];
-
-    const timeVals: Array<GraphSeriesValue> = data.series[0].fields[0].values.toArray();
-    const yVals: Array<GraphSeriesValue> = data.series[0].fields[1].values.toArray();
-
-    const data1: GraphSeriesValue[][] = [];
-    for (let i = 0; i < timeVals.length; i++) {
-        data1.push([timeVals[i], yVals[i]]);
-    }
-
-    const unixTimeRange = timeRange.to.unix() - timeRange.from.unix();
-    const ser: GraphSeriesXY = {
-        seriesIndex: ser_ind++,
-        yAxis: { index: 0 },
-        isVisible: true,
-        timeField: data.series[0].fields[0],
-        valueField: data.series[0].fields[1],
-        timeStep: width / unixTimeRange,
-        data: data1,
-        label: 'some label',
-    };
-    series.push(ser);
 
 
     return (
         <div>
-            <label className="graphName">[Name]</label>
+            <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/back2.png" onClick={() => setShowGraph(false)} className="graphBack" />
+            <label className="graphName">{focusItem.text}</label>
             <div className="graph">
                 <label className="graphHeader">Infrastructure Metrics</label>
                 <div className="infrastructureDropdown">
-                <DropdownUI
-                    id="infrastructurMetrics"
-                    onChange={() => null}
-                    options={[]}
-                    value={"test"}
-                />
+                    <DropdownUI
+                        id="infrastructurMetrics"
+                        onChange={() => null}
+                        options={[]}
+                        value={"test"}
+                    />
                 </div>
-               
+
                 <Graph
                     width={width / 2}
                     height={height / 3}
