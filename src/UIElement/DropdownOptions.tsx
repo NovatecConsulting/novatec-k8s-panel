@@ -105,3 +105,20 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 
 
 
+export function dropdownInfrastructureOption() {
+
+    let option: Array<SelectableValue> = [];
+
+
+    const one = ["CPU Usage", "container_cpu_usage_seconds_total"]
+
+    let firstElement: SelectableValue = { label: one[0], value: one[1] };
+
+    option.push(firstElement);
+
+    return option;
+
+}
+
+
+

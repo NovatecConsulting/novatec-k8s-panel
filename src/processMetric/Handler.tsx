@@ -79,14 +79,6 @@ export function handler(width: number, height: number, levelOption: string, data
                 }
             }
         }
-
-        /* 
-         const allElementInfo = getContainerInformation(data);
-         for (let i = 0; i < allElementInfo.length; i++) {
-             allElements[i].elementInfo = allElementInfo[i];
-             allElements[i].text = allElementInfo[i].container;
-         }
-         */
     }
     const tuple: Tuple = { outside: undefined, inside: allElements }
     return tuple;

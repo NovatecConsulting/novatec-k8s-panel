@@ -1,20 +1,26 @@
 import { PanelData, GraphSeriesXY, TimeRange, GraphSeriesValue } from '@grafana/data';
 
-export function getSeries(width: number, data: PanelData, timeRange: TimeRange, name: string) {
+export function getSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
 
     let ser_ind: number = 0;
     let series: GraphSeriesXY[] = [];
 
     let dataIndex = 0;
-
     for (let i = 0; i < data.series.length; i++) {
         const temp = data.series[i].name?.split(" ");
-
+        console.log(temp)
         if (temp !== undefined) {
             if (temp[0] === name) {
-                dataIndex = i;
+                if (temp[1] === level) {
+                    dataIndex = i;
+                }
+
             }
         }
+    }
+
+    if (dataIndex === 0) {
+        return series;
     }
 
     const timeVals: Array<GraphSeriesValue> = data.series[dataIndex].fields[0].values.toArray();
@@ -32,7 +38,7 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
         valueField: data.series[dataIndex].fields[1],
         timeStep: width / unixTimeRange,
         data: data1,
-        label: 'some label',
+        label: metric,
     };
     series.push(ser);
     return series;

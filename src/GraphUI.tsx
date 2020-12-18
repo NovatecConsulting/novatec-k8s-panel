@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Graph } from '@grafana/ui'
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { DropdownUI } from 'uiElement/Dropdown';
-import { getSeries } from './processMetric/ConvertGraphData'
-import { Element } from './types'
+import { getSeries } from './processMetric/ConvertGraphData';
+import { Element } from './types';
+import { dropdownInfrastructureOption } from './uiElement/DropdownOptions';
 
 
 // import { stylesFactory, useTheme } from '@grafana/ui';
@@ -17,12 +18,23 @@ type Props = {
     timeRange: TimeRange;
     setShowGraph: (value: boolean) => void;
     focusItem: Element;
+    level: string
 
 }
 
-export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem }: Props) => {
+export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
 
-    let series: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text);
+    const [infrastructureMetric, setInfrastructureMetric] = useState("-");
+    let series: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
+
+
+    const dropdownChange = (label: string | undefined) => {
+        if (label !== undefined) {
+            setInfrastructureMetric(label)
+        }
+
+    }
+
 
 
 
@@ -35,9 +47,9 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                 <div className="infrastructureDropdown">
                     <DropdownUI
                         id="infrastructurMetrics"
-                        onChange={() => null}
-                        options={[]}
-                        value={"test"}
+                        onChange={dropdownChange}
+                        options={dropdownInfrastructureOption()}
+                        value={infrastructureMetric}
                     />
                 </div>
 

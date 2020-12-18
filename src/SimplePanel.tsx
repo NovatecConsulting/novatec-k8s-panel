@@ -196,6 +196,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
           timeRange={timeRange}
           setShowGraph={setShowGraph}
           focusItem={drilldownItem}
+          level={levelOption}
         />}
 
     </div>
