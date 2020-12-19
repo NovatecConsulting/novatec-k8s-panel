@@ -108,14 +108,13 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 export function dropdownInfrastructureOption() {
 
     let option: Array<SelectableValue> = [];
+    const all = ["cpu_usage", "container_memory_working_set_bytes"]
 
+    for (let i = 0; i < all.length; i++) {
+        let oneElement: SelectableValue = { label: all[i] }
+        option.push(oneElement);
 
-    const one = ["CPU Usage", "container_cpu_usage_seconds_total"]
-
-    let firstElement: SelectableValue = { label: one[0], value: one[1] };
-
-    option.push(firstElement);
-
+    }
     return option;
 
 }

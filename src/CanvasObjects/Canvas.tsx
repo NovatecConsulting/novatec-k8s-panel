@@ -43,11 +43,7 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
     };
 
-
-    console.log(allRect)
     return (
-
-
         <div>
             <Stage width={width - 20}
                 height={height - 40}

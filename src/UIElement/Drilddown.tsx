@@ -1,6 +1,8 @@
 import React from 'react';
 import { Element } from '../types'
 
+import 'style/SimplePanel.css'
+
 type Props = {
 
     closeDrilldown: () => void;
@@ -10,8 +12,8 @@ type Props = {
 export const Drilldown = ({ closeDrilldown, drilldownItem, setShowGraph }: Props) => {
 
     return (
-        <div style={{ textAlign: "center" }}>
-            <div style={{ width: "99%", paddingTop: "1rem" }}>
+        <div className="drilldown--main">
+            <div className="drilldown--back">
                 <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/back2.png" onClick={closeDrilldown} style={{ width: "25px", height: "25px", float: "right", marginRight: "1rem" }} />
             </div>
             <label style={{ color: "white", fontSize: 17, paddingTop: "1.5rem" }}>{drilldownItem.text}</label>

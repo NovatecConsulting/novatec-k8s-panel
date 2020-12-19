@@ -62,9 +62,22 @@
 }
 
 
+.drilldown--main{
+    text-align: center;
+}
 
+.drilldown--back{
 
+    width: 99%;
+    padding-top: 1rem;
+}
 
+.drilldown--header{
+
+    color: white;
+    font-size: 17;
+    padding-top: 1.5rem;
+}
 
 
 

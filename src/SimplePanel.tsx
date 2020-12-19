@@ -66,8 +66,6 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
    * For reasons of asynchrony the handler is not called with the state.
    */
   const setFilterOptionHandler = (option: SelectableValue) => {
-    console.log("huhu");
-    console.log(option);
     if (option.label !== undefined) {
       setFilterOption(option);
       callHandlers(levelOption, option, groupedOption);

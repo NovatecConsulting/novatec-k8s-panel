@@ -8,11 +8,15 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
     let dataIndex = 0;
     for (let i = 0; i < data.series.length; i++) {
         const temp = data.series[i].name?.split(" ");
-        console.log(temp)
+        console.log("Hello World");
+        console.log(temp);
         if (temp !== undefined) {
             if (temp[0] === name) {
                 if (temp[1] === level) {
-                    dataIndex = i;
+                    if (temp[2] === metric) {
+                        dataIndex = i;
+                    }
+
                 }
 
             }

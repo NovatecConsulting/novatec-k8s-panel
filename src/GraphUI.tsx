@@ -24,7 +24,7 @@ type Props = {
 
 export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
 
-    const [infrastructureMetric, setInfrastructureMetric] = useState("-");
+    const [infrastructureMetric, setInfrastructureMetric] = useState("cpu_usage");
     let series: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
 
 
@@ -34,9 +34,6 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
         }
 
     }
-
-
-
 
     return (
         <div>
