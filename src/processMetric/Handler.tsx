@@ -1,6 +1,6 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { positionOnlyGrupped, position, getOverview, positionOutside2 } from '../canvasObjects/Calculation'
-import { getAllElementInfo2, getAllElementInfo, getDeploymentInformation, getNamespaceCount, getDeploymentCount, getPodCount, getContainerCount } from './ConvertData'
+import { positionOnlyGrupped, position, getOverview, positionOutside } from '../canvasObjects/Calculation'
+import { getAllElementInfo, getAllContainer, getDeploymentInformation, getDeploymentCount } from './ConvertData'
 import { Element, Namespace, Tuple, Types } from 'types';
 
 
@@ -9,18 +9,27 @@ import { Element, Namespace, Tuple, Types } from 'types';
 export function handler(width: number, height: number, levelOption: string, data: PanelData) {
 
     let allElements: Element[] = new Array();
+    const allElementInfo = getAllElementInfo(data);
+    const namespaceCount = allElementInfo.length;
+
+    let podCount = 0;
+    let containerCount = 0;
+    for (let i = 0; i < allElementInfo.length; i++) {
+        podCount += allElementInfo[i].Pod.length;
+        for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
+            containerCount += allElementInfo[i].Pod[l].Container.length;
+        }
+
+    }
+
 
     if (levelOption === 'Overview') {
         // Overview
-        const namespaceCount = getNamespaceCount(data);
         const deploymentCount = getDeploymentCount(data);
-        const podCount = getPodCount(data);
-        const containerCount = getContainerCount(data);
         return getOverview(width, namespaceCount, deploymentCount, podCount, containerCount);
     } else if (levelOption === 'Namespace') {
         //Namespace
-        allElements = position(width, height, getNamespaceCount(data));
-        const allElementInfo = getAllElementInfo2(data);
+        allElements = position(width, height, namespaceCount);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo.namespace = allElementInfo[i].Name;
             allElements[i].text = allElementInfo[i].Name;
@@ -45,8 +54,7 @@ export function handler(width: number, height: number, levelOption: string, data
     }
     else if (levelOption === 'Pod') {
         // Pod
-        allElements = position(width, height, getPodCount(data));
-        const allElementInfo = getAllElementInfo2(data);
+        allElements = position(width, height, podCount);
 
         let temp = 0;
         for (let i = 0; i < allElementInfo.length; i++) {
@@ -63,9 +71,8 @@ export function handler(width: number, height: number, levelOption: string, data
 
     } else if (levelOption === 'Container') {
         //Container
-        allElements = position(width, height, getContainerCount(data));
+        allElements = position(width, height, containerCount);
 
-        const allElementInfo = getAllElementInfo2(data);
         let temp = 0;
         for (let i = 0; i < allElementInfo.length; i++) {
             for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
@@ -91,7 +98,7 @@ export function filterHandler(width: number, height: number, allInfo: Tuple, lev
     const allElements = allInfo.inside;
     // focus one
     if (levelOption === filterOption.description) {
-        
+
         for (let i = 0; i < allElements.length; i++) {
             if (allElements[i].text === filterOption.label) {
                 filterElement.push(allElements[i]);
@@ -114,7 +121,7 @@ export function filterHandler(width: number, height: number, allInfo: Tuple, lev
 // Filter with diffrent Level
 export function filterDiffLevel(data: PanelData, levelOption: string, filterOption: SelectableValue) {
 
-    let allElementInfo = getAllElementInfo(data);
+    let allElementInfo = getAllContainer(data);
     let filterElements: any[] = new Array();
 
     for (let i = 0; i < allElementInfo.length; i++) {
@@ -157,12 +164,12 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
  * @param groupedOption 
  * @param data 
  */
-export function groupedHandler(showInfo: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, data: PanelData, width: number, height: number) {
+export function groupedWithFilterHandler(showInfo: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, data: PanelData, width: number, height: number) {
 
     if (hasHigherLevel(filterOption, groupedOption)) {
-        return groupedHandler2(data, levelOption, filterOption, groupedOption, width, height, true)
+        return groupedHandler(data, levelOption, filterOption, groupedOption, width, height, true)
     } else {
-        let allElementInfo = getAllElementInfo(data);
+        let allElementInfo = getAllContainer(data);
         let outside: string = "";
         const showElements = showInfo.inside;
 
@@ -199,7 +206,7 @@ export function groupedHandler(showInfo: Tuple, levelOption: string, filterOptio
 
         }
 
-        const outsideInfo = positionOutside2(showElements);
+        const outsideInfo = positionOutside(showElements);
         const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green", elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } }
 
         let allOutside = new Array();
@@ -248,9 +255,9 @@ function hasHigherLevel(filterOption: SelectableValue, groupedOption: string) {
  * @param width 
  * @param height 
  */
-export function groupedHandler2(data: PanelData, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
+export function groupedHandler(data: PanelData, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
 
-    let allInformation = getAllElementInfo2(data);
+    let allInformation = getAllElementInfo(data);
     let tuple = new Array();
     let insideElements: string[] = [];
 

@@ -2,19 +2,6 @@ import { PanelData } from "@grafana/data";
 import { Types, Container, Pod, Namespace } from 'types';
 
 
-// Count
-export function getPodCount(data: PanelData) {
-    return data.series[0].fields[1].values.get(0);
-}
-
-export function getContainerCount(data: PanelData) {
-    return data.series[1].fields[1].values.get(0);
-}
-
-export function getNamespaceCount(data: PanelData) {
-    return data.series[2].fields[1].values.get(0);;
-}
-
 
 export function getDeploymentCount(data: PanelData) {
 
@@ -79,7 +66,7 @@ export function getContainerInformation(data: PanelData) {
 
 
 
-export function getAllElementInfo(data: PanelData) {
+export function getAllContainer(data: PanelData) {
 
     let allElementInfo = new Array();
     for (let i = 0; i < data.series[8].fields[5].values.length; i++) {
@@ -96,7 +83,7 @@ export function getAllElementInfo(data: PanelData) {
 
 
 
-export function getAllElementInfo2(data: PanelData) {
+export function getAllElementInfo(data: PanelData) {
 
 
     let allElementInfo = new Array();

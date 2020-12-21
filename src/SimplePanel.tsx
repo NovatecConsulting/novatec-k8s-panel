@@ -8,7 +8,7 @@ import { Canvas } from 'canvasObjects/Canvas';
 import { DropdownUI, DropdownFilter } from 'uiElement/Dropdown';
 import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'uiElement/DropdownOptions';
 import 'style/SimplePanel.css';
-import { handler, filterHandler, groupedHandler, groupedHandler2 } from 'processMetric/Handler';
+import { handler, filterHandler, groupedWithFilterHandler, groupedHandler } from 'processMetric/Handler';
 import { Element } from 'types';
 import { Drilldown } from './uiElement/Drilddown';
 
@@ -102,9 +102,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     }
     if (grouped !== "-" && filter.label === "-") {
 
-      setShowElements(groupedHandler2(data, level, filter, grouped, width, height, false));
+      setShowElements(groupedHandler(data, level, filter, grouped, width, height, false));
     } else if (grouped !== "-") {
-      setShowElements(groupedHandler(showElements, level, filter, grouped, data, width, height));
+     setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height));
     }
 
   }

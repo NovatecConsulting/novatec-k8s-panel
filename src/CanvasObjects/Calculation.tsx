@@ -77,7 +77,7 @@ export function calcDropdownOptions() {
  * Calculates position outside level and grouped.
  * @param insideElements 
  */
-export function positionOutside2(insideElements: Element[]) {
+export function positionOutside(insideElements: Element[]) {
 
     let xMax = _.maxBy(insideElements, function (o: Element) {
         return o.position.x
@@ -146,7 +146,7 @@ export function positionOnlyGrupped(allInfos: any[], width: number, height: numb
     }
     let outside = new Array();
     for (let i = 0; i < test.length; i++) {
-        let outsideInfo = positionOutside2(insidePosition[i]);
+        let outsideInfo = positionOutside(insidePosition[i]);
         const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: test[i].outside, color: "green", elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } }
         outside.push(outsideElement);
     }
