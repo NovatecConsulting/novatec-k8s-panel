@@ -7,10 +7,6 @@ import { getSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { dropdownInfrastructureOption } from './uiElement/DropdownOptions';
 
-
-// import { stylesFactory, useTheme } from '@grafana/ui';
-
-
 type Props = {
     width: number;
     height: number;
@@ -24,7 +20,7 @@ type Props = {
 
 export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
 
-    const [infrastructureMetric, setInfrastructureMetric] = useState("cpu_usage");
+    const [infrastructureMetric, setInfrastructureMetric] = useState("CPU Usage");
     let series: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
 
 
@@ -32,7 +28,6 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
         if (label !== undefined) {
             setInfrastructureMetric(label)
         }
-
     }
 
     return (
@@ -56,7 +51,6 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                     series={series}
                     timeRange={data.timeRange}
                     showLines={true}
-
                 />
             </div>
             <hr className="graphHr"></hr>

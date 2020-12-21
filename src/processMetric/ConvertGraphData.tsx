@@ -5,15 +5,16 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
     let ser_ind: number = 0;
     let series: GraphSeriesXY[] = [];
 
+    const metricName = convertMetricName(metric);
+    // convert metric to promql metric name
+
     let dataIndex = 0;
     for (let i = 0; i < data.series.length; i++) {
         const temp = data.series[i].name?.split(" ");
-        console.log("Hello World");
-        console.log(temp);
         if (temp !== undefined) {
             if (temp[0] === name) {
                 if (temp[1] === level) {
-                    if (temp[2] === metric) {
+                    if (temp[2] === metricName) {
                         dataIndex = i;
                     }
 
@@ -46,4 +47,20 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
     };
     series.push(ser);
     return series;
+}
+
+
+function convertMetricName(metric: string) {
+
+
+    const allMetrics = [["CPU Usage", "cpu_usage"], ["Memory Usage", "container_memory_working_set_bytes"], ["Memory Saturation", "memory_saturation"]];
+
+    for (let i = 0; i < allMetrics.length; i++) {
+
+        if (metric === allMetrics[i][0]) {
+            return allMetrics[i][1];
+        }
+    }
+    return "";
+
 }
