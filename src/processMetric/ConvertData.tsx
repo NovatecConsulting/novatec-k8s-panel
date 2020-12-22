@@ -22,6 +22,7 @@ export function getDeploymentInformation(data: PanelData) {
 export function getAllContainer(data: PanelData) {
 
     let allElementInfo = new Array();
+
     for (let i = 0; i < data.series[0].fields[5].values.length; i++) {
         let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", deployment: "" };
 
@@ -36,6 +37,8 @@ export function getAllContainer(data: PanelData) {
 
 
 export function getAllElementInfo(data: PanelData) {
+
+    newTest(data);
 
     const allElementInfo = getAllContainer(data);
     let allContainers: Container[] = [];
@@ -81,4 +84,53 @@ export function getAllElementInfo(data: PanelData) {
         allNamespaces.push(namespace);
     }
     return allNamespaces;
+}
+
+
+
+function newTest(data: PanelData) {
+
+    let kube_pod_owner;
+    let kube_replicaset_owner;
+    for (let i = 0; i < data.series.length; i++) {
+
+        if (data.series[i].refId === "D") {
+            kube_pod_owner = data.series[i];
+        } else if (data.series[i].refId === "E") {
+            kube_replicaset_owner = data.series[i];
+        }
+    }
+
+
+
+
+    const kube_replicaset_ownerObject = { deployment: kube_replicaset_owner?.fields[1].values.toArray(), replicaset: kube_replicaset_owner?.fields[2].values.toArray() }
+    console.log(kube_replicaset_ownerObject);
+
+    console.log("Hello World 2");
+
+    const kube_pod_ownerObject = { owner_name: kube_pod_owner?.fields[1].values.toArray(), pod: kube_pod_owner?.fields[2].values.toArray() }
+    console.log(kube_pod_ownerObject);
+
+    let aaa = new Array();
+
+    if (kube_replicaset_ownerObject.replicaset !== undefined &&
+        kube_replicaset_ownerObject.deployment !== undefined &&
+        kube_pod_ownerObject.pod !== undefined &&
+        kube_pod_ownerObject.owner_name !== undefined) {
+
+        for (let i = 0; i < kube_replicaset_ownerObject.replicaset?.length; i++) {
+
+            for (let l = 0; l < kube_pod_ownerObject.owner_name.length; l++) {
+                if (kube_replicaset_ownerObject.replicaset[i] === kube_pod_ownerObject.owner_name[l]) {
+                    let element = { deployment: kube_replicaset_ownerObject.deployment[i], pod: kube_pod_ownerObject.pod[l] }
+                    aaa.push(element);
+                }
+            }
+        }
+    }
+
+    console.log(aaa);
+
+
 }
