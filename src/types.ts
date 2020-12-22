@@ -64,6 +64,7 @@ export interface Pod {
   Name: string;
   Container: Container[];
   Namespace: string;
+  Deployment: string;
 
 
 }

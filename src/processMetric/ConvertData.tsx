@@ -1,8 +1,6 @@
 import { PanelData } from "@grafana/data";
 import { Types, Container, Pod, Namespace } from 'types';
 
-
-
 export function getDeploymentCount(data: PanelData) {
 
     return data.series[1].fields[1].values.get(0);
@@ -38,8 +36,6 @@ export function getAllContainer(data: PanelData) {
 
 export function getAllElementInfo(data: PanelData) {
 
-    newTest(data);
-
     const allElementInfo = getAllContainer(data);
     let allContainers: Container[] = [];
 
@@ -57,7 +53,7 @@ export function getAllElementInfo(data: PanelData) {
     let allElementPod = Array.from(podSet);
     console.log(allElementPod);
     for (let i = 0; i < allElementPod.length; i++) {
-        let pod: Pod = { Name: "" + allElementPod[i], Container: [], Namespace: "" }
+        let pod: Pod = { Name: "" + allElementPod[i], Container: [], Namespace: "", Deployment: "", }
         for (let l = 0; l < allContainers.length; l++) {
             if (allContainers[l].Pod === pod.Name) {
                 pod.Container.push(allContainers[l]);
@@ -83,12 +79,12 @@ export function getAllElementInfo(data: PanelData) {
         }
         allNamespaces.push(namespace);
     }
-    return allNamespaces;
+    return addDeployment(data, allNamespaces);;
 }
 
 
 
-function newTest(data: PanelData) {
+function addDeployment(data: PanelData, allNamespaces: Namespace[]) {
 
     let kube_pod_owner;
     let kube_replicaset_owner;
@@ -101,18 +97,10 @@ function newTest(data: PanelData) {
         }
     }
 
-
-
-
     const kube_replicaset_ownerObject = { deployment: kube_replicaset_owner?.fields[1].values.toArray(), replicaset: kube_replicaset_owner?.fields[2].values.toArray() }
-    console.log(kube_replicaset_ownerObject);
-
-    console.log("Hello World 2");
-
     const kube_pod_ownerObject = { owner_name: kube_pod_owner?.fields[1].values.toArray(), pod: kube_pod_owner?.fields[2].values.toArray() }
-    console.log(kube_pod_ownerObject);
 
-    let aaa = new Array();
+    let allDeployments = new Array();
 
     if (kube_replicaset_ownerObject.replicaset !== undefined &&
         kube_replicaset_ownerObject.deployment !== undefined &&
@@ -124,13 +112,20 @@ function newTest(data: PanelData) {
             for (let l = 0; l < kube_pod_ownerObject.owner_name.length; l++) {
                 if (kube_replicaset_ownerObject.replicaset[i] === kube_pod_ownerObject.owner_name[l]) {
                     let element = { deployment: kube_replicaset_ownerObject.deployment[i], pod: kube_pod_ownerObject.pod[l] }
-                    aaa.push(element);
+                    allDeployments.push(element);
                 }
             }
         }
     }
+    for (let i = 0; i < allDeployments.length; i++) {
 
-    console.log(aaa);
-
-
+        for (let l = 0; l < allNamespaces.length; l++) {
+            for (let j = 0; j < allNamespaces[l].Pod.length; j++) {
+                if (allDeployments[i].pod === allNamespaces[l].Pod[j].Name) {
+                    allNamespaces[l].Pod[j].Deployment = allDeployments[i].deployment;
+                }
+            }
+        }
+    }
+    return allNamespaces;
 }
