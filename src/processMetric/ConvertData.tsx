@@ -51,7 +51,6 @@ export function getAllElementInfo(data: PanelData) {
         podSet.add(allElementInfo[i].pod);
     }
     let allElementPod = Array.from(podSet);
-    console.log(allElementPod);
     for (let i = 0; i < allElementPod.length; i++) {
         let pod: Pod = { Name: "" + allElementPod[i], Container: [], Namespace: "", Deployment: "", }
         for (let l = 0; l < allContainers.length; l++) {

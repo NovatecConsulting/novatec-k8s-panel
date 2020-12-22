@@ -46,6 +46,8 @@ export function handler(width: number, height: number, levelOption: string, data
         // Deployment
         allElements = position(width, height, getDeploymentCount(data));
         const allElementInfo = getDeploymentInformation(data);
+        console.log("hello world");
+        console.log(allElementInfo);
         for (let i = 0; i < allElementInfo.length; i++) {
             allElements[i].elementInfo = allElementInfo[i];
             allElements[i].text = allElementInfo[i].deployment;
@@ -64,6 +66,7 @@ export function handler(width: number, height: number, levelOption: string, data
                 allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Namespace;
                 allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Pod[l].Container.length;
                 allElements[temp].elementInfo.type = Types.Pod;
+                allElements[temp].elementInfo.deployment = allElementInfo[i].Pod[l].Deployment;
                 temp += 1;
 
             }
@@ -82,6 +85,7 @@ export function handler(width: number, height: number, levelOption: string, data
                     allElements[temp].elementInfo.namespace = allElementInfo[i].Pod[l].Container[j].Namespace;
                     allElements[temp].elementInfo.container = allElementInfo[i].Pod[l].Container[j].Name;
                     allElements[temp].elementInfo.type = Types.Container;
+                    allElements[temp].elementInfo.deployment = allElementInfo[i].Pod[l].Deployment;
                     temp += 1;
                 }
             }
