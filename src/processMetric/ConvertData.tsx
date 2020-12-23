@@ -20,6 +20,7 @@ export function getDeploymentInformation(data: PanelData) {
 export function getAllContainer(data: PanelData) {
 
     let allElementInfo = new Array();
+    const allDeployment = addDeployment(data);
 
     for (let i = 0; i < data.series[0].fields[5].values.length; i++) {
         let elementInfo = { type: Types.Container, container: "", pod: "", namespace: "", node: "", deployment: "" };
@@ -27,8 +28,15 @@ export function getAllContainer(data: PanelData) {
         elementInfo.container = data.series[0].fields[5].values.get(i);
         elementInfo.pod = data.series[0].fields[16].values.get(i);
         elementInfo.namespace = data.series[0].fields[15].values.get(i);
+
+        for (let l = 0; l < allDeployment.length; l++) {
+            if (allDeployment[l].pod === elementInfo.pod) {
+                elementInfo.deployment = allDeployment[l].deployment;
+            }
+        }
         allElementInfo.push(elementInfo);
     }
+
     return allElementInfo;
 }
 
@@ -82,7 +90,7 @@ export function getAllElementInfo(data: PanelData) {
                 podsInDeployment.push(allPods[l])
             }
         }
-        let deployment: Deployment = { Name: allDeployments[i].deployment, Namespace: allDeployments[i].namespace, Pod: podsInDeployment, Container: containerInDeployment}
+        let deployment: Deployment = { Name: allDeployments[i].deployment, Namespace: allDeployments[i].namespace, Pod: podsInDeployment, Container: containerInDeployment }
         allDeploymentObjects.push(deployment);
     }
     //+++++++++++++++++++++++++

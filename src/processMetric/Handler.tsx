@@ -136,6 +136,10 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
             if (allElementInfo[i].namespace === filterOption.label) {
                 filterElements.push(allElementInfo[i]);
             }
+        } else if (filterOption.description === "Deployment") {
+            if (allElementInfo[i].deployment === filterOption.label) {
+                filterElements.push(allElementInfo[i])
+            }
         } else if (filterOption.description === "Pod") {
             if (allElementInfo[i].pod === filterOption.label) {
                 filterElements.push(allElementInfo[i]);
@@ -154,6 +158,8 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
 
         if (levelOption === "Namespace") {
             filterToLevel.add(filterElements[i].namespace);
+        } else if (levelOption === "Deployment" && filterElements[i].deployment !== "") {
+            filterToLevel.add(filterElements[i].deployment);
         } else if (levelOption === "Pod") {
             filterToLevel.add(filterElements[i].pod);
         } else if (levelOption === "Container") {
