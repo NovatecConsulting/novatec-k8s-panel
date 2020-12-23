@@ -1,6 +1,6 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOnlyGrupped, position, getOverview, positionOutside } from '../canvasObjects/Calculation'
-import { getAllElementInfo, getAllContainer, getDeploymentInformation, getDeploymentCount } from './ConvertData'
+import { getAllElementInfo, getAllContainer, getDeploymentCount } from './ConvertData'
 import { Element, Namespace, Tuple, Types } from 'types';
 
 
@@ -21,8 +21,6 @@ export function handler(width: number, height: number, levelOption: string, data
         }
 
     }
-
-
     if (levelOption === 'Overview') {
         // Overview
         const deploymentCount = getDeploymentCount(data);
@@ -35,6 +33,7 @@ export function handler(width: number, height: number, levelOption: string, data
             allElements[i].text = allElementInfo[i].Name;
             allElements[i].elementInfo.pod = "Count: " + allElementInfo[i].Pod.length;
             allElements[i].elementInfo.type = Types.Namespace;
+            allElements[i].elementInfo.deployment = "Count: " + allElementInfo[i].Deployment.length;
 
             let podcount = 0;
             for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
@@ -45,16 +44,24 @@ export function handler(width: number, height: number, levelOption: string, data
     } else if (levelOption === 'Deployment') {
         // Deployment
         allElements = position(width, height, getDeploymentCount(data));
-        const allElementInfo = getDeploymentInformation(data);
-        console.log("hello world");
+        let temp = 0;
+        console.log("servus 2");
         console.log(allElementInfo);
         for (let i = 0; i < allElementInfo.length; i++) {
-            allElements[i].elementInfo = allElementInfo[i];
-            allElements[i].text = allElementInfo[i].deployment;
-            allElements[i].elementInfo.type = Types.Deployment;
+            for (let l = 0; l < allElementInfo[i].Deployment.length; l++) {
+                allElements[temp].text = allElementInfo[i].Deployment[l].Name;
+                allElements[temp].elementInfo.pod = "Count: " + allElementInfo[i].Deployment[l].Pod.length;
+                allElements[temp].elementInfo.namespace = allElementInfo[i].Deployment[l].Namespace;
+                allElements[temp].elementInfo.type = Types.Deployment;
+                allElements[temp].elementInfo.deployment = allElementInfo[i].Deployment[l].Name;
+                allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Deployment[l].Container.length;
+
+
+                temp += 1;
+            }
         }
-    }
-    else if (levelOption === 'Pod') {
+
+    } else if (levelOption === 'Pod') {
         // Pod
         allElements = position(width, height, podCount);
 

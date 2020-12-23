@@ -1,5 +1,5 @@
 import { PanelData } from "@grafana/data";
-import { Types, Container, Pod, Namespace } from 'types';
+import { Types, Container, Pod, Namespace, Deployment } from 'types';
 
 export function getDeploymentCount(data: PanelData) {
 
@@ -40,7 +40,7 @@ export function getAllElementInfo(data: PanelData) {
     let allContainers: Container[] = [];
 
     for (let i = 0; i < allElementInfo.length; i++) {
-        let container: Container = { Name: allElementInfo[i].container, Pod: allElementInfo[i].pod, Namespace: allElementInfo[i].namespace };
+        let container: Container = { Name: allElementInfo[i].container, Pod: allElementInfo[i].pod, Namespace: allElementInfo[i].namespace, Deployment: "" };
         allContainers.push(container)
     }
 
@@ -62,6 +62,31 @@ export function getAllElementInfo(data: PanelData) {
         allPods.push(pod);
     }
 
+
+    //++++++++++++++++++
+
+    const allDeployments = addDeployment(data);
+
+    let allDeploymentObjects: Deployment[] = [];
+
+    for (let i = 0; i < allDeployments.length; i++) {
+        let podsInDeployment: Pod[] = []
+        let containerInDeployment: Container[] = [];
+        for (let l = 0; l < allPods.length; l++) {
+            if (allPods[l].Name === allDeployments[i].pod) {
+                allPods[l].Deployment = allDeployments[i].deployment;
+                for (let j = 0; j < allPods[l].Container.length; j++) {
+                    allPods[l].Container[j].Deployment = allDeployments[i].deployment;
+                    containerInDeployment.push(allPods[l].Container[j])
+                }
+                podsInDeployment.push(allPods[l])
+            }
+        }
+        let deployment: Deployment = { Name: allDeployments[i].deployment, Namespace: allDeployments[i].namespace, Pod: podsInDeployment, Container: containerInDeployment}
+        allDeploymentObjects.push(deployment);
+    }
+    //+++++++++++++++++++++++++
+
     let allNamespaces: Namespace[] = [];
 
     let namespaceSet = new Set();
@@ -70,20 +95,27 @@ export function getAllElementInfo(data: PanelData) {
     }
     let allElementNamespace = Array.from(namespaceSet);
     for (let i = 0; i < allElementNamespace.length; i++) {
-        let namespace: Namespace = { Name: "" + allElementNamespace[i], Pod: [] }
+        let namespace: Namespace = { Name: "" + allElementNamespace[i], Pod: [], Deployment: [] }
         for (let l = 0; l < allPods.length; l++) {
             if (allPods[l].Namespace === namespace.Name) {
                 namespace.Pod.push(allPods[l])
             }
         }
+
+        for (let j = 0; j < allDeploymentObjects.length; j++) {
+            if (allDeploymentObjects[j].Namespace === namespace.Name) {
+                namespace.Deployment.push(allDeploymentObjects[j])
+            }
+        }
+
         allNamespaces.push(namespace);
     }
-    return addDeployment(data, allNamespaces);;
+    return allNamespaces;
 }
 
 
 
-function addDeployment(data: PanelData, allNamespaces: Namespace[]) {
+function addDeployment(data: PanelData) {
 
     let kube_pod_owner;
     let kube_replicaset_owner;
@@ -96,13 +128,14 @@ function addDeployment(data: PanelData, allNamespaces: Namespace[]) {
         }
     }
 
-    const kube_replicaset_ownerObject = { deployment: kube_replicaset_owner?.fields[1].values.toArray(), replicaset: kube_replicaset_owner?.fields[2].values.toArray() }
+    const kube_replicaset_ownerObject = { namespace: kube_replicaset_owner?.fields[1].values.toArray(), deployment: kube_replicaset_owner?.fields[2].values.toArray(), replicaset: kube_replicaset_owner?.fields[3].values.toArray() }
     const kube_pod_ownerObject = { owner_name: kube_pod_owner?.fields[1].values.toArray(), pod: kube_pod_owner?.fields[2].values.toArray() }
 
     let allDeployments = new Array();
 
     if (kube_replicaset_ownerObject.replicaset !== undefined &&
         kube_replicaset_ownerObject.deployment !== undefined &&
+        kube_replicaset_ownerObject.namespace !== undefined &&
         kube_pod_ownerObject.pod !== undefined &&
         kube_pod_ownerObject.owner_name !== undefined) {
 
@@ -110,21 +143,11 @@ function addDeployment(data: PanelData, allNamespaces: Namespace[]) {
 
             for (let l = 0; l < kube_pod_ownerObject.owner_name.length; l++) {
                 if (kube_replicaset_ownerObject.replicaset[i] === kube_pod_ownerObject.owner_name[l]) {
-                    let element = { deployment: kube_replicaset_ownerObject.deployment[i], pod: kube_pod_ownerObject.pod[l] }
+                    let element = { namespace: kube_replicaset_ownerObject.namespace[i], deployment: kube_replicaset_ownerObject.deployment[i], pod: kube_pod_ownerObject.pod[l] }
                     allDeployments.push(element);
                 }
             }
         }
     }
-    for (let i = 0; i < allDeployments.length; i++) {
-
-        for (let l = 0; l < allNamespaces.length; l++) {
-            for (let j = 0; j < allNamespaces[l].Pod.length; j++) {
-                if (allDeployments[i].pod === allNamespaces[l].Pod[j].Name) {
-                    allNamespaces[l].Pod[j].Deployment = allDeployments[i].deployment;
-                }
-            }
-        }
-    }
-    return allNamespaces;
+    return allDeployments;
 }

@@ -55,6 +55,7 @@ export interface Container {
   Name: string;
   Pod: string;
   Namespace: string;
+  Deployment: string;
 }
 
 
@@ -74,12 +75,20 @@ export interface Namespace {
 
   Name: string;
   Pod: Pod[];
+  Deployment: Deployment[];
+}
 
+export interface Deployment {
+
+  Name: string;
+  Namespace: string;
+  Pod: Pod[];
+  Container: Container[];
 
 }
 
 
 export interface Tuple {
   inside: Element[];
-  outside?: Element [];
+  outside?: Element[];
 }
