@@ -45,8 +45,6 @@ export function handler(width: number, height: number, levelOption: string, data
         // Deployment
         allElements = position(width, height, getDeploymentCount(data));
         let temp = 0;
-        console.log("servus 2");
-        console.log(allElementInfo);
         for (let i = 0; i < allElementInfo.length; i++) {
             for (let l = 0; l < allElementInfo[i].Deployment.length; l++) {
                 allElements[temp].text = allElementInfo[i].Deployment[l].Name;
@@ -55,8 +53,6 @@ export function handler(width: number, height: number, levelOption: string, data
                 allElements[temp].elementInfo.type = Types.Deployment;
                 allElements[temp].elementInfo.deployment = allElementInfo[i].Deployment[l].Name;
                 allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Deployment[l].Container.length;
-
-
                 temp += 1;
             }
         }

@@ -71,6 +71,17 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
         }
 
         for (let i = 0; i < allElement.length; i++) {
+            for (let l = 0; l < allElement[i].Deployment.length; l++) {
+                let podElement: SelectableValue = {};
+                podElement.label = allElement[i].Deployment[l].Name;
+                podElement.description = "Deployment";
+
+                option.push(podElement)
+            }
+        }
+
+
+        for (let i = 0; i < allElement.length; i++) {
             for (let l = 0; l < allElement[i].Pod.length; l++) {
                 let podElement: SelectableValue = {};
                 podElement.label = allElement[i].Pod[l].Name;
