@@ -179,7 +179,10 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
  */
 export function groupedWithFilterHandler(showInfo: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, data: PanelData, width: number, height: number) {
 
+    console.log("Hello World");
+
     if (hasHigherLevel(filterOption, groupedOption)) {
+        console.log("has")
         return groupedHandler(data, levelOption, filterOption, groupedOption, width, height, true)
     } else {
         let allElementInfo = getAllContainer(data);
@@ -219,9 +222,45 @@ export function groupedWithFilterHandler(showInfo: Tuple, levelOption: string, f
 
         }
 
-        const outsideInfo = positionOutside(showElements);
-        const outsideElement: Element = { position: outsideInfo.outisdePosition, width: outsideInfo.width, height: outsideInfo.height, text: outside, color: "green", elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace } }
+        if (levelOption === "Deployment" && groupedOption === "Namespace") {
+            for (let i = 0; i < showElements.length; i++) {
+                for (let l = 0; l < allElementInfo.length; l++) {
+                    if (allElementInfo[l].deployment === showElements[i].text) {
+                        outside = allElementInfo[l].namespace;
+                    }
+                }
+            }
+        }
 
+        if (levelOption === "Pod" && groupedOption === "Deployment") {
+            for (let i = 0; i < showElements.length; i++) {
+                for (let l = 0; l < allElementInfo.length; l++) {
+                    if (allElementInfo[l].pod === showElements[i].text) {
+                        outside = allElementInfo[l].deployment;
+                    }
+                }
+            }
+        }
+
+        if (levelOption === "Container" && groupedOption === "Deployment") {
+            for (let i = 0; i < showElements.length; i++) {
+                for (let l = 0; l < allElementInfo.length; l++) {
+                    if (allElementInfo[l].container === showElements[i].text) {
+
+                        outside = allElementInfo[l].deployment;
+                    }
+                }
+            }
+        }
+
+        const outsideInfo = positionOutside(showElements);
+        const outsideElement: Element = {
+            position: outsideInfo.outisdePosition,
+            width: outsideInfo.width,
+            height: outsideInfo.height,
+            text: outside, color: "green",
+            elementInfo: { namespace: "", deployment: "", pod: "", container: "", type: Types.Namespace }
+        }
         let allOutside = new Array();
         allOutside.push(outsideElement);
         const tuple: Tuple = { outside: allOutside, inside: showElements };
@@ -297,29 +336,52 @@ export function groupedHandler(data: PanelData, levelOption: string, filterOptio
         if (levelOption === "Pod" && groupedOption === "Namespace") {
             insideElements = [];
         }
+        if (levelOption === "Deployment" && groupedOption === "Namespace") {
+            insideElements = [];
+        }
         for (let l = 0; l < allInformation[i].Pod.length; l++) {
             if (levelOption === "Container" && groupedOption === "Pod") {
+                insideElements = [];
+            }
+            if (levelOption === "Pod" && groupedOption === "Deployment") {
+                insideElements = [];
+            }
+            if (levelOption === "Container" && groupedOption === "Deployment") {
                 insideElements = [];
             }
             if (levelOption === "Pod") {
                 insideElements.push(allInformation[i].Pod[l].Name);
             }
+            if (levelOption === "Deployment") {
+                insideElements.push(allInformation[i].Pod[l].Deployment)
+            }
             for (let j = 0; j < allInformation[i].Pod[l].Container.length; j++) {
                 if (levelOption === "Container") {
                     insideElements.push(allInformation[i].Pod[l].Container[j].Name);
                 }
-
             }
             if (levelOption === "Container" && groupedOption === "Pod") {
                 tuple.push({ outside: allInformation[i].Pod[l].Name, inside: insideElements })
             }
+            if (levelOption === "Pod" && groupedOption === "Deployment") {
+                tuple.push({ outside: allInformation[i].Pod[l].Deployment, inside: insideElements })
+            }
+            if (levelOption === "Container" && groupedOption === "Deployment") {
+                tuple.push({ outside: allInformation[i].Pod[l].Deployment, inside: insideElements })
+            }
         }
-        if (levelOption === "Pod") {
+        if (levelOption === "Pod" && groupedOption === "Namespace") {
+            tuple.push({ outside: allInformation[i].Name, inside: insideElements })
+        }
+        if (levelOption === "Deployment" && groupedOption === "Namespace") {
             tuple.push({ outside: allInformation[i].Name, inside: insideElements })
         }
         if (levelOption === "Container" && groupedOption === "Namespace") {
             tuple.push({ outside: allInformation[i].Name, inside: insideElements })
         }
     }
+
+
+
     return positionOnlyGrupped(tuple, width, height);
 }
