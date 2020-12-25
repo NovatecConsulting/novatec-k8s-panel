@@ -8,13 +8,17 @@ import { RectItem } from 'canvasObjects/Item/RectItem';
 import { TextOutside } from 'canvasObjects/Outside/TextOutside';
 import { TextItem } from 'canvasObjects/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
+import { MetricImage } from 'canvasObjects/Item/MetricImage';
+import {Element} from 'types';
+
 
 type Props = {
     allInfos: Tuple,
     setGroupedOptionHandler: (value: SelectableValue) => void;
+    itemSelectHandler: (item: Element) => void;
 }
 
-export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
+export const Outside = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: Props) => {
     return (
         <Layer>
 
@@ -48,6 +52,15 @@ export const Outside = ({ allInfos, setGroupedOptionHandler }: Props) => {
                 <TextItem
                     position={info.position}
                     text={info.text}
+                />
+            ))}
+
+            {allInfos.inside.map((info) => (
+                <MetricImage
+                    position={info.position}
+                    itemWidth={info.width}
+                    item={info}
+                    itemSelectHandler={()=>itemSelectHandler(info)}
                 />
             ))}
         </Layer>

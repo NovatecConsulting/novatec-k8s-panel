@@ -102,7 +102,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     }
     if (grouped !== "-" && filter.label === "-") {
 
-      setShowElements(groupedHandler(data, level, filter, grouped, width, height, false));
+      setShowElements(groupedHandler(data,showElements, level, filter, grouped, width, height, false));
     } else if (grouped !== "-") {
      setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height));
     }

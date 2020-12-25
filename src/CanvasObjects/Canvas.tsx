@@ -67,6 +67,7 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
                         (<Outside
                             allInfos={allRect}
                             setGroupedOptionHandler={setGroupedOptionHandler}
+                            itemSelectHandler={itemSelectHandler}
                         />
                         )}
 

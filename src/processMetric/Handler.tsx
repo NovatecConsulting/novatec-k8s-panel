@@ -113,8 +113,6 @@ export function filterHandler(width: number, height: number, allInfo: Tuple, lev
         }
     } else {
         let filterInfo = filterDiffLevel(data, levelOption, filterOption);
-        console.log("-------------");
-        console.log(filterInfo);
         filterElement = position(width, height, filterInfo.length);
 
         for (let i = 0; i < filterElement.length; i++) {
@@ -188,7 +186,7 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
 export function groupedWithFilterHandler(showInfo: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, data: PanelData, width: number, height: number) {
 
     if (hasHigherLevel(filterOption, groupedOption)) {
-        return groupedHandler(data, levelOption, filterOption, groupedOption, width, height, true)
+        return groupedHandler(data, showInfo, levelOption, filterOption, groupedOption, width, height, true)
     } else {
         let allElementInfo = getAllContainer(data);
         let outside: string = "";
@@ -312,7 +310,7 @@ function hasHigherLevel(filterOption: SelectableValue, groupedOption: string) {
  * @param width 
  * @param height 
  */
-export function groupedHandler(data: PanelData, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
+export function groupedHandler(data: PanelData, showElements: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
 
     let allInformation = getAllElementInfo(data);
     let tuple = new Array();
@@ -399,5 +397,16 @@ export function groupedHandler(data: PanelData, levelOption: string, filterOptio
             checkTuple.push({ outside: tuple[i].outside, inside: allInside });
         }
     }
-    return positionOnlyGrupped(checkTuple, width, height);
+
+    let test = positionOnlyGrupped(checkTuple, width, height);
+
+    for (let i = 0; i < test.inside.length; i++) {
+        for (let l = 0; l < showElements.inside.length; l++) {
+            if (test.inside[i].text === showElements.inside[l].text) {
+                test.inside[i].elementInfo = showElements.inside[l].elementInfo;
+            }
+        }
+    }
+
+    return test
 }
