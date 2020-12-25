@@ -68,7 +68,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const setFilterOptionHandler = (option: SelectableValue) => {
     if (option.label !== undefined) {
       setFilterOption(option);
-      callHandlers(levelOption, option, groupedOption);
+      setGroupedOption("-")
+      callHandlers(levelOption, option, "-");
     }
   }
 

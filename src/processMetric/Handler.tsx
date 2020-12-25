@@ -312,6 +312,11 @@ function hasHigherLevel(filterOption: SelectableValue, groupedOption: string) {
  */
 export function groupedHandler(data: PanelData, showElements: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
 
+    showElements = handler(width, height, levelOption, data);
+    if (filterOption.label !== "-") {
+        showElements = filterHandler(width, height, showElements, levelOption, filterOption, data);
+    }
+
     let allInformation = getAllElementInfo(data);
     let tuple = new Array();
     let insideElements: string[] = [];
@@ -398,15 +403,14 @@ export function groupedHandler(data: PanelData, showElements: Tuple, levelOption
         }
     }
 
-    let test = positionOnlyGrupped(checkTuple, width, height);
+    let tupleInfo = positionOnlyGrupped(checkTuple, width, height);
 
-    for (let i = 0; i < test.inside.length; i++) {
+    for (let i = 0; i < tupleInfo.inside.length; i++) {
         for (let l = 0; l < showElements.inside.length; l++) {
-            if (test.inside[i].text === showElements.inside[l].text) {
-                test.inside[i].elementInfo = showElements.inside[l].elementInfo;
+            if (tupleInfo.inside[i].text === showElements.inside[l].text) {
+                tupleInfo.inside[i].elementInfo = showElements.inside[l].elementInfo;
             }
         }
     }
-
-    return test
+    return tupleInfo
 }
