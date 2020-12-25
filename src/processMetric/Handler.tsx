@@ -113,13 +113,21 @@ export function filterHandler(width: number, height: number, allInfo: Tuple, lev
         }
     } else {
         let filterInfo = filterDiffLevel(data, levelOption, filterOption);
+        console.log("-------------");
+        console.log(filterInfo);
         filterElement = position(width, height, filterInfo.length);
 
         for (let i = 0; i < filterElement.length; i++) {
             filterElement[i].text = "" + filterInfo[i];
+            for (let l = 0; l < allElements.length; l++) {
+                if (allElements[l].text === filterInfo[i]) {
+                    filterElement[i].elementInfo = allElements[l].elementInfo;
+                }
+            }
         }
     }
     const tuple: Tuple = { outside: undefined, inside: filterElement }
+
     return tuple;
 }
 
@@ -179,10 +187,7 @@ export function filterDiffLevel(data: PanelData, levelOption: string, filterOpti
  */
 export function groupedWithFilterHandler(showInfo: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, data: PanelData, width: number, height: number) {
 
-    console.log("Hello World");
-
     if (hasHigherLevel(filterOption, groupedOption)) {
-        console.log("has")
         return groupedHandler(data, levelOption, filterOption, groupedOption, width, height, true)
     } else {
         let allElementInfo = getAllContainer(data);
@@ -264,8 +269,8 @@ export function groupedWithFilterHandler(showInfo: Tuple, levelOption: string, f
         let allOutside = new Array();
         allOutside.push(outsideElement);
         const tuple: Tuple = { outside: allOutside, inside: showElements };
-        return tuple;
 
+        return tuple;
     }
 
 
@@ -381,7 +386,18 @@ export function groupedHandler(data: PanelData, levelOption: string, filterOptio
         }
     }
 
-
-
-    return positionOnlyGrupped(tuple, width, height);
+    // check if empty
+    let checkTuple = [];
+    for (let i = 0; i < tuple.length; i++) {
+        if (tuple[i].outside !== "") {
+            let allInside = [];
+            for (let l = 0; l < tuple[i].inside.length; l++) {
+                if (tuple[i].inside[l] !== "") {
+                    allInside.push(tuple[i].inside[l])
+                }
+            }
+            checkTuple.push({ outside: tuple[i].outside, inside: allInside });
+        }
+    }
+    return positionOnlyGrupped(checkTuple, width, height);
 }

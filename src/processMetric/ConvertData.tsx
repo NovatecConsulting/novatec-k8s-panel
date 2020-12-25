@@ -70,9 +70,6 @@ export function getAllElementInfo(data: PanelData) {
         allPods.push(pod);
     }
 
-
-    //++++++++++++++++++
-
     const allDeployments = addDeployment(data);
 
     let allDeploymentObjects: Deployment[] = [];
@@ -93,10 +90,8 @@ export function getAllElementInfo(data: PanelData) {
         let deployment: Deployment = { Name: allDeployments[i].deployment, Namespace: allDeployments[i].namespace, Pod: podsInDeployment, Container: containerInDeployment }
         allDeploymentObjects.push(deployment);
     }
-    //+++++++++++++++++++++++++
 
     let allNamespaces: Namespace[] = [];
-
     let namespaceSet = new Set();
     for (let i = 0; i < allElementInfo.length; i++) {
         namespaceSet.add(allElementInfo[i].namespace);
