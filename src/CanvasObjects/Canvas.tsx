@@ -58,6 +58,7 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
                 {levelOption === 'Overview' ? (< Overview
                     allInfos={allRect.inside}
                     setLevelOptionHandler={setLevelOptionHandler}
+                    setGroupedOptionHandler={setGroupedOptionHandler}
                 />)
                     : allRect.outside === undefined ? (<Item
                         allInfos={allRect.inside}

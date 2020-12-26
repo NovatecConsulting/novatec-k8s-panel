@@ -103,6 +103,20 @@ export function handler(width: number, height: number, levelOption: string, data
                 }
             }
         }
+    } else if (levelOption === 'Node') {
+
+        const allContainer = getAllContainer(data);
+        let allDiffNode: Set<string> = new Set();
+        for (let i = 0; i < allContainer.length; i++) {
+            allDiffNode.add(allContainer[i].node);
+        }
+        const allNodeArray: string[] = Array.from(allDiffNode);
+        allElements = position(width, height, allNodeArray.length);
+
+        for (let i = 0; i < allElements.length; i++) {
+            allElements[i].text = allNodeArray[i];
+        }
+
     }
     const tuple: Tuple = { outside: undefined, inside: allElements }
     return tuple;
