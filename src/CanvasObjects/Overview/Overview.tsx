@@ -5,6 +5,8 @@ import { Element } from 'types';
 import { Layer } from 'react-konva';
 import { RectOverview } from 'canvasObjects/Overview/RectOverview';
 import { TextOverview } from 'canvasObjects/Overview/TextOverview';
+import { Node } from 'canvasObjects/Node/Node';
+import {NodeText} from 'canvasObjects/Node/NodeText'
 
 type Props = {
     allInfos: Element[],
@@ -33,6 +35,14 @@ export const Overview = ({ allInfos, setLevelOptionHandler }: Props) => {
                     width={info.width}
                 />
             ))}
+            <Node
+                height={allInfos[allInfos.length - 1].position.y + allInfos[0].height}
+            />
+            <NodeText
+                position={{ x: 40, y: (allInfos[allInfos.length - 1].position.y + allInfos[0].height)/2}}
+                text={"Node"}
+                
+            />
         </Layer>
     );
 
