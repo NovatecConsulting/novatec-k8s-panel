@@ -36,10 +36,13 @@ export function handler(width: number, height: number, levelOption: string, data
             allElements[i].elementInfo.deployment = "Count: " + allElementInfo[i].Deployment.length;
 
             let podcount = 0;
+            let diffNodes = new Set();
             for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
                 podcount += allElementInfo[i].Pod[l].Container.length;
+                diffNodes.add(allElementInfo[i].Pod[l].Node);
             }
             allElements[i].elementInfo.container = "Count: " + podcount;
+            allElements[i].elementInfo.node = "Count: " + diffNodes.size;
         }
     } else if (levelOption === 'Deployment') {
         // Deployment
@@ -53,6 +56,11 @@ export function handler(width: number, height: number, levelOption: string, data
                 allElements[temp].elementInfo.type = Types.Deployment;
                 allElements[temp].elementInfo.deployment = allElementInfo[i].Deployment[l].Name;
                 allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Deployment[l].Container.length;
+                let diffNodes = new Set();
+                for (let j = 0; j < allElementInfo[i].Deployment[l].Pod.length; j++) {
+                    diffNodes.add(allElementInfo[i].Deployment[l].Pod[j].Node);
+                }
+                allElements[temp].elementInfo.node = "Count: " + diffNodes.size;
                 temp += 1;
             }
         }
@@ -70,6 +78,7 @@ export function handler(width: number, height: number, levelOption: string, data
                 allElements[temp].elementInfo.container = "Count: " + allElementInfo[i].Pod[l].Container.length;
                 allElements[temp].elementInfo.type = Types.Pod;
                 allElements[temp].elementInfo.deployment = allElementInfo[i].Pod[l].Deployment;
+                allElements[temp].elementInfo.node = allElementInfo[i].Pod[l].Node;
                 temp += 1;
 
             }
@@ -89,6 +98,7 @@ export function handler(width: number, height: number, levelOption: string, data
                     allElements[temp].elementInfo.container = allElementInfo[i].Pod[l].Container[j].Name;
                     allElements[temp].elementInfo.type = Types.Container;
                     allElements[temp].elementInfo.deployment = allElementInfo[i].Pod[l].Deployment;
+                    allElements[temp].elementInfo.node = allElementInfo[i].Pod[l].Node;
                     temp += 1;
                 }
             }
