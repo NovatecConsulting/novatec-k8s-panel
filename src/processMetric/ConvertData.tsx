@@ -28,6 +28,7 @@ export function getAllContainer(data: PanelData) {
         elementInfo.container = data.series[0].fields[5].values.get(i);
         elementInfo.pod = data.series[0].fields[16].values.get(i);
         elementInfo.namespace = data.series[0].fields[15].values.get(i);
+        elementInfo.node = data.series[0].fields[14].values.get(i);
 
         for (let l = 0; l < allDeployment.length; l++) {
             if (allDeployment[l].pod === elementInfo.pod) {
@@ -45,10 +46,11 @@ export function getAllContainer(data: PanelData) {
 export function getAllElementInfo(data: PanelData) {
 
     const allElementInfo = getAllContainer(data);
+
     let allContainers: Container[] = [];
 
     for (let i = 0; i < allElementInfo.length; i++) {
-        let container: Container = { Name: allElementInfo[i].container, Pod: allElementInfo[i].pod, Namespace: allElementInfo[i].namespace, Deployment: "" };
+        let container: Container = { Name: allElementInfo[i].container, Pod: allElementInfo[i].pod, Namespace: allElementInfo[i].namespace, Deployment: "", Node: allElementInfo[i].node };
         allContainers.push(container)
     }
 
@@ -60,11 +62,12 @@ export function getAllElementInfo(data: PanelData) {
     }
     let allElementPod = Array.from(podSet);
     for (let i = 0; i < allElementPod.length; i++) {
-        let pod: Pod = { Name: "" + allElementPod[i], Container: [], Namespace: "", Deployment: "", }
+        let pod: Pod = { Name: "" + allElementPod[i], Container: [], Namespace: "", Deployment: "", Node: "" }
         for (let l = 0; l < allContainers.length; l++) {
             if (allContainers[l].Pod === pod.Name) {
                 pod.Container.push(allContainers[l]);
-                pod.Namespace = allContainers[l].Namespace
+                pod.Namespace = allContainers[l].Namespace;
+                pod.Node = allContainers[l].Node;
             }
         }
         allPods.push(pod);

@@ -56,6 +56,7 @@ export interface Container {
   Pod: string;
   Namespace: string;
   Deployment: string;
+  Node: string;
 }
 
 
@@ -66,10 +67,8 @@ export interface Pod {
   Container: Container[];
   Namespace: string;
   Deployment: string;
-
-
+  Node: string;
 }
-
 
 export interface Namespace {
 
