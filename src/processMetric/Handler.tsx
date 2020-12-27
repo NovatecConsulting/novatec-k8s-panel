@@ -336,7 +336,12 @@ function hasHigherLevel(filterOption: SelectableValue, groupedOption: string) {
  */
 export function groupedHandler(data: PanelData, showElements: Tuple, levelOption: string, filterOption: SelectableValue, groupedOption: string, width: number, height: number, filter: boolean) {
 
+
     showElements = handler(width, height, levelOption, data);
+    if (levelOption === "Node") {
+        return nodeGrouped(data, groupedOption, width, height);
+    }
+
     if (filterOption.label !== "-") {
         showElements = filterHandler(width, height, showElements, levelOption, filterOption, data);
     }
@@ -387,6 +392,7 @@ export function groupedHandler(data: PanelData, showElements: Tuple, levelOption
             if (levelOption === "Deployment") {
                 insideElements.push(allInformation[i].Pod[l].Deployment)
             }
+
             for (let j = 0; j < allInformation[i].Pod[l].Container.length; j++) {
                 if (levelOption === "Container") {
                     insideElements.push(allInformation[i].Pod[l].Container[j].Name);
@@ -428,6 +434,56 @@ export function groupedHandler(data: PanelData, showElements: Tuple, levelOption
     }
 
     let tupleInfo = positionOnlyGrupped(checkTuple, width, height);
+
+    for (let i = 0; i < tupleInfo.inside.length; i++) {
+        for (let l = 0; l < showElements.inside.length; l++) {
+            if (tupleInfo.inside[i].text === showElements.inside[l].text) {
+                tupleInfo.inside[i].elementInfo = showElements.inside[l].elementInfo;
+            }
+        }
+    }
+    return tupleInfo
+}
+
+
+
+function nodeGrouped(data: PanelData, groupedOption: string, width: number, height: number) {
+
+    console.log("HuHu");
+    const allElements = getAllElementInfo(data);
+    let tuple = new Array();
+
+    // het all diff nodes
+
+    let allDiffNodes = new Set();
+    for (let i = 0; i < allElements.length; i++) {
+        for (let l = 0; l < allElements[i].Pod.length; l++) {
+            allDiffNodes.add(allElements[i].Pod[l].Node);
+        }
+    }
+
+    const allNodes = Array.from(allDiffNodes);
+
+
+    if (groupedOption === "Pod") {
+        for (let i = 0; i < allNodes.length; i++) {
+
+            let inside = new Array();
+            for (let l = 0; l < allElements.length; l++) {
+                for (let j = 0; j < allElements[l].Pod.length; j++) {
+
+                    if (allElements[l].Pod[j].Node === allNodes[i]) {
+                        inside.push(allElements[l].Pod[j].Name)
+                    }
+
+                }
+            }
+            tuple.push({ outside: allNodes[i], inside: inside })
+        }
+    }
+
+    let tupleInfo = positionOnlyGrupped(tuple, width, height);
+    const showElements = handler(width, height, groupedOption, data)
 
     for (let i = 0; i < tupleInfo.inside.length; i++) {
         for (let l = 0; l < showElements.inside.length; l++) {
