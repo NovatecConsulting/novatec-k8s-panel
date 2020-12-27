@@ -453,8 +453,7 @@ function nodeGrouped(data: PanelData, groupedOption: string, width: number, heig
     const allElements = getAllElementInfo(data);
     let tuple = new Array();
 
-    // het all diff nodes
-
+    // get all diff nodes
     let allDiffNodes = new Set();
     for (let i = 0; i < allElements.length; i++) {
         for (let l = 0; l < allElements[i].Pod.length; l++) {
@@ -476,6 +475,22 @@ function nodeGrouped(data: PanelData, groupedOption: string, width: number, heig
                         inside.push(allElements[l].Pod[j].Name)
                     }
 
+                }
+            }
+            tuple.push({ outside: allNodes[i], inside: inside })
+        }
+    }
+
+    if (groupedOption === "Container") {
+        for (let i = 0; i < allNodes.length; i++) {
+            let inside = new Array();
+            for (let l = 0; l < allElements.length; l++) {
+                for (let j = 0; j < allElements[l].Pod.length; j++) {
+                    for (let k = 0; k < allElements[l].Pod[j].Container.length; k++) {
+                        if (allElements[l].Pod[j].Container[k].Node === allNodes[i]) {
+                            inside.push(allElements[l].Pod[j].Container[k].Name)
+                        }
+                    }
                 }
             }
             tuple.push({ outside: allNodes[i], inside: inside })
