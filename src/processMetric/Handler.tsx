@@ -497,6 +497,19 @@ function nodeGrouped(data: PanelData, groupedOption: string, width: number, heig
         }
     }
 
+
+    if (groupedOption === "Namespace") {
+        for (let i = 0; i < allElements.length; i++) {
+
+            let nodesInNamespace = new Set();
+            for (let l = 0; l < allElements[i].Pod.length; l++) {
+                nodesInNamespace.add(allElements[i].Pod[l].Node);
+            }
+            tuple.push({ outside: allElements[i].Name, inside: Array.from(nodesInNamespace) })
+        }
+
+    }
+
     let tupleInfo = positionOnlyGrupped(tuple, width, height);
     const showElements = handler(width, height, groupedOption, data)
 
