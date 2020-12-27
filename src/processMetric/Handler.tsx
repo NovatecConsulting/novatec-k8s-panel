@@ -464,6 +464,33 @@ function nodeGrouped(data: PanelData, groupedOption: string, width: number, heig
     const allNodes = Array.from(allDiffNodes);
 
 
+    if (groupedOption === "Namespace") {
+        for (let i = 0; i < allElements.length; i++) {
+
+            let nodesInNamespace = new Set();
+            for (let l = 0; l < allElements[i].Pod.length; l++) {
+                nodesInNamespace.add(allElements[i].Pod[l].Node);
+            }
+            tuple.push({ outside: allElements[i].Name, inside: Array.from(nodesInNamespace) })
+        }
+
+    }
+
+    if (groupedOption === "Deployment") {
+        for (let i = 0; i < allElements.length; i++) {
+
+            for (let l = 0; l < allElements[i].Deployment.length; l++) {
+
+                let nodesInDeployment = new Set();
+                for (let j = 0; j < allElements[i].Deployment[l].Pod.length; j++) {
+                    nodesInDeployment.add(allElements[i].Deployment[l].Pod[j].Node);
+                }
+                tuple.push({ outside: allElements[i].Deployment[l].Name, inside: Array.from(nodesInDeployment) })
+            }
+        }
+
+    }
+
     if (groupedOption === "Pod") {
         for (let i = 0; i < allNodes.length; i++) {
 
@@ -495,19 +522,6 @@ function nodeGrouped(data: PanelData, groupedOption: string, width: number, heig
             }
             tuple.push({ outside: allNodes[i], inside: inside })
         }
-    }
-
-
-    if (groupedOption === "Namespace") {
-        for (let i = 0; i < allElements.length; i++) {
-
-            let nodesInNamespace = new Set();
-            for (let l = 0; l < allElements[i].Pod.length; l++) {
-                nodesInNamespace.add(allElements[i].Pod[l].Node);
-            }
-            tuple.push({ outside: allElements[i].Name, inside: Array.from(nodesInNamespace) })
-        }
-
     }
 
     let tupleInfo = positionOnlyGrupped(tuple, width, height);
