@@ -56,7 +56,12 @@ function convertMetricName(metric: string) {
     const allMetrics = [["CPU Usage", "cpu_usage"],
     ["Memory Usage", "container_memory_working_set_bytes"],
     ["Memory Saturation", "memory_saturation"],
-    ["Network receive total", "network_receive"]];
+    ["Network receive total", "network_receive"],
+    ["Network transmit total", "network_transmit"],
+    ["Network receive saturation", "network_receive_dropped"],
+    ["Network transmit saturation", "network_transmit_dropped"],
+    ["Network receive errors", "network_receive_errors"],
+    ["Network transmit errors", "network_transmit_errors"]];
 
     for (let i = 0; i < allMetrics.length; i++) {
 

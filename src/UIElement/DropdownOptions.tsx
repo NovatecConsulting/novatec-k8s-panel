@@ -111,7 +111,15 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 export function dropdownInfrastructureOption() {
 
     let option: Array<SelectableValue> = [];
-    const all = ["CPU Usage", "Memory Usage", "Memory Saturation", "Network receive total"];
+    const all = ["CPU Usage",
+        "Memory Usage",
+        "Memory Saturation",
+        "Network receive total",
+        "Network transmit total",
+        "Network receive saturation",
+        "Network transmit saturation",
+        "Network receive errors",
+        "Network transmit errors"];
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }
