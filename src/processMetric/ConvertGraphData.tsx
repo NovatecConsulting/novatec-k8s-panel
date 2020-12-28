@@ -53,7 +53,10 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
 function convertMetricName(metric: string) {
 
 
-    const allMetrics = [["CPU Usage", "cpu_usage"], ["Memory Usage", "container_memory_working_set_bytes"], ["Memory Saturation", "memory_saturation"]];
+    const allMetrics = [["CPU Usage", "cpu_usage"],
+    ["Memory Usage", "container_memory_working_set_bytes"],
+    ["Memory Saturation", "memory_saturation"],
+    ["Network receive total", "network_receive"]];
 
     for (let i = 0; i < allMetrics.length; i++) {
 
