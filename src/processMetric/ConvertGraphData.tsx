@@ -1,6 +1,97 @@
 import { PanelData, GraphSeriesXY, TimeRange, GraphSeriesValue } from '@grafana/data';
+import { getAllElementInfo } from './ConvertData';
 
+
+
+/**
+ * Calculate objects of the series.
+ */
 export function getSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
+
+    if (level === "Deployment") {
+        const pods = findPod(data, name);
+        name = pods[0];
+        level = "Pod";
+        let allSeries = new Array();
+        // If deployment consists of one pod.
+        if (pods.length === 1) {
+            return getOneSeries(width, data, timeRange, pods[0], level, metric)
+        } else {
+            for (let i = 0; i < pods.length; i++) {
+                allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric));
+            }
+            // Addition when deployment consists of multiple pods.
+            let allData = allSeries[0][0].data;
+            for (let i = 0; i < allSeries[0].length; i++) {
+                if (i != 0) {
+                    allData = allData[1].map(function (num: number, idx: number) {
+                        return num + allSeries[0][i].data[1][idx];
+                    });
+                }
+            }
+            allSeries[0][0].data = allData;
+            return allSeries[0];
+        }
+
+    } else {
+        return getOneSeries(width, data, timeRange, name, level, metric)
+    }
+}
+
+
+/**
+ * Get the metic. 
+ */
+function convertMetricName(metric: string) {
+
+    const allMetrics = [["CPU Usage", "cpu_usage"],
+    ["Memory Usage", "container_memory_working_set_bytes"],
+    ["Memory Saturation", "memory_saturation"],
+    ["Network receive total", "network_receive"],
+    ["Network transmit total", "network_transmit"],
+    ["Network receive saturation", "network_receive_dropped"],
+    ["Network transmit saturation", "network_transmit_dropped"],
+    ["Network receive errors", "network_receive_errors"],
+    ["Network transmit errors", "network_transmit_errors"]];
+
+    for (let i = 0; i < allMetrics.length; i++) {
+
+        if (metric === allMetrics[i][0]) {
+            return allMetrics[i][1];
+        }
+    }
+    return "";
+
+}
+
+/**
+ * If the metrics are displayed from a deployment, the affected pods must be found.
+ * @param data 
+ * @param name 
+ */
+function findPod(data: PanelData, name: string) {
+    const allElements = getAllElementInfo(data);
+    let podsOfDeployment = new Array();
+
+    for (let i = 0; i < allElements.length; i++) {
+        for (let l = 0; l < allElements[i].Deployment.length; l++) {
+            if (allElements[i].Deployment[l].Name === name) {
+                for (let j = 0; j < allElements[i].Deployment[l].Pod.length; j++) {
+                    podsOfDeployment.push(allElements[i].Deployment[l].Pod[j].Name);
+                }
+
+            }
+        }
+    }
+    return podsOfDeployment;
+}
+
+
+
+/**
+ * Calculates a series.
+ */
+function getOneSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
 
     let ser_ind: number = 0;
     let series: GraphSeriesXY[] = [];
@@ -47,28 +138,5 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
     };
     series.push(ser);
     return series;
-}
-
-
-function convertMetricName(metric: string) {
-
-
-    const allMetrics = [["CPU Usage", "cpu_usage"],
-    ["Memory Usage", "container_memory_working_set_bytes"],
-    ["Memory Saturation", "memory_saturation"],
-    ["Network receive total", "network_receive"],
-    ["Network transmit total", "network_transmit"],
-    ["Network receive saturation", "network_receive_dropped"],
-    ["Network transmit saturation", "network_transmit_dropped"],
-    ["Network receive errors", "network_receive_errors"],
-    ["Network transmit errors", "network_transmit_errors"]];
-
-    for (let i = 0; i < allMetrics.length; i++) {
-
-        if (metric === allMetrics[i][0]) {
-            return allMetrics[i][1];
-        }
-    }
-    return "";
 
 }
