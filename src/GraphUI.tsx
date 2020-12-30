@@ -33,27 +33,49 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
     return (
         <div>
             <img src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/back2.png" onClick={() => setShowGraph(false)} className="graphBack" />
-            <label className="graphName">{focusItem.text}</label>
-            <div className="graph">
-                <label className="graphHeader">Infrastructure Metrics</label>
-                <div className="infrastructureDropdown">
-                    <DropdownUI
-                        id="infrastructurMetrics"
-                        onChange={dropdownChange}
-                        options={dropdownInfrastructureOption()}
-                        value={infrastructureMetric}
+            <div>
+                <label className="graphName">{focusItem.text}</label>
+                <div className="graph">
+                    <label className="graphHeader">Infrastructure Metrics</label>
+                    <div className="infrastructureDropdown">
+                        <DropdownUI
+                            id="infrastructurMetrics"
+                            onChange={dropdownChange}
+                            options={dropdownInfrastructureOption()}
+                            value={infrastructureMetric}
+                        />
+                    </div>
+
+                    <Graph
+                        width={width / 2}
+                        height={height / 3}
+                        series={series}
+                        timeRange={data.timeRange}
+                        showLines={true}
                     />
                 </div>
-
-                <Graph
-                    width={width / 2}
-                    height={height / 3}
-                    series={series}
-                    timeRange={data.timeRange}
-                    showLines={true}
-                />
+                <hr className="graphHr"></hr>
             </div>
-            <hr className="graphHr"></hr>
+            <div>
+                <div className="graph">
+                    <label className="graphHeader">Application Metrics</label>
+                    <div className="infrastructureDropdown">
+                        <DropdownUI
+                            id="infrastructurMetrics"
+                            onChange={dropdownChange}
+                            options={dropdownInfrastructureOption()}
+                            value={infrastructureMetric}
+                        />
+                    </div>
+                    <Graph
+                        width={width / 2}
+                        height={height / 3}
+                        series={series}
+                        timeRange={data.timeRange}
+                        showLines={true}
+                    />
+                </div>
+            </div>
         </div>
     );
 
