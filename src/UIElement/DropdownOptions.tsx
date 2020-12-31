@@ -131,4 +131,23 @@ export function dropdownInfrastructureOption() {
 }
 
 
+export function dropdownApplicationOption() {
+
+    let option: Array<SelectableValue> = [];
+    const all = ["Service in count"];
+
+    for (let i = 0; i < all.length; i++) {
+        let oneElement: SelectableValue = { label: all[i] }
+        option.push(oneElement);
+
+    }
+    return option;
+
+}
+
+
+
+
+
+
 

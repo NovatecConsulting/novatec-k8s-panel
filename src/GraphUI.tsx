@@ -6,6 +6,7 @@ import { DropdownUI } from 'uiElement/Dropdown';
 import { getSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { dropdownInfrastructureOption } from './uiElement/DropdownOptions';
+import { dropdownApplicationOption } from './uiElement/DropdownOptions';
 
 type Props = {
     width: number;
@@ -21,12 +22,20 @@ type Props = {
 export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
 
     const [infrastructureMetric, setInfrastructureMetric] = useState("CPU Usage");
-    let series: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
+    const [applicationMetric, setApplicationMetric] = useState("Service in count");
+    let seriesInfrastructure: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
+    let seriesApplication: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, applicationMetric);
 
 
-    const dropdownChange = (label: string | undefined) => {
+    const dropdownInfrastructureChange = (label: string | undefined) => {
         if (label !== undefined) {
             setInfrastructureMetric(label)
+        }
+    }
+
+    const dropdownApplicationChange = (label: string | undefined) => {
+        if (label !== undefined) {
+            setApplicationMetric(label);
         }
     }
 
@@ -40,7 +49,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                     <div className="infrastructureDropdown">
                         <DropdownUI
                             id="infrastructurMetrics"
-                            onChange={dropdownChange}
+                            onChange={dropdownInfrastructureChange}
                             options={dropdownInfrastructureOption()}
                             value={infrastructureMetric}
                         />
@@ -49,7 +58,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                     <Graph
                         width={width / 2}
                         height={height / 3}
-                        series={series}
+                        series={seriesInfrastructure}
                         timeRange={data.timeRange}
                         showLines={true}
                     />
@@ -61,16 +70,16 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                     <label className="graphHeader">Application Metrics</label>
                     <div className="infrastructureDropdown">
                         <DropdownUI
-                            id="infrastructurMetrics"
-                            onChange={dropdownChange}
-                            options={dropdownInfrastructureOption()}
-                            value={infrastructureMetric}
+                            id="applicationMetrics"
+                            onChange={dropdownApplicationChange}
+                            options={dropdownApplicationOption()}
+                            value={applicationMetric}
                         />
                     </div>
                     <Graph
                         width={width / 2}
                         height={height / 3}
-                        series={series}
+                        series={seriesApplication}
                         timeRange={data.timeRange}
                         showLines={true}
                     />
