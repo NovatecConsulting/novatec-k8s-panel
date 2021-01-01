@@ -107,7 +107,6 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 }
 
 
-
 export function dropdownInfrastructureOption() {
 
     let option: Array<SelectableValue> = [];
@@ -127,14 +126,18 @@ export function dropdownInfrastructureOption() {
 
     }
     return option;
-
 }
 
 
 export function dropdownApplicationOption() {
 
     let option: Array<SelectableValue> = [];
-    const all = ["Service in count"];
+    const all = ["Service in count",
+        "Service out count",
+        "Service in responsetime sum",
+        "Service out responsetime sum",
+        "http in responsetime sum",
+        "http out responsetime sum"];
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }

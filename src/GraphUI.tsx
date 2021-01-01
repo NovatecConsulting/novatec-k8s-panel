@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Graph } from '@grafana/ui'
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { DropdownUI } from 'uiElement/Dropdown';
-import { getSeries } from './processMetric/ConvertGraphData';
+import { getSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { dropdownInfrastructureOption } from './uiElement/DropdownOptions';
 import { dropdownApplicationOption } from './uiElement/DropdownOptions';
@@ -24,7 +24,12 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
     const [infrastructureMetric, setInfrastructureMetric] = useState("CPU Usage");
     const [applicationMetric, setApplicationMetric] = useState("Service in count");
     let seriesInfrastructure: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
-    let seriesApplication: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, applicationMetric);
+    let seriesApplication: GraphSeriesXY[] = getApplicationSeries(width, data, timeRange, focusItem.text, level, applicationMetric);
+
+    // Is undefined if there are no agents in the container.
+    if (seriesApplication === undefined) {
+        seriesApplication = [];
+    }
 
 
     const dropdownInfrastructureChange = (label: string | undefined) => {

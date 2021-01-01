@@ -1,5 +1,5 @@
 import { PanelData, GraphSeriesXY, TimeRange, GraphSeriesValue } from '@grafana/data';
-import { getAllElementInfo } from './ConvertData';
+import { getAllContainer, getAllElementInfo } from './ConvertData';
 
 
 
@@ -39,12 +39,75 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
 }
 
 
+
+export function getApplicationSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
+
+    if (level === 'Container') {
+        return getOneSeries(width, data, timeRange, name, level, metric);
+    } else {
+        const allContainer = getAllContainer(data);
+        let container = new Array();
+        if (level === 'Pod') {
+
+            for (let i = 0; i < allContainer.length; i++) {
+                if (allContainer[i].pod === name) {
+                    container.push(allContainer[i].container);
+                }
+            }
+        } else if (level === 'Deployment') {
+
+            for (let i = 0; i < allContainer.length; i++) {
+                if (allContainer[i].deployment === name) {
+                    container.push(allContainer[i].container);
+                }
+            }
+        } else if (level === 'Namespace') {
+
+            for (let i = 0; i < allContainer.length; i++) {
+                if (allContainer[i].namespace === name) {
+                    container.push(allContainer[i].container);
+                }
+            }
+        }
+
+        let allSeries = new Array();
+        for (let i = 0; i < container.length; i++) {
+            allSeries.push(getOneSeries(width, data, timeRange, container[i], "Container", metric));
+        }
+
+        let notEmpty = new Array();
+        for (let i = 0; i < allSeries.length; i++) {
+            if (allSeries[i].length !== 0) {
+                notEmpty.push(allSeries[i]);
+            }
+
+        }
+
+        allSeries = notEmpty;
+        if (container.length === 1) {
+            return allSeries[0];
+        }
+
+        let allData = allSeries[0][0].data;
+        for (let i = 0; i < allSeries[0].length; i++) {
+            if (i != 0) {
+                allData = allData[1].map(function (num: number, idx: number) {
+                    return num + allSeries[0][i].data[1][idx];
+                });
+            }
+        }
+        allSeries[0][0].data = allData;
+        return allSeries[0];
+    }
+}
+
+
 /**
  * Get the metic. 
  */
 function convertMetricName(metric: string) {
 
-    const allMetrics = [["CPU Usage", "cpu_usage"],
+    const infrastructureMetrics = [["CPU Usage", "cpu_usage"],
     ["Memory Usage", "container_memory_working_set_bytes"],
     ["Memory Saturation", "memory_saturation"],
     ["Network receive total", "network_receive"],
@@ -53,6 +116,17 @@ function convertMetricName(metric: string) {
     ["Network transmit saturation", "network_transmit_dropped"],
     ["Network receive errors", "network_receive_errors"],
     ["Network transmit errors", "network_transmit_errors"]];
+
+
+    const applicationMetrics = [["Service in count", "service_in_count"],
+    ["Service out count", "service_out_count"],
+    ["Service in responsetime sum", "service_in_responsetime_sum"],
+    ["Service out responsetime sum", "service_out_responsetime_sum"],
+    ["http in responsetime sum", "http_in_responsetime_sum"],
+    ["http out responsetime sum", "http_out_responsetime_sum"]];
+
+
+    const allMetrics = infrastructureMetrics.concat(applicationMetrics);
 
     for (let i = 0; i < allMetrics.length; i++) {
 
