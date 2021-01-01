@@ -103,9 +103,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     }
     if (grouped !== "-" && filter.label === "-") {
 
-      setShowElements(groupedHandler(data,showElements, level, filter, grouped, width, height, false));
+      setShowElements(groupedHandler(data, showElements, level, filter, grouped, width, height, false));
     } else if (grouped !== "-") {
-     setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height));
+      setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height));
     }
 
   }
@@ -134,7 +134,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 id={"left"}
                 options={dropdownOptions(levelOptions, levelOption)}
                 onChange={setLevelOptionHandler}
-                value={levelOption} />
+                value={levelOption} 
+                isDisabled={false}
+                />
             </div>
           </div>
           <div className="test">
@@ -154,7 +156,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 id={"center-right"}
                 options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)}
                 onChange={setGroupedOptionHandler}
-                value={groupedOption} />
+                value={groupedOption}
+                isDisabled={false}
+              />
             </div>
           </div>
           <div className="test">
@@ -165,6 +169,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 options={dropdownOptions(metricOptions, metricOption)}
                 onChange={setMetricOptionHandler}
                 value={metricOption}
+                isDisabled={true}
               />
             </div>
           </div>

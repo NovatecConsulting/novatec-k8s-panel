@@ -10,9 +10,10 @@ interface SelectProps {
     options: Array<SelectableValue>;
     onChange: (value: string | undefined) => void; 
     value: string;
+    isDisabled: boolean
 }
 
-export const DropdownUI = ({ id, options, onChange, value }: SelectProps) => {
+export const DropdownUI = ({ id, options, onChange, value, isDisabled }: SelectProps) => {
     let value1: SelectableValue = {};
     value1.label = value;
     return (
@@ -24,6 +25,7 @@ export const DropdownUI = ({ id, options, onChange, value }: SelectProps) => {
                 options={options}
                 onChange={item=> onChange(item.label)}
                 value = {value1}
+                isDisabled= {isDisabled}
 
             />
         </div>
