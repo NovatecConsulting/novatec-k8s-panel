@@ -43,6 +43,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const setLevelOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       try {
+        setShowDrilldown(false);
         let value = label.split(' ')[0];
         setLevelOption(value);
 
@@ -71,6 +72,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
       setFilterOption(option);
       setGroupedOption("-")
       callHandlers(levelOption, option, "-");
+      setShowDrilldown(false);
     }
   }
 
@@ -83,12 +85,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     if (label !== undefined) {
       setGroupedOption(label);
       callHandlers(levelOption, filterOption, label);
+      setShowDrilldown(false);
     }
   }
 
   const setMetricOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       setMetricOption(label);
+      setShowDrilldown(false);
     }
   }
 
@@ -115,8 +119,15 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
    * 
    */
   const itemSelectHandler = (item: Element) => {
-    setShowDrilldown(true);
-    setDrilldownItem(item);
+
+    if (levelOption !== "Node") {
+      setShowDrilldown(true);
+      setDrilldownItem(item);
+    } else {
+      setShowGraph(true);
+      setDrilldownItem(item);
+    }
+
   }
 
 
