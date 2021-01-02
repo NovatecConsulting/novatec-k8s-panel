@@ -63,7 +63,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
 
                     <Graph
                         width={width / 2}
-                        height={height / 3}
+                        height={height / 3.5}
                         series={seriesInfrastructure}
                         timeRange={data.timeRange}
                         showLines={true}
@@ -85,7 +85,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                     </div>
                     <Graph
                         width={width / 2}
-                        height={height / 3}
+                        height={height / 3.5}
                         series={seriesApplication}
                         timeRange={data.timeRange}
                         showLines={true}
