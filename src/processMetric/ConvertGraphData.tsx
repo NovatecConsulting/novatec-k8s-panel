@@ -126,8 +126,11 @@ function convertMetricName(metric: string) {
     ["http out responsetime sum", "http_out_responsetime_sum"]];
 
 
-    const allMetrics = infrastructureMetrics.concat(applicationMetrics);
+    const nodeMetrics = [["Write total", "container_fs_writes_total"],
+    ["Read total", "container_fs_reads_total"]];
 
+    
+    const allMetrics = infrastructureMetrics.concat(applicationMetrics).concat(nodeMetrics);
     for (let i = 0; i < allMetrics.length; i++) {
 
         if (metric === allMetrics[i][0]) {

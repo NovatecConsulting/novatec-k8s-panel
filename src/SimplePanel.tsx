@@ -13,6 +13,7 @@ import { Element } from 'types';
 import { Drilldown } from './uiElement/Drilddown';
 
 import { GraphUI } from './GraphUI';
+import { NodeMetric } from './NodeMetric';
 
 
 const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
@@ -123,6 +124,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     setShowDrilldown(false);
   }
 
+
   return (
     <div>
       {!showGraph ? (<div>
@@ -134,9 +136,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 id={"left"}
                 options={dropdownOptions(levelOptions, levelOption)}
                 onChange={setLevelOptionHandler}
-                value={levelOption} 
+                value={levelOption}
                 isDisabled={false}
-                />
+              />
             </div>
           </div>
           <div className="test">
@@ -192,7 +194,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
           setGroupedOptionHandler={setFilterOptionHandler}
           itemSelectHandler={itemSelectHandler}
         />
-      </div>) :
+      </div>) : levelOption != "Node" && showGraph ? (
         <GraphUI
           width={width}
           height={height}
@@ -201,7 +203,15 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
           setShowGraph={setShowGraph}
           focusItem={drilldownItem}
           level={levelOption}
-        />}
+        />) : <NodeMetric
+            width={width}
+            height={height}
+            data={data}
+            timeRange={timeRange}
+            setShowGraph={setShowGraph}
+            focusItem={drilldownItem}
+            level={levelOption}
+          />}
 
     </div>
   )

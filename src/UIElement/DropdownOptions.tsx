@@ -149,6 +149,20 @@ export function dropdownApplicationOption() {
 }
 
 
+export function dropdownNodeOption() {
+
+    let option: Array<SelectableValue> = [];
+    const all = ["Write total","Read total"];
+
+    for (let i = 0; i < all.length; i++) {
+        let oneElement: SelectableValue = { label: all[i] }
+        option.push(oneElement);
+
+    }
+    return option;
+
+}
+
 
 
 
