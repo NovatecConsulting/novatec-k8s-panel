@@ -176,7 +176,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
             </div>
           </div>
           {showDrilldown ? (
-            <div className="drilldown">
+            <div className="drilldown" style={{ height: height - 40 }}>
               <Drilldown
                 closeDrilldown={closeDrilldown}
                 drilldownItem={drilldownItem}
