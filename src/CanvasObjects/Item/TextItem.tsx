@@ -14,6 +14,7 @@ export const TextItem = ({ position, text }: Props) => {
             x={position.x+10}
             y={position.y+10}
             text={text}
+            
         />
     );
 }

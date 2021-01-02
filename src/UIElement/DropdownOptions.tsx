@@ -107,7 +107,7 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 }
 
 
-export function dropdownInfrastructureOption() {
+export function dropdownInfrastructureOption(value: string) {
 
     let option: Array<SelectableValue> = [];
     const all = ["CPU Usage",
@@ -122,14 +122,15 @@ export function dropdownInfrastructureOption() {
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }
-        option.push(oneElement);
-
+        if (value !== oneElement.label) {
+            option.push(oneElement);
+        }
     }
     return option;
 }
 
 
-export function dropdownApplicationOption() {
+export function dropdownApplicationOption(value: string) {
 
     let option: Array<SelectableValue> = [];
     const all = ["Service in count",
@@ -141,23 +142,26 @@ export function dropdownApplicationOption() {
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }
-        option.push(oneElement);
-
+        if (value !== oneElement.label) {
+            option.push(oneElement);
+        }
     }
     return option;
 
 }
 
 
-export function dropdownNodeOption() {
+export function dropdownNodeOption(value: string) {
 
     let option: Array<SelectableValue> = [];
-    const all = ["Write total","Read total"];
+    const all = ["Write total", "Read total"];
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }
-        option.push(oneElement);
 
+        if (value !== oneElement.label) {
+            option.push(oneElement);
+        }
     }
     return option;
 

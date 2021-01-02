@@ -41,7 +41,7 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
                         <DropdownUI
                             id="infrastructurMetrics"
                             onChange={dropdownInfrastructureChange}
-                            options={dropdownNodeOption()}
+                            options={dropdownNodeOption(nodeMetric)}
                             value={nodeMetric}
                             isDisabled={false}
                         />

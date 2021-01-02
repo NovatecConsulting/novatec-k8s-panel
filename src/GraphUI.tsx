@@ -55,7 +55,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                         <DropdownUI
                             id="infrastructurMetrics"
                             onChange={dropdownInfrastructureChange}
-                            options={dropdownInfrastructureOption()}
+                            options={dropdownInfrastructureOption(infrastructureMetric)}
                             value={infrastructureMetric}
                             isDisabled={false}
                         />
@@ -78,7 +78,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                         <DropdownUI
                             id="applicationMetrics"
                             onChange={dropdownApplicationChange}
-                            options={dropdownApplicationOption()}
+                            options={dropdownApplicationOption(applicationMetric)}
                             value={applicationMetric}
                             isDisabled={false}
                         />
