@@ -110,7 +110,7 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 export function dropdownInfrastructureOption(value: string, level: string) {
 
     let option: Array<SelectableValue> = [];
-    let all = ["CPU Usage","Memory Usage"];
+    let all = ["CPU Usage", "Memory Usage"];
 
     if (level !== "Container") {
         const notContainerLevel = [
@@ -158,7 +158,10 @@ export function dropdownApplicationOption(value: string) {
 export function dropdownNodeOption(value: string) {
 
     let option: Array<SelectableValue> = [];
-    const all = ["Write total", "Read total"];
+    const all = ["Write total",
+        "Read total",
+        "Alloctable CPU Cores",
+        "Alloctable Memory Bytes"];
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }
