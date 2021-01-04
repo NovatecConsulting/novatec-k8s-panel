@@ -161,7 +161,9 @@ export function dropdownNodeOption(value: string) {
     const all = ["Write total",
         "Read total",
         "Alloctable CPU Cores",
-        "Alloctable Memory Bytes"];
+        "Alloctable Memory Bytes",
+        "Active Memory",
+        "Inactive Memory"];
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }

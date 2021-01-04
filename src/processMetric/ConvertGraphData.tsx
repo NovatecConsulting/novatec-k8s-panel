@@ -129,7 +129,9 @@ function convertMetricName(metric: string) {
     const nodeMetrics = [["Write total", "container_fs_writes_total"],
     ["Read total", "container_fs_reads_total"],
     ["Alloctable CPU Cores", "kube_node_status_allocatable_cpu_cores"],
-    ["Alloctable Memory Bytes", "kube_node_status_allocatable_memory_bytes"]];
+    ["Alloctable Memory Bytes", "kube_node_status_allocatable_memory_bytes"],
+    ["Active Memory", "node_memory_Active_bytes"],
+    ["Inactive Memory", "node_memory_Inactive_bytes"]];
 
 
     const allMetrics = infrastructureMetrics.concat(applicationMetrics).concat(nodeMetrics);
