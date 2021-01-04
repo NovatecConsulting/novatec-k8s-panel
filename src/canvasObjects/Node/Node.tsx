@@ -16,7 +16,7 @@ export const Node = ({ height, setLevelOptionHandler }: Props) => {
     return (
         <Rect
             perfectDrawEnabled={false}
-            x={40}
+            x={70}
             y={10}
             width={120}
             height={height - 10}

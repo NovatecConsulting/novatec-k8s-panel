@@ -44,7 +44,7 @@ export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHand
 
             />
             <NodeText
-                position={{ x: 40, y: (allInfos[allInfos.length - 1].position.y + allInfos[0].height) / 2 }}
+                position={{ x: 70, y: (allInfos[allInfos.length - 1].position.y + allInfos[0].height) / 2 }}
                 text={"Node"}
 
             />

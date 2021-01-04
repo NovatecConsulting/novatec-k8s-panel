@@ -107,18 +107,22 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
 }
 
 
-export function dropdownInfrastructureOption(value: string) {
+export function dropdownInfrastructureOption(value: string, level: string) {
 
     let option: Array<SelectableValue> = [];
-    const all = ["CPU Usage",
-        "Memory Usage",
-        "Memory Saturation",
-        "Network receive total",
-        "Network transmit total",
-        "Network receive saturation",
-        "Network transmit saturation",
-        "Network receive errors",
-        "Network transmit errors"];
+    let all = ["CPU Usage","Memory Usage"];
+
+    if (level !== "Container") {
+        const notContainerLevel = [
+            "Network receive total",
+            "Network transmit total",
+            "Network receive saturation",
+            "Network transmit saturation",
+            "Network receive errors",
+            "Network transmit errors"];
+
+        all.concat(notContainerLevel);
+    }
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }

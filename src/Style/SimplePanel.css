@@ -7,29 +7,23 @@
     flex: 1;
 }
 
-
-
-
-.drilldown{
-    
+.drilldown{ 
     position: absolute;
     width: 35rem;
     margin-top: 3.8rem;
     background-color: #30343a;
      z-index: 9;
      border-right: 1px solid black;
-    
 }
+
 .canvas {
     z-index: -4;
 }
 
-
-
 .graph {
     margin: auto;
     width: 50%;
-
+    align-items: center;
 }
 
 .graphBack{
@@ -43,6 +37,9 @@
     font-size: 1.1rem;
 }
 
+.datapoints-warning{
+    margin-top: 9.8rem;
+}
 
 .graphHeader {
     color: #33B5E5;
@@ -50,35 +47,30 @@
     width: 100%;
     font-size: 1rem;
 }
+
 .infrastructureDropdown{
     width: 30%;
 }
 
 .graphHr {
-
     border-top: 2px solid black;
     width: 100%;
 }
-
 
 .drilldown--main{
     text-align: center;
 }
 
 .drilldown--back{
-
     width: 99%;
     padding-top: 1rem;
 }
 
 .drilldown--header{
-
     color: white;
     font-size: 17;
     padding-top: 1.5rem;
 }
-
-
 
 .NodeGraph{
     width:100%;
