@@ -68,7 +68,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
    * For reasons of asynchrony the handler is not called with the state.
    */
   const setFilterOptionHandler = (option: SelectableValue) => {
-    if (option.label !== undefined) {
+    if (option.label !== undefined && levelOption !== "Node") {
       setFilterOption(option);
       setGroupedOption("-")
       callHandlers(levelOption, option, "-");
@@ -159,7 +159,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 id={"center-left"}
                 options={dropdownOptionsFilter(data, filterOption.label, levelOption)}
                 onChange={setFilterOptionHandler}
-                value={filterOption} />
+                value={filterOption}
+                isDisabled={levelOption === "Node"} />
             </div>
           </div>
           <div className="test">

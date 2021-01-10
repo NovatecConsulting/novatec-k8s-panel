@@ -40,9 +40,10 @@ interface SelectPropsGrouped {
     options: Array<SelectableValue>;
     onChange: (value: SelectableValue) => void;
     value: SelectableValue;
+    isDisabled: boolean
 }
 
-export const DropdownFilter = ({ id, options, onChange, value }: SelectPropsGrouped) => {
+export const DropdownFilter = ({ id, options, onChange, value, isDisabled }: SelectPropsGrouped) => {
     return (
         <div>
             <Select
@@ -52,6 +53,7 @@ export const DropdownFilter = ({ id, options, onChange, value }: SelectPropsGrou
                 options={options}
                 onChange={item=> onChange(item)}
                 value = {value}
+                isDisabled={isDisabled}
             />
         </div>
     )
