@@ -142,7 +142,9 @@ export function dropdownApplicationOption(value: string) {
         "Service in responsetime sum",
         "Service out responsetime sum",
         "http in responsetime sum",
-        "http out responsetime sum"];
+        "http out responsetime sum",
+        "jvm memory heap",
+        "jvm memory non heap"];
 
     for (let i = 0; i < all.length; i++) {
         let oneElement: SelectableValue = { label: all[i] }

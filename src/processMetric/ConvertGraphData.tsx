@@ -80,7 +80,6 @@ export function getApplicationSeries(width: number, data: PanelData, timeRange: 
             if (allSeries[i].length !== 0) {
                 notEmpty.push(allSeries[i]);
             }
-
         }
 
         allSeries = notEmpty;
@@ -88,17 +87,24 @@ export function getApplicationSeries(width: number, data: PanelData, timeRange: 
             return allSeries[0];
         }
 
-        let allData = allSeries[0][0].data;
-        for (let i = 0; i < allSeries[0].length; i++) {
+        if (allSeries.length === 0) {
+            return [];
+        }
+        for (let i = 0; i < allSeries.length; i++) {
             if (i != 0) {
-                allData = allData[1].map(function (num: number, idx: number) {
-                    return num + allSeries[0][i].data[1][idx];
-                });
+                for (let l = 0; l < allSeries[0][0].data.length; l++) {
+                    allSeries[0][0].data[l][1] += allSeries[i][0].data[l][1];
+                    allSeries[0][0].valueField.values.set(l,allSeries[0][0].data[l][1]);
+                }
             }
         }
-        allSeries[0][0].data = allData;
+
+        //console.log(allSeries[0][0].valueField.values.get(701))
         return allSeries[0];
     }
+
+
+
 }
 
 
@@ -123,7 +129,9 @@ function convertMetricName(metric: string) {
     ["Service in responsetime sum", "service_in_responsetime_sum"],
     ["Service out responsetime sum", "service_out_responsetime_sum"],
     ["http in responsetime sum", "http_in_responsetime_sum"],
-    ["http out responsetime sum", "http_out_responsetime_sum"]];
+    ["http out responsetime sum", "http_out_responsetime_sum"],
+    ["jvm memory heap", "jvm_memory_used_heap"],
+    ["jvm memory non heap", "jvm_memory_used_nonheap"]];
 
 
     const nodeMetrics = [["Write total", "container_fs_writes_total"],
