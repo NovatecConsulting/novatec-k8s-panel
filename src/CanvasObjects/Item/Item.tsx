@@ -35,6 +35,9 @@ export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: P
                 <TextItem
                     position={info.position}
                     text={info.text}
+                    option={info.text}
+                    setGroupedOption={setGroupedOptionHandler}
+                    type={info.elementInfo?.type}
                 />
             ))}
             {allInfos.map((info) => (

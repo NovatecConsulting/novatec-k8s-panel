@@ -29,7 +29,7 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
     const handleWheel = (e: any) => {
         e.evt.preventDefault();
 
-        const scaleBy = 1.02;
+        const scaleBy = 1.05;
         const stage = e.target.getStage();
         const oldScale = stage.scaleX();
         const mousePointTo = {

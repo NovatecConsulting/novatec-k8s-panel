@@ -4,10 +4,11 @@ import { Text } from 'react-konva';
 
 type Props = {
     position: Position;
-    text: string
+    text: string;
+    setLevelOptionHandler: (value: string | undefined) => void;
 }
 
-export const NodeText = ({ position, text }: Props) => {
+export const NodeText = ({ position, text, setLevelOptionHandler }: Props) => {
 
     return (
         <Text
@@ -18,6 +19,7 @@ export const NodeText = ({ position, text }: Props) => {
             align={"center"}
             width= {120}
             fontSize={15}
+            onClick={() =>setLevelOptionHandler("Node")}
         />
     );
 }

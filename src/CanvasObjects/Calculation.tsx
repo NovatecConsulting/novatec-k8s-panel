@@ -48,7 +48,7 @@ function calculation(width: number, rectWidth: number, rectHeight: number, oldPo
     const distance = 20;
     let position: Position = { x: oldPosition.x + rectWidth + distance, y: oldPosition.y };
 
-    if (position.x > width) {
+    if (position.x > (width-350)) {
         position.x = 0 + distance;
         position.y += rectHeight + distance;
     }

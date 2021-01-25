@@ -6,9 +6,11 @@ type Props = {
     position: Position;
     text: string;
     width: number;
+    option: string;
+    setLevelOptionHandler: (value: string | undefined) => void;
 }
 
-export const TextOverview = ({ position, text, width }: Props) => {
+export const TextOverview = ({ position, text, width, setLevelOptionHandler, option }: Props) => {
 
     return (
         <Text
@@ -18,6 +20,7 @@ export const TextOverview = ({ position, text, width }: Props) => {
             fontSize={15}
             width= {width}
             align={"center"}
+            onClick={(e) => setLevelOptionHandler(option)}
         />
     );
 }

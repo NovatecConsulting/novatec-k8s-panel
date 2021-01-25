@@ -36,6 +36,8 @@ export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHand
                     position={info.position}
                     text={info.text}
                     width={info.width}
+                    option={info.text}
+                    setLevelOptionHandler={setLevelOptionHandler}
                 />
             ))}
             <Node
@@ -46,6 +48,7 @@ export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHand
             <NodeText
                 position={{ x: 70, y: (allInfos[allInfos.length - 1].position.y + allInfos[0].height) / 2 }}
                 text={"Node"}
+                setLevelOptionHandler={setLevelOptionHandler}
 
             />
         </Layer>

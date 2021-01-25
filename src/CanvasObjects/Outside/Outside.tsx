@@ -52,6 +52,9 @@ export const Outside = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }
                 <TextItem
                     position={info.position}
                     text={info.text}
+                    option={info.text}
+                    setGroupedOption={()=>{}}
+                    type={info.elementInfo?.type}
                 />
             ))}
 
