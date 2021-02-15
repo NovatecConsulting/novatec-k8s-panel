@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 
 import { Graph } from '@grafana/ui'
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
-import { DropdownUI } from 'uiElement/Dropdown';
+import { DropdownComponent } from 'Menu/Dropdown';
 import { getSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
-import { dropdownInfrastructureOption } from './uiElement/DropdownOptions';
-import { dropdownApplicationOption } from './uiElement/DropdownOptions';
+import { dropdownInfrastructureOption } from './Menu/DropdownOptions';
+import { dropdownApplicationOption } from './Menu/DropdownOptions';
 
 type Props = {
     width: number;
@@ -26,7 +26,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
     let seriesInfrastructure: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
     let seriesApplication: GraphSeriesXY[] = getApplicationSeries(width, data, timeRange, focusItem.text, level, applicationMetric);
 
-    // Is undefined if there are no agents in the container.
+    // is undefined if no application metrics are available
     if (seriesApplication === undefined) {
         seriesApplication = [];
     }
@@ -52,7 +52,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                 <div className="graph">
                     <label className="graphHeader">Infrastructure Metrics</label>
                     <div className="infrastructureDropdown">
-                        <DropdownUI
+                        <DropdownComponent
                             id="infrastructurMetrics"
                             onChange={dropdownInfrastructureChange}
                             options={dropdownInfrastructureOption(infrastructureMetric, level)}
@@ -75,7 +75,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                 <div className="graph">
                     <label className="graphHeader">Application Metrics</label>
                     <div className="infrastructureDropdown">
-                        <DropdownUI
+                        <DropdownComponent
                             id="applicationMetrics"
                             onChange={dropdownApplicationChange}
                             options={dropdownApplicationOption(applicationMetric)}

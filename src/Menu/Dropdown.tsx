@@ -1,21 +1,25 @@
 import React from 'react';
-import { LegacyForms} from '@grafana/ui';
+import { LegacyForms } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
 
-
 const { Select } = LegacyForms;
+
+
 
 interface SelectProps {
     id: string,
     options: Array<SelectableValue>;
-    onChange: (value: string | undefined) => void; 
+    onChange: (value: string | undefined) => void;
     value: string;
     isDisabled: boolean
 }
 
-export const DropdownUI = ({ id, options, onChange, value, isDisabled }: SelectProps) => {
-    let value1: SelectableValue = {};
-    value1.label = value;
+/**
+ * Component for the dropdown menu.
+ * Value is a String
+ */
+export const DropdownComponent = ({ id, options, onChange, value, isDisabled }: SelectProps) => {
+    const selectableValue: SelectableValue = {label: value};
     return (
         <div>
             <Select
@@ -23,9 +27,9 @@ export const DropdownUI = ({ id, options, onChange, value, isDisabled }: SelectP
                 placeholder="-"
                 isSearchable={true}
                 options={options}
-                onChange={item=> onChange(item.label)}
-                value = {value1}
-                isDisabled= {isDisabled}
+                onChange={item => onChange(item.label)}
+                value={selectableValue}
+                isDisabled={isDisabled}
 
             />
         </div>
@@ -33,9 +37,9 @@ export const DropdownUI = ({ id, options, onChange, value, isDisabled }: SelectP
 }
 
 
-// Dropdown Filter has its own object
 
-interface SelectPropsGrouped {
+
+interface SelectPropsFilter {
     id: string;
     options: Array<SelectableValue>;
     onChange: (value: SelectableValue) => void;
@@ -43,7 +47,11 @@ interface SelectPropsGrouped {
     isDisabled: boolean
 }
 
-export const DropdownFilter = ({ id, options, onChange, value, isDisabled }: SelectPropsGrouped) => {
+/**
+ * Component for the dropdown menu.
+ * Value is a "SelectableValue".
+ */
+export const DropdownComponentFilter = ({ id, options, onChange, value, isDisabled }: SelectPropsFilter) => {
     return (
         <div>
             <Select
@@ -51,8 +59,8 @@ export const DropdownFilter = ({ id, options, onChange, value, isDisabled }: Sel
                 placeholder="-"
                 isSearchable={true}
                 options={options}
-                onChange={item=> onChange(item)}
-                value = {value}
+                onChange={item => onChange(item)}
+                value={value}
                 isDisabled={isDisabled}
             />
         </div>

@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { SimpleOptions, Tuple, Types } from 'types';
-// import { css, cx } from 'emotion';
-// import { stylesFactory, useTheme } from '@grafana/ui';
-
 import { Canvas } from 'canvasObjects/Canvas';
-import { DropdownUI, DropdownFilter } from 'uiElement/Dropdown';
-import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'uiElement/DropdownOptions';
+import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
+import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
 import 'style/SimplePanel.css';
 import { handler, filterHandler, groupedWithFilterHandler, groupedHandler } from 'processMetric/Handler';
 import { Element } from 'types';
-import { Drilldown } from './uiElement/Drilddown';
-
+import { Drilldown } from './Menu/Drilddown';
 import { GraphUI } from './GraphUI';
 import { NodeMetric } from './NodeMetric';
-
 
 const levelOptions = ["Overview", "Namespace", "Deployment", "Pod", "Container"];
 const groupedOptions = ["Namespace", "Deployment", "Pod", "Container"]
@@ -35,10 +30,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const [drilldownItem, setDrilldownItem] = useState({ position: { x: 0, y: 0 }, width: 0, height: 0, color: "", text: "-", elementInfo: { type: Types.Namespace } });
   const [showGraph, setShowGraph] = useState(false)
 
+
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
-   * 
-   * For reasons of asynchrony the handler is not called with the state.
    */
   const setLevelOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
@@ -64,8 +58,6 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
 
   /**
    * The value of the Filter dropdown is set. Then the appropriate handler is called.
-   * 
-   * For reasons of asynchrony the handler is not called with the state.
    */
   const setFilterOptionHandler = (option: SelectableValue) => {
     if (option.label !== undefined && levelOption !== "Node") {
@@ -78,8 +70,6 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
 
   /**
    * The value of the Grouped by dropdown is set. Then the appropriate handler is called.
-   * 
-   * For reasons of asynchrony the handler is not called with the state.
    */
   const setGroupedOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
@@ -89,13 +79,15 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     }
   }
 
+  /**
+   * ToDo
+   */
   const setMetricOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       setMetricOption(label);
       setShowDrilldown(false);
     }
   }
-
 
   /**
    * Calls the matching handlers.
@@ -112,14 +104,12 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     } else if (grouped !== "-") {
       setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height));
     }
-
   }
 
   /**
-   * 
+   * Is called to display the drilldown menu.
    */
   const itemSelectHandler = (item: Element) => {
-
     if (levelOption !== "Node") {
       setShowDrilldown(true);
       setDrilldownItem(item);
@@ -127,23 +117,23 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
       setShowGraph(true);
       setDrilldownItem(item);
     }
-
   }
 
-
+  /**
+   * Is called to close the drilldown menu.
+   */
   const closeDrilldown = () => {
     setShowDrilldown(false);
   }
 
-
   return (
     <div>
       {!showGraph ? (<div>
-        <div className="header">
-          <div className="test">
+        <div className="header--simple">
+          <div className="dropdown--simple">
             <label>Level:</label>
             <div>
-              <DropdownUI
+              <DropdownComponent
                 id={"left"}
                 options={dropdownOptions(levelOptions, levelOption)}
                 onChange={setLevelOptionHandler}
@@ -152,10 +142,10 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
               />
             </div>
           </div>
-          <div className="test">
+          <div className="dropdown--simple">
             <label>Filter:</label>
             <div>
-              <DropdownFilter
+              <DropdownComponentFilter
                 id={"center-left"}
                 options={dropdownOptionsFilter(data, filterOption.label, levelOption)}
                 onChange={setFilterOptionHandler}
@@ -163,10 +153,10 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 isDisabled={levelOption === "Node"} />
             </div>
           </div>
-          <div className="test">
+          <div className="dropdown--simple">
             <label>Grouped by:</label>
             <div>
-              <DropdownUI
+              <DropdownComponent
                 id={"center-right"}
                 options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)}
                 onChange={setGroupedOptionHandler}
@@ -175,10 +165,10 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
               />
             </div>
           </div>
-          <div className="test">
+          <div className="dropdown--simple">
             <label>Metric:</label>
             <div>
-              <DropdownUI
+              <DropdownComponent
                 id={"right"}
                 options={dropdownOptions(metricOptions, metricOption)}
                 onChange={setMetricOptionHandler}
@@ -188,7 +178,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
             </div>
           </div>
           {showDrilldown ? (
-            <div className="drilldown" style={{ height: height - 40 }}>
+            <div className="drilldown--simple" style={{ height: height - 40 }}>
               <Drilldown
                 closeDrilldown={closeDrilldown}
                 drilldownItem={drilldownItem}

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import { Graph } from '@grafana/ui'
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
-import { DropdownUI } from 'uiElement/Dropdown';
+import { DropdownComponent } from 'Menu/Dropdown';
 import { Element } from './types';
-import { dropdownNodeOption } from './uiElement/DropdownOptions';
+import { dropdownNodeOption } from './Menu/DropdownOptions';
 import { getSeries } from './processMetric/ConvertGraphData';
 
 type Props = {
@@ -38,7 +38,7 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
                 <div className="graph">
                     <label className="graphHeader">Node Metrics</label>
                     <div className="infrastructureDropdown">
-                        <DropdownUI
+                        <DropdownComponent
                             id="infrastructurMetrics"
                             onChange={dropdownInfrastructureChange}
                             options={dropdownNodeOption(nodeMetric)}

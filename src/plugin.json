@@ -1,7 +1,7 @@
 {
   "type": "panel",
-  "name": "test12",
-  "id": "novatec-test-12",
+  "name": "novatec-k8s-monitoring",
+  "id": "novatec-k8s-monitoring",
   "info": {
     "description": "",
     "author": {
