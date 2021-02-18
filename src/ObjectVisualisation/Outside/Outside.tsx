@@ -1,16 +1,13 @@
 import React from 'react';
 import { Tuple } from 'types';
-
-// import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectOutside } from 'canvasObjects/Outside/RectOutside';
-import { RectItem } from 'canvasObjects/Item/RectItem';
-import { TextOutside } from 'canvasObjects/Outside/TextOutside';
-import { TextItem } from 'canvasObjects/Item/TextItem';
+import { RectOutside } from 'ObjectVisualisation/Outside/RectOutside';
+import { RectItem } from 'ObjectVisualisation/Item/RectItem';
+import { TextOutside } from 'ObjectVisualisation/Outside/TextOutside';
+import { TextItem } from 'ObjectVisualisation/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
-import { MetricImage } from 'canvasObjects/Item/MetricImage';
+import { MetricImage } from 'ObjectVisualisation/Item/MetricImage';
 import {Element} from 'types';
-
 
 type Props = {
     allInfos: Tuple,
@@ -21,7 +18,6 @@ type Props = {
 export const Outside = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: Props) => {
     return (
         <Layer>
-
             { allInfos.outside!.map((info) => (
                 <RectOutside
                     position={info.position}
@@ -47,7 +43,6 @@ export const Outside = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }
                     type={info.elementInfo?.type}
                 />
             ))}
-
             {allInfos.inside.map((info) => (
                 <TextItem
                     position={info.position}
@@ -57,7 +52,6 @@ export const Outside = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }
                     type={info.elementInfo?.type}
                 />
             ))}
-
             {allInfos.inside.map((info) => (
                 <MetricImage
                     position={info.position}

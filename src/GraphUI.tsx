@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-
 import { Graph } from '@grafana/ui'
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { DropdownComponent } from 'Menu/Dropdown';
-import { getSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
+import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { dropdownInfrastructureOption } from './Menu/DropdownOptions';
 import { dropdownApplicationOption } from './Menu/DropdownOptions';
@@ -16,21 +15,22 @@ type Props = {
     setShowGraph: (value: boolean) => void;
     focusItem: Element;
     level: string
-
 }
 
+/**
+ * Infrastructure and application metrics component.
+ */
 export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
 
     const [infrastructureMetric, setInfrastructureMetric] = useState("CPU Usage");
     const [applicationMetric, setApplicationMetric] = useState("Service in count");
-    let seriesInfrastructure: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
+    let seriesInfrastructure: GraphSeriesXY[] = getInfrastructureSeries(width, data, timeRange, focusItem.text, level, infrastructureMetric);
     let seriesApplication: GraphSeriesXY[] = getApplicationSeries(width, data, timeRange, focusItem.text, level, applicationMetric);
 
     // is undefined if no application metrics are available
     if (seriesApplication === undefined) {
         seriesApplication = [];
     }
-
 
     const dropdownInfrastructureChange = (label: string | undefined) => {
         if (label !== undefined) {
@@ -88,8 +88,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
                         height={height / 3.5}
                         series={seriesApplication}
                         timeRange={data.timeRange}
-                        showLines={true}
-                        
+                        showLines={true}                   
                     />
                 </div>
             </div>

@@ -3,19 +3,17 @@ import { Element } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectOverview } from 'canvasObjects/Overview/RectOverview';
-import { TextOverview } from 'canvasObjects/Overview/TextOverview';
-import { Node } from 'canvasObjects/Node/Node';
-import { NodeText } from 'canvasObjects/Node/NodeText'
+import { RectOverview } from 'ObjectVisualisation/Overview/RectOverview';
+import { TextOverview } from 'ObjectVisualisation/Overview/TextOverview';
+import { Node } from 'ObjectVisualisation/Node/Node';
+import { NodeText } from 'ObjectVisualisation/Node/NodeText'
 import { SelectableValue } from '@grafana/data';
 
 type Props = {
     allInfos: Element[],
     setLevelOptionHandler: (value: string | undefined) => void;
     setGroupedOptionHandler: (value: SelectableValue) => void;
-
 }
-
 
 export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHandler }: Props) => {
 
@@ -53,5 +51,4 @@ export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHand
             />
         </Layer>
     );
-
 }

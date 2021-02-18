@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { Stage } from 'react-konva';
 import { Tuple } from 'types';
-import { Overview } from 'canvasObjects/Overview/Overview';
-import { Item } from 'canvasObjects/Item/Item';
-import { Outside } from 'canvasObjects/Outside/Outside'
+import { Overview } from 'ObjectVisualisation/Overview/Overview';
+import { Item } from 'ObjectVisualisation/Item/Item';
+import { Outside } from 'ObjectVisualisation/Outside/Outside'
 import { SelectableValue } from '@grafana/data';
 import { Element } from 'types';
 
@@ -17,9 +17,11 @@ interface StageProps {
     setLevelOptionHandler: (value: string | undefined) => void;
     setGroupedOptionHandler: (value: SelectableValue) => void;
     itemSelectHandler: (item: Element) => void;
-
 }
 
+/**
+ * Canvas to display the objects.
+ */
 export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHandler, setGroupedOptionHandler, itemSelectHandler }: StageProps) => {
 
     const [stageScale, setStageScale] = useState(1);
@@ -54,7 +56,6 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
                 y={stageY}
                 draggable={true}
                 style={{ background: '#30343a' }} >
-
                 {levelOption === 'Overview' ? (< Overview
                     allInfos={allRect.inside}
                     setLevelOptionHandler={setLevelOptionHandler}
@@ -71,9 +72,7 @@ export const Canvas = ({ width, height, allRect, levelOption, setLevelOptionHand
                             itemSelectHandler={itemSelectHandler}
                         />
                         )}
-
             </Stage>
         </div>
-
     )
 }

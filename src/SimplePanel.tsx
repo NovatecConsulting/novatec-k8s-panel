@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { SimpleOptions, Tuple, Types } from 'types';
-import { Canvas } from 'canvasObjects/Canvas';
+import { Canvas } from 'ObjectVisualisation/Canvas';
 import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
 import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
 import 'style/SimplePanel.css';
@@ -214,7 +214,6 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
             focusItem={drilldownItem}
             level={levelOption}
           />}
-
     </div>
   )
 }

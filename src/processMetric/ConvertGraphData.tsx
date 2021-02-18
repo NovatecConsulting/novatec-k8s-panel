@@ -1,12 +1,10 @@
 import { PanelData, GraphSeriesXY, TimeRange, GraphSeriesValue } from '@grafana/data';
 import { getAllContainer, getAllElementInfo } from './ConvertData';
 
-
-
 /**
- * Calculate objects of the series.
+ * Calculate infrastructure series.
  */
-export function getSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
+export function getInfrastructureSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
 
     if (level === "Deployment") {
         const pods = findPod(data, name);
@@ -39,7 +37,9 @@ export function getSeries(width: number, data: PanelData, timeRange: TimeRange, 
 }
 
 
-
+/**
+ * Calculate application series.
+ */
 export function getApplicationSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
 
     if (level === 'Container') {
@@ -98,18 +98,13 @@ export function getApplicationSeries(width: number, data: PanelData, timeRange: 
                 }
             }
         }
-
-        //console.log(allSeries[0][0].valueField.values.get(701))
         return allSeries[0];
     }
-
-
-
 }
 
 
 /**
- * Get the metic. 
+ * Return the name of the metric. 
  */
 function convertMetricName(metric: string) {
 
@@ -123,7 +118,6 @@ function convertMetricName(metric: string) {
     ["Network receive errors", "network_receive_errors"],
     ["Network transmit errors", "network_transmit_errors"]];
 
-
     const applicationMetrics = [["Service in count", "service_in_count"],
     ["Service out count", "service_out_count"],
     ["Service in responsetime sum", "service_in_responsetime_sum"],
@@ -133,14 +127,12 @@ function convertMetricName(metric: string) {
     ["jvm memory heap", "jvm_memory_used_heap"],
     ["jvm memory non heap", "jvm_memory_used_nonheap"]];
 
-
     const nodeMetrics = [["Write total", "container_fs_writes_total"],
     ["Read total", "container_fs_reads_total"],
     ["Alloctable CPU Cores", "kube_node_status_allocatable_cpu_cores"],
     ["Alloctable Memory Bytes", "kube_node_status_allocatable_memory_bytes"],
     ["Active Memory", "node_memory_Active_bytes"],
     ["Inactive Memory", "node_memory_Inactive_bytes"]];
-
 
     const allMetrics = infrastructureMetrics.concat(applicationMetrics).concat(nodeMetrics);
     for (let i = 0; i < allMetrics.length; i++) {
@@ -150,13 +142,10 @@ function convertMetricName(metric: string) {
         }
     }
     return "";
-
 }
 
 /**
  * If the metrics are displayed from a deployment, the affected pods must be found.
- * @param data 
- * @param name 
  */
 function findPod(data: PanelData, name: string) {
     const allElements = getAllElementInfo(data);
@@ -175,10 +164,8 @@ function findPod(data: PanelData, name: string) {
     return podsOfDeployment;
 }
 
-
-
 /**
- * Calculates a series.
+ * Calculates one series.
  */
 function getOneSeries(width: number, data: PanelData, timeRange: TimeRange, name: string, level: string, metric: string) {
 
@@ -197,9 +184,7 @@ function getOneSeries(width: number, data: PanelData, timeRange: TimeRange, name
                     if (temp[2] === metricName) {
                         dataIndex = i;
                     }
-
                 }
-
             }
         }
     }
@@ -227,5 +212,4 @@ function getOneSeries(width: number, data: PanelData, timeRange: TimeRange, name
     };
     series.push(ser);
     return series;
-
 }

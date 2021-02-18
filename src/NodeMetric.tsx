@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-
 import { Graph } from '@grafana/ui'
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { DropdownComponent } from 'Menu/Dropdown';
 import { Element } from './types';
 import { dropdownNodeOption } from './Menu/DropdownOptions';
-import { getSeries } from './processMetric/ConvertGraphData';
+import { getInfrastructureSeries } from './processMetric/ConvertGraphData';
 
 type Props = {
     width: number;
@@ -14,16 +13,17 @@ type Props = {
     timeRange: TimeRange;
     setShowGraph: (value: boolean) => void;
     focusItem: Element;
-    level: string
-
+    level: string;
 }
 
+/**
+ * Component to display the node metrics.
+ */
 export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
 
     const [nodeMetric, setNodeMetric] = useState("Write total");
-    let seriesInfrastructure: GraphSeriesXY[] = getSeries(width, data, timeRange, focusItem.text, level, nodeMetric);
+    let seriesInfrastructure: GraphSeriesXY[] = getInfrastructureSeries(width, data, timeRange, focusItem.text, level, nodeMetric);
   
-
     const dropdownInfrastructureChange = (label: string | undefined) => {
         if (label !== undefined) {
             setNodeMetric(label)
@@ -59,5 +59,4 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
             </div>
         </div>
     );
-
 }

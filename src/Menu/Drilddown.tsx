@@ -1,6 +1,5 @@
 import React from 'react';
 import { Element } from '../types'
-
 import 'style/SimplePanel.css'
 
 type Props = {

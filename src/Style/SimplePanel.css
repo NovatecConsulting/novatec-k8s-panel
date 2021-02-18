@@ -1,9 +1,9 @@
-.header--simple {
+.header--simple{
     display: flex;
     flex-direction: row;
 }
 
-.dropdown--simple {
+.dropdown--simple{
     flex: 1;
 }
 
@@ -12,15 +12,15 @@
     width: 35rem;
     margin-top: 3.8rem;
     background-color: #30343a;
-     z-index: 9;
-     border-right: 1px solid black;
+    z-index: 9;
+    border-right: 1px solid black;
 }
 
-.canvas {
+.canvas{
     z-index: -4;
 }
 
-.graph {
+.graph{
     margin: auto;
     width: 50%;
     align-items: center;
@@ -41,7 +41,7 @@
     margin-top: 9.8rem;
 }
 
-.graphHeader {
+.graphHeader{
     color: #33B5E5;
     text-align: center;
     width: 100%;
@@ -73,7 +73,6 @@
     margin-left: 1rem;
 }
 
-
 .header--drilldown{
     color: white;
     font-size: 17px;
@@ -91,14 +90,11 @@
     height: 25px;
     margin-left: 1rem;
     margin-bottom: 0.55rem;
-
 }
-
 
 .table--drilldown{
     width: 99%;
 }
-
 
 .trName--drilldown{
     border-top: 1px solid black;
@@ -129,12 +125,6 @@
 .tr--drilldown{
     text-align: left;
 }
-
-
-
-
-
-
 
 .NodeGraph{
     width:100%;

@@ -1,15 +1,10 @@
 import React from 'react';
 import { Rect } from 'react-konva';
 
-
-
-
 type Props = {
     height: number;
-    setLevelOptionHandler: (value: string | undefined) => void;
-    
+    setLevelOptionHandler: (value: string | undefined) => void; 
 }
-
 
 export const Node = ({ height, setLevelOptionHandler }: Props) => {
 

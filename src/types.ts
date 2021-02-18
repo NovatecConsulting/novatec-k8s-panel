@@ -6,7 +6,6 @@ export interface SimpleOptions {
   seriesCountSize: SeriesSize;
 }
 
-
 export interface Element {
   position: Position;
   width: number;
@@ -18,10 +17,8 @@ export interface Element {
 }
 
 export interface Position {
-
   x: number;
   y: number;
-
 }
 
 export interface ElementInfo {
@@ -33,7 +30,6 @@ export interface ElementInfo {
   deployment?: string;
 }
 
-
 export enum Types {
   Namespace = "Namespace",
   Deployment = "Deployment",
@@ -42,16 +38,7 @@ export enum Types {
   Node = "Node"
 }
 
-
-
-
-
-
-// new:
-
-
 export interface Container {
-
   Name: string;
   Pod: string;
   Namespace: string;
@@ -59,10 +46,7 @@ export interface Container {
   Node: string;
 }
 
-
-
 export interface Pod {
-
   Name: string;
   Container: Container[];
   Namespace: string;
@@ -71,21 +55,17 @@ export interface Pod {
 }
 
 export interface Namespace {
-
   Name: string;
   Pod: Pod[];
   Deployment: Deployment[];
 }
 
 export interface Deployment {
-
   Name: string;
   Namespace: string;
   Pod: Pod[];
   Container: Container[];
-
 }
-
 
 export interface Tuple {
   inside: Element[];

@@ -22,40 +22,35 @@ export function dropdownOptions(allOptions: string[], value: string) {
 
 export function dropdownGroupedOptions(allOptions: string[], value: string, levelOption: string) {
 
-    let options: string[] = new Array();
+    let option: Array<SelectableValue> = [];
 
     if (value !== "-") {
-        options.push("-");
+        let firstElement: SelectableValue = {};
+        firstElement.label = "-";
+        option.push(firstElement);
     }
 
     if (levelOption !== "Overview") {
         for (let i = 0; i < allOptions.length; i++) {
-
             if (allOptions[i] === levelOption) {
                 break;
             } else {
-                options.push(allOptions[i]);
+                let oneOption: SelectableValue = {};
+                oneOption.label = allOptions[i];
+                option.push(oneOption)
             }
         }
     }
-
-    let test: Array<SelectableValue> = [];
-    for (let i = 0; i < options.length; i++) {
-        let element: SelectableValue = {};
-        element.label = options[i];
-        test.push(element);
-    }
-
-    return test;
+    return option;
 }
 
 
 export function dropdownOptionsFilter(data: PanelData, value: string | undefined, levelOption: String) {
 
     let option: Array<SelectableValue> = [];
-    let firstElement: SelectableValue = {};
 
     if (value !== "-") {
+        let firstElement: SelectableValue = {};
         firstElement.label = "-";
         option.push(firstElement);
     }
@@ -79,7 +74,6 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
                 option.push(podElement)
             }
         }
-
 
         for (let i = 0; i < allElement.length; i++) {
             for (let l = 0; l < allElement[i].Pod.length; l++) {
@@ -175,7 +169,6 @@ export function dropdownNodeOption(value: string) {
         }
     }
     return option;
-
 }
 
 

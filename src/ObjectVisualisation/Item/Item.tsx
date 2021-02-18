@@ -3,10 +3,10 @@ import { Element } from 'types';
 
 // import { render } from 'react-dom';
 import { Layer } from 'react-konva';
-import { RectItem } from 'canvasObjects/Item/RectItem';
-import { TextItem } from 'canvasObjects/Item/TextItem';
+import { RectItem } from 'ObjectVisualisation/Item/RectItem';
+import { TextItem } from 'ObjectVisualisation/Item/TextItem';
 import { SelectableValue } from '@grafana/data';
-import { MetricImage } from 'canvasObjects/Item/MetricImage';
+import { MetricImage } from 'ObjectVisualisation/Item/MetricImage';
 
 
 type Props = {
@@ -18,7 +18,6 @@ type Props = {
 export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: Props) => {
 
     return (
-
         <Layer>
             {allInfos.map((info) => (
                 <RectItem

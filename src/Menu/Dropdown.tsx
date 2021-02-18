@@ -1,10 +1,7 @@
 import React from 'react';
 import { LegacyForms } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
-
 const { Select } = LegacyForms;
-
-
 
 interface SelectProps {
     id: string,
@@ -35,8 +32,6 @@ export const DropdownComponent = ({ id, options, onChange, value, isDisabled }: 
         </div>
     )
 }
-
-
 
 
 interface SelectPropsFilter {
