@@ -31,11 +31,11 @@ export interface ElementInfo {
 }
 
 export enum Types {
-  Namespace = "Namespace",
-  Deployment = "Deployment",
-  Pod = "Pod",
-  Container = "Container",
-  Node = "Node"
+  Namespace = 'Namespace',
+  Deployment = 'Deployment',
+  Pod = 'Pod',
+  Container = 'Container',
+  Node = 'Node',
 }
 
 export interface Container {

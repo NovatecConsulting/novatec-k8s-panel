@@ -29,6 +29,8 @@
 .graphBack{
     width: 25px;
     height: 25px;
+    background-color: transparent;
+    border: none;
 }
 
 .graphName{
@@ -70,7 +72,9 @@
     width: 25px;
     height: 25px;
     float: right;
-    margin-left: 1rem;
+    background-color: transparent;
+    border: none;
+    margin-right: 10px;
 }
 
 .header--drilldown{
@@ -90,6 +94,8 @@
     height: 25px;
     margin-left: 1rem;
     margin-bottom: 0.55rem;
+    background-color: transparent;
+    border: none;
 }
 
 .table--drilldown{
