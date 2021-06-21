@@ -69,16 +69,24 @@
 }
 
 .back--drilldown{
-    width: 25px;
+    width: 70px;
     height: 25px;
     float: right;
     background-color: transparent;
-    border: none;
+    border: 2px solid #e7e7e7;
     margin-right: 10px;
+    border-radius: 5px;
+    color:#e7e7e7;
+    transition-duration: 0.4s;
+}
+.back--drilldown:hover{
+    background-color: #e7e7e7;
+    color: #30343a;
 }
 
 .header--drilldown{
     color: white;
+    width: auto;
     font-size: 17px;
     padding-top: 1.5rem;
 }
@@ -90,12 +98,24 @@
 }
 
 .metricImage--drilldown{
-    width: 25px;
-    height: 25px;
+    width: 90px;
+    height: 40px;
     margin-left: 1rem;
     margin-bottom: 0.55rem;
-    background-color: transparent;
-    border: none;
+    background-color: #e7e7e7;
+    
+    border-radius: 5px;
+    border: 2px solid #e7e7e7;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    color: #30343a;
+}
+.metricImage--drilldown:hover{
+    background-color:transparent ;
+    color: #e7e7e7;
 }
 
 .table--drilldown{
