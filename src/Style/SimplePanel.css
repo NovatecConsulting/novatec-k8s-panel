@@ -88,8 +88,12 @@
 .header--drilldown {
     color: white;
     width: auto;
-    font-size: 17px;
-    padding-top: 1.5rem;
+    position: relative;
+    float: left;
+    width: 30%;
+    font-size: 15px;
+    color: beige;
+    text-align: left;
 }
 
 .hr--drilldown {
