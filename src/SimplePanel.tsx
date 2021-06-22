@@ -23,7 +23,7 @@ const metricOptions = [
   'Memory Requests',
 ];
 
-interface Props extends PanelProps<SimpleOptions> {}
+interface Props extends PanelProps<SimpleOptions> { }
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
   let firstFilterOption: SelectableValue = { label: '-', description: 'Overview' };
@@ -120,11 +120,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
    * Is called to display the drilldown menu.
    */
   const itemSelectHandler = (item: Element) => {
-    if (levelOption !== 'Node') {
-      setShowDrilldown(true);
-      setDrilldownItem(item);
-    } else {
-      setShowGraph(true);
+    setShowDrilldown(!showDrilldown);
+    if (showDrilldown == true) {
       setDrilldownItem(item);
     }
   };
