@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Image } from 'react-konva';
 import { Position, Element } from 'types';
+const blackIcon = require("../../img/metrics.png");
+const whiteIcon = require("../../img/metricsWhite.png");
 
 type Props = {
   position: Position;
@@ -16,10 +18,10 @@ export const MetricImage = ({ position, itemWidth, item, itemSelectHandler }: Pr
   useEffect(() => {
     const temp = new window.Image();
     if (!isMousedOver) {
-      temp.src = 'https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/metrics.png';
+      temp.src = blackIcon;
     }
     else {
-      temp.src = 'https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/metricsWhite.png'
+      temp.src = whiteIcon
     }
     temp.onload = () => {
       setImage(temp);
