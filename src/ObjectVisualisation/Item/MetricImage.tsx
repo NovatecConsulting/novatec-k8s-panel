@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Image } from 'react-konva';
 import { Position, Element } from 'types';
+const blackIcon = require("../../img/metrics.png");
+const whiteIcon = require("../../img/metricsWhite.png");
 
 type Props = {
   position: Position;
@@ -11,20 +13,34 @@ type Props = {
 
 export const MetricImage = ({ position, itemWidth, item, itemSelectHandler }: Props) => {
   const [image, setImage] = useState(new window.Image());
+  const [isMousedOver, setIsMousedOver] = useState(false);
 
   useEffect(() => {
     const temp = new window.Image();
-    temp.src = 'https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/metrics.png';
+    if (!isMousedOver) {
+      temp.src = blackIcon;
+    }
+    else {
+      temp.src = whiteIcon
+    }
     temp.onload = () => {
       setImage(temp);
     };
-  });
 
+  }, [isMousedOver]);
+
+  const handleMouseOver = () => {
+    setIsMousedOver(true);
+  }
+  const handleMouseOut = () => {
+    setIsMousedOver(false);
+  }
   const itemClicked = () => {
     itemSelectHandler(item);
   };
 
   return (
+
     <Image
       x={position.x + itemWidth - 40}
       y={position.y + 10}
@@ -32,6 +48,9 @@ export const MetricImage = ({ position, itemWidth, item, itemSelectHandler }: Pr
       height={30}
       image={image}
       onClick={itemClicked}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
     />
+
   );
 };

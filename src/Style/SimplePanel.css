@@ -1,13 +1,13 @@
-.header--simple{
+.header--simple {
     display: flex;
     flex-direction: row;
 }
 
-.dropdown--simple{
+.dropdown--simple {
     flex: 1;
 }
 
-.drilldown--simple{ 
+.drilldown--simple {
     position: absolute;
     width: 35rem;
     margin-top: 3.8rem;
@@ -16,41 +16,41 @@
     border-right: 1px solid black;
 }
 
-.canvas{
+.canvas {
     z-index: -4;
 }
 
-.graph{
+.graph {
     margin: auto;
     width: 50%;
     align-items: center;
 }
 
-.graphBack{
+.graphBack {
     width: 25px;
     height: 25px;
     background-color: transparent;
     border: none;
 }
 
-.graphName{
+.graphName {
     width: 100%;
     text-align: center;
     font-size: 1.1rem;
 }
 
-.datapoints-warning{
+.datapoints-warning {
     margin-top: 9.8rem;
 }
 
-.graphHeader{
+.graphHeader {
     color: #33B5E5;
     text-align: center;
     width: 100%;
     font-size: 1rem;
 }
 
-.infrastructureDropdown{
+.infrastructureDropdown {
     width: 30%;
 }
 
@@ -59,68 +59,93 @@
     width: 100%;
 }
 
-.main--drilldown{
+.main--drilldown {
     text-align: center;
 }
 
-.imageBack--drilldown{
+.imageBack--drilldown {
     width: 99%;
     padding-top: 1rem;
 }
 
-.back--drilldown{
-    width: 25px;
+.back--drilldown {
+    width: 70px;
     height: 25px;
     float: right;
     background-color: transparent;
-    border: none;
+    border: 2px solid #e7e7e7;
     margin-right: 10px;
+    border-radius: 5px;
+    color: #e7e7e7;
+    transition-duration: 0.4s;
 }
 
-.header--drilldown{
+.back--drilldown:hover {
+    background-color: #e7e7e7;
+    color: #30343a;
+}
+
+.header--drilldown {
     color: white;
-    font-size: 17px;
-    padding-top: 1.5rem;
+    width: auto;
+    position: relative;
+    float: left;
+    width: 30%;
+    font-size: 15px;
+    color: beige;
+    text-align: left;
 }
 
-.hr--drilldown{
+.hr--drilldown {
     border-top: 1px solid black;
     width: 75%;
     margin-top: -0.1rem;
 }
 
-.metricImage--drilldown{
-    width: 25px;
-    height: 25px;
+.metricImage--drilldown {
+    width: 90px;
+    height: 40px;
     margin-left: 1rem;
     margin-bottom: 0.55rem;
-    background-color: transparent;
-    border: none;
+    background-color: #e7e7e7;
+    border-radius: 5px;
+    border: 2px solid #e7e7e7;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    color: #30343a;
 }
 
-.table--drilldown{
+.metricImage--drilldown:hover {
+    background-color: transparent;
+    color: #e7e7e7;
+}
+
+.table--drilldown {
     width: 99%;
 }
 
-.trName--drilldown{
+.trName--drilldown {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     background-color: #505050;
-    color:#33B5E5;
+    color: #33B5E5;
 }
 
-.thName--drilldown{
+.thName--drilldown {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 5px;
     padding-right: 5px;
 }
 
-.thValue--drilldown{
+.thValue--drilldown {
     padding: 3px 5px;
 }
 
-.td--drilldown{
+.td--drilldown {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 5px;
@@ -128,17 +153,12 @@
     border-bottom: 1px solid black;
 }
 
-.tr--drilldown{
+.tr--drilldown {
     text-align: left;
 }
 
-.NodeGraph{
-    width:100%;
+.NodeGraph {
+    width: 100%;
     display: flex;
     justify-content: center;
 }
-
-
-
-
-

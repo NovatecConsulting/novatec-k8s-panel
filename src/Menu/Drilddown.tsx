@@ -1,6 +1,8 @@
 import React from 'react';
 import { Element } from '../types';
 import 'style/SimplePanel.css';
+import { BiStats } from 'react-icons/bi';
+import { MdArrowBack } from 'react-icons/md';
 
 type Props = {
   closeDrilldown: () => void;
@@ -16,12 +18,12 @@ export const Drilldown = ({ closeDrilldown, drilldownItem, setShowGraph }: Props
     <div className="main--drilldown">
       <div className="imageBack--drilldown">
         <button onClick={closeDrilldown} className="back--drilldown">
-          back
+          <i><MdArrowBack /> Back</i>
         </button>
       </div>
       <label className="header--drilldown">{drilldownItem.text}</label>
       <button className="metricImage--drilldown" onClick={() => setShowGraph(true)}>
-        metrics
+        <i>Metrics <BiStats /> </i>
       </button>
       <hr className="hr--drilldown"></hr>
       <table className="table--drilldown">
