@@ -87,12 +87,10 @@
 
 .header--drilldown {
     color: white;
-    width: auto;
     position: relative;
     float: left;
     width: 30%;
     font-size: 15px;
-    color: beige;
     text-align: left;
 }
 
