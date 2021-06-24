@@ -107,7 +107,7 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
     }
     return 0;
   });
-  //second sort the namespaces
+  //second sort the Deployments
   option.sort(function (a, b) {
     if (a.description == 'Deployment' && b.description == 'Deployment') {
       if ((a.label || '').toLowerCase() < (b.label || '').toLowerCase()) return -1;
