@@ -33,6 +33,11 @@ export const Canvas = ({
   const [stageX, setStageX] = useState(0);
   const [stageY, setStageY] = useState(0);
 
+  const resetZoom = () => {
+    setStageX(0);
+    setStageY(0);
+    setStageScale(1);
+  }
   const handleWheel = (e: any) => {
     e.evt.preventDefault();
 
@@ -61,6 +66,7 @@ export const Canvas = ({
         y={stageY}
         draggable={true}
         style={{ background: '#30343a' }}
+        onClick={resetZoom}
       >
         {levelOption === 'Overview' ? (
           <Overview
