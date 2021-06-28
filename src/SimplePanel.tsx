@@ -122,11 +122,13 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const itemSelectHandler = (item: Element) => {
     setShowDrilldown(!showDrilldown);
 
+
     if (levelOption !== 'Node') {
       setDrilldownItem(item);
     }
     else {
       setShowGraph(true);
+
     }
 
   };
