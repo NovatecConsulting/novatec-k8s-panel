@@ -33,6 +33,11 @@ export const Canvas = ({
   const [stageX, setStageX] = useState(0);
   const [stageY, setStageY] = useState(0);
 
+  const resetZoom = () => {
+    setStageX(0);
+    setStageY(0);
+    setStageScale(1);
+  }
   const handleWheel = (e: any) => {
     e.evt.preventDefault();
 
@@ -45,9 +50,11 @@ export const Canvas = ({
     };
 
     const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    setStageScale(newScale);
-    setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
-    setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
+    if (newScale < 1.5 && newScale > 0.5) {
+      setStageScale(newScale);
+      setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
+      setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
+    }
   };
   return (
     <div>
@@ -61,6 +68,7 @@ export const Canvas = ({
         y={stageY}
         draggable={true}
         style={{ background: '#30343a' }}
+        onClick={resetZoom}
       >
         {levelOption === 'Overview' ? (
           <Overview

@@ -57,9 +57,10 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
       let namespaceElement: SelectableValue = {};
       namespaceElement.label = allElement[i].Name;
       namespaceElement.description = 'Namespace';
-      option.push(namespaceElement);
-    }
 
+      option.push(namespaceElement);
+
+    }
     for (let i = 0; i < allElement.length; i++) {
       for (let l = 0; l < allElement[i].Deployment.length; l++) {
         let podElement: SelectableValue = {};
@@ -67,6 +68,7 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
         podElement.description = 'Deployment';
 
         option.push(podElement);
+
       }
     }
 
@@ -77,6 +79,7 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
         podElement.description = 'Pod';
 
         option.push(podElement);
+
       }
     }
 
@@ -88,10 +91,49 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
           containerElement.description = 'Container';
 
           option.push(containerElement);
+
+
         }
       }
     }
   }
+  //sorting algorithms:
+  //first sort the namespaces
+  option.sort(function (a, b) {
+    if (a.description == 'Namespace' && b.description == 'Namespace') {
+      if ((a.label || '').toLowerCase() < (b.label || '').toLowerCase()) return -1;
+      if ((a.label || '').toLowerCase() > (b.label || '').toLowerCase()) return 1;
+      return 0;
+    }
+    return 0;
+  });
+  //second sort the Deployments
+  option.sort(function (a, b) {
+    if (a.description == 'Deployment' && b.description == 'Deployment') {
+      if ((a.label || '').toLowerCase() < (b.label || '').toLowerCase()) return -1;
+      if ((a.label || '').toLowerCase() > (b.label || '').toLowerCase()) return 1;
+      return 0;
+    }
+    return 0;
+  });
+  //third sort the pods
+  option.sort(function (a, b) {
+    if (a.description == 'Pod' && b.description == 'Pod') {
+      if ((a.label || '').toLowerCase() < (b.label || '').toLowerCase()) return -1;
+      if ((a.label || '').toLowerCase() > (b.label || '').toLowerCase()) return 1;
+      return 0;
+    }
+    return 0;
+  });
+  //fourth sort the containers
+  option.sort(function (a, b) {
+    if (a.description == 'Container' && b.description == 'Container') {
+      if ((a.label || '').toLowerCase() < (b.label || '').toLowerCase()) return -1;
+      if ((a.label || '').toLowerCase() > (b.label || '').toLowerCase()) return 1;
+      return 0;
+    }
+    return 0;
+  });
   return option;
 }
 
