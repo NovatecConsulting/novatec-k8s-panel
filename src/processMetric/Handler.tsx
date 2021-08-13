@@ -1,6 +1,6 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOnlyGrupped, position, getOverview, positionOutside } from '../ObjectVisualisation/Calculation';
-import { getAllElementInfo, getAllContainer, getDeploymentCount } from './ConvertData';
+import { getAllElementInfo, getAllContainer, getDeploymentCount, getData } from './ConvertData';
 import { Element, Namespace, Tuple, Types } from 'types';
 
 // Returns the elements considering the level.
@@ -143,6 +143,7 @@ export function filterHandler(
     }
   }
   const tuple: Tuple = { outside: undefined, inside: filterElement };
+  console.log(getData(data));
   return tuple;
 }
 
