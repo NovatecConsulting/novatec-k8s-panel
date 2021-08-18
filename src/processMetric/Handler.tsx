@@ -109,6 +109,7 @@ export function handler(width: number, height: number, levelOption: string, data
     }
   }
   const tuple: Tuple = { outside: undefined, inside: allElements };
+  console.log(getData(data));
   return tuple;
 }
 
@@ -143,7 +144,6 @@ export function filterHandler(
     }
   }
   const tuple: Tuple = { outside: undefined, inside: filterElement };
-  console.log(getData(data));
   return tuple;
 }
 

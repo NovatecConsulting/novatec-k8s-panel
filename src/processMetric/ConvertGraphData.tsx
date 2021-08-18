@@ -28,7 +28,7 @@ export function getInfrastructureSeries(
       let allData = allSeries[0][0].data;
       for (let i = 0; i < allSeries[0].length; i++) {
         if (i !== 0) {
-          allData = allData[1].map(function(num: number, idx: number) {
+          allData = allData[1].map(function (num: number, idx: number) {
             return num + allSeries[0][i].data[1][idx];
           });
         }
@@ -155,6 +155,7 @@ function convertMetricName(metric: string) {
 }
 
 /**
+ * Returns an array of all pods in a given deployment
  * If the metrics are displayed from a deployment, the affected pods must be found.
  */
 function findPod(data: PanelData, name: string) {
@@ -176,7 +177,60 @@ function findPod(data: PanelData, name: string) {
 /**
  * Calculates one series.
  */
-function getOneSeries(
+// export function getOneSeries(
+//   width: number,
+//   data: PanelData,
+//   timeRange: TimeRange,
+//   name: string,
+//   level: string,
+//   metric: string
+// ) {
+//   let ser_ind = 0;
+//   let series: GraphSeriesXY[] = [];
+
+//   const metricName = convertMetricName(metric);
+//   // convert metric to promql metric name
+
+//   let dataIndex = 0;
+//   for (let i = 0; i < data.series.length; i++) {
+//     const temp = data.series[i].name?.split(' ');
+//     if (temp !== undefined) {
+//       if (temp[0] === name) {
+//         if (temp[1] === level) {
+//           if (temp[2] === metricName) {
+//             dataIndex = i;
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   if (dataIndex === 0) {
+//     return series;
+//   }
+
+//   const timeVals: GraphSeriesValue[] = data.series[dataIndex].fields[0].values.toArray();
+//   const yVals: GraphSeriesValue[] = data.series[dataIndex].fields[1].values.toArray();
+//   const data1: GraphSeriesValue[][] = [];
+//   for (let i = 0; i < timeVals.length; i++) {
+//     data1.push([timeVals[i], yVals[i]]);
+//   }
+//   const unixTimeRange = timeRange.to.unix() - timeRange.from.unix();
+//   const ser: GraphSeriesXY = {
+//     seriesIndex: ser_ind++,
+//     yAxis: { index: 0 },
+//     isVisible: true,
+//     timeField: data.series[dataIndex].fields[0],
+//     valueField: data.series[dataIndex].fields[1],
+//     timeStep: width / unixTimeRange,
+//     data: data1,
+//     label: metric,
+//   };
+//   series.push(ser);
+//   return series;
+// }
+
+export function getOneSeries(
   width: number,
   data: PanelData,
   timeRange: TimeRange,
@@ -191,16 +245,15 @@ function getOneSeries(
   // convert metric to promql metric name
 
   let dataIndex = 0;
+  let refid;
   for (let i = 0; i < data.series.length; i++) {
-    const temp = data.series[i].name?.split(' ');
-    if (temp !== undefined) {
-      if (temp[0] === name) {
-        if (temp[1] === level) {
-          if (temp[2] === metricName) {
-            dataIndex = i;
-          }
-        }
-      }
+    if (data.series[i].name?.includes(metricName) && data.series[i].name?.includes(level.toLowerCase())) {
+      refid = data.series[i].refId;
+    }
+  }
+  for (let i = 0; i < data.series.length; i++) {
+    if (data.series[i].refId === refid && data.series[i].name?.includes(name)) {
+      dataIndex = i;
     }
   }
 
