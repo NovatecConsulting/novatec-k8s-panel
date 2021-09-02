@@ -245,14 +245,11 @@ export function getOneSeries(
   // convert metric to promql metric name
 
   let dataIndex = 0;
-  let refid;
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].name?.includes(metricName) && data.series[i].name?.includes(level.toLowerCase())) {
-      refid = data.series[i].refId;
-    }
-  }
-  for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].refId === refid && data.series[i].name?.includes(name)) {
+    if (data.series[i].refId?.includes("infrastructure") &&
+      data.series[i].refId?.includes(metricName) &&
+      data.series[i].refId?.includes(level.toLowerCase()) &&
+      data.series[i].name?.includes(name)) {
       dataIndex = i;
     }
   }

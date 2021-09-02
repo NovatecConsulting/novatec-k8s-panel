@@ -1,6 +1,6 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { positionOnlyGrupped, position, getOverview, positionOutside } from '../ObjectVisualisation/Calculation';
-import { getAllElementInfo, getAllContainer, getDeploymentCount, getData} from './ConvertData';
+import { getAllElementInfo, getAllContainer, getDeploymentCount, getData, addDeployment } from './ConvertData';
 import { Element, Namespace, Tuple, Types } from 'types';
 
 // Returns the elements considering the level.
@@ -110,15 +110,7 @@ export function handler(width: number, height: number, levelOption: string, data
   }
   const tuple: Tuple = { outside: undefined, inside: allElements };
   console.log(getData(data));
-  // console.log(getDeploymentCount(data));
-  // console.log(newGetDeploymentCount(data));
-  // console.log(getDeploymentNames(data));
-  // console.log(newGetDeploymentNames(data));
-  // console.log(getAllContainer(data));
-  // console.log(newGetAllContainer(data));
-  // console.log("adddeployments: ", addDeployment(data));
-  // console.log("old Add Deployments: " , OldAddDeployment(data));
-  // console.log(getDeploymentInformation);
+  console.log("addDeplowment: ", addDeployment(data));
   return tuple;
 }
 

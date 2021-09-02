@@ -170,12 +170,12 @@ export function addDeployment(data: PanelData) {
     replicaset: new Array(),
   };
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].name?.includes("{owner_name=")) {
+    if (data.series[i].refId?.includes("pod_owner")) {
       let smth = fromPromtoJSON(data.series[i].name);
       kube_pod_ownerObject.owner_name.push(smth.owner_name);
       kube_pod_ownerObject.pod.push(smth.pod);
     }
-    if (data.series[i].name?.includes("replicaset=")) {
+    if (data.series[i].refId?.includes("replicaset_owner")) {
       let smth = fromPromtoJSON(data.series[i].name);
       kube_replicaset_ownerObject.deployment.push(smth.owner_name);
       kube_replicaset_ownerObject.namespace.push(smth.namespace);
