@@ -12,32 +12,29 @@ export function getInfrastructureSeries(
   level: string,
   metric: string
 ) {
+  const metricType = "infra";
   if (level === 'Deployment') {
     const pods = findPod(data, name);
     name = pods[0];
     level = 'Pod';
     let allSeries: any = [];
-    // If deployment consists of one pod.
-    if (pods.length === 1) {
-      return getOneSeries(width, data, timeRange, pods[0], level, metric);
-    } else {
-      for (let i = 0; i < pods.length; i++) {
-        allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric));
-      }
-      // Addition when deployment consists of multiple pods.
-      let allData = allSeries[0][0].data;
-      for (let i = 0; i < allSeries[0].length; i++) {
-        if (i !== 0) {
-          allData = allData[1].map(function (num: number, idx: number) {
-            return num + allSeries[0][i].data[1][idx];
-          });
-        }
-      }
-      allSeries[0][0].data = allData;
-      return allSeries[0];
+    for (let i = 0; i < pods.length; i++) {
+      allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric, metricType));
     }
+    // Addition when deployment consists of multiple pods.
+    let allData = allSeries[0][0].data;
+    for (let i = 0; i < allSeries[0].length; i++) {
+      if (i !== 0) {
+        allData = allData[1].map(function (num: number, idx: number) {
+          return num + allSeries[0][i].data[1][idx];
+        });
+      }
+    }
+    allSeries[0][0].data = allData;
+    return allSeries[0];
+
   } else {
-    return getOneSeries(width, data, timeRange, name, level, metric);
+    return getOneSeries(width, data, timeRange, name, level, metric, metricType);
   }
 }
 
@@ -52,8 +49,9 @@ export function getApplicationSeries(
   level: string,
   metric: string
 ) {
+  const metricType = "app";
   if (level === 'Container') {
-    return getOneSeries(width, data, timeRange, name, level, metric);
+    return getOneSeries(width, data, timeRange, name, level, metric, metricType);
   } else {
     const allContainer = getAllContainer(data);
     let container = [];
@@ -79,7 +77,7 @@ export function getApplicationSeries(
 
     let allSeries = [];
     for (let i = 0; i < container.length; i++) {
-      allSeries.push(getOneSeries(width, data, timeRange, container[i], 'Container', metric));
+      allSeries.push(getOneSeries(width, data, timeRange, container[i], 'Container', metric, metricType));
     }
 
     let notEmpty: any = [];
@@ -236,7 +234,8 @@ export function getOneSeries(
   timeRange: TimeRange,
   name: string,
   level: string,
-  metric: string
+  metric: string,
+  metricType: string
 ) {
   let ser_ind = 0;
   let series: GraphSeriesXY[] = [];
@@ -245,14 +244,11 @@ export function getOneSeries(
   // convert metric to promql metric name
 
   let dataIndex = 0;
-  let refid;
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].name?.includes(metricName) && data.series[i].name?.includes(level.toLowerCase())) {
-      refid = data.series[i].refId;
-    }
-  }
-  for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].refId === refid && data.series[i].name?.includes(name)) {
+    if (data.series[i].refId?.includes(metricType) &&
+      data.series[i].refId?.includes(metricName) &&
+      data.series[i].refId?.includes(level.toLowerCase()) &&
+      data.series[i].name?.includes(name)) {
       dataIndex = i;
     }
   }
