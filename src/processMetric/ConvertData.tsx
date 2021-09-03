@@ -48,7 +48,7 @@ function fromPromtoJSON(str: any) {
  * Returns an array of all the object containers
  */
 export function getAllContainer( data: PanelData){
-  const allDeployment = addDeployment(data);
+  const allDeployment = getDeploymentInfo(data);
   let allContainers = [];
   for (let i = 0; i < data.series.length; i++) {
     if (data.series[i].refId?.includes("namespace_pod_container_info")) {
@@ -105,7 +105,7 @@ export function getAllElementInfo(data: PanelData) {
     }
     allPods.push(pod);
   }
-  const allDeployments = addDeployment(data);
+  const allDeployments = getDeploymentInfo(data);
   let allDeploymentObjects: Deployment[] = [];
 
   for (let i = 0; i < allDeployments.length; i++) {
@@ -159,7 +159,7 @@ export function getAllElementInfo(data: PanelData) {
 /**
  * Returns the deployments with their specific namespace,name, and pod replicasets
  */
-export function addDeployment(data: PanelData) {
+export function getDeploymentInfo(data: PanelData) {
   let kube_pod_ownerObject = {
     owner_name: new Array(),
     pod: new Array(),
