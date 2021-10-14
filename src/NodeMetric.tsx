@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Graph } from '@grafana/ui';
+import { Button, Graph, useStyles2 } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { DropdownComponent } from 'Menu/Dropdown';
 import { Element } from './types';
 import { dropdownNodeOption } from './Menu/DropdownOptions';
 import { getInfrastructureSeries } from './processMetric/ConvertGraphData';
+import { getStyles } from 'styles/component/GraphStyle';
+import { css } from '@emotion/css';
 
 type Props = {
   width: number;
@@ -29,6 +31,7 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
     level,
     nodeMetric
   );
+  const styles = useStyles2(getStyles);
 
   const dropdownInfrastructureChange = (label: string | undefined) => {
     if (label !== undefined) {
@@ -38,16 +41,14 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
 
   return (
     <div>
-      <img
-        src="https://raw.githubusercontent.com/fylip97/Thesis/main/src/img/back2.png"
-        onClick={() => setShowGraph(false)}
-        className="graphBack"
-      />
+      <Button variant="secondary" size="sm" icon="arrow-left" onClick={() => setShowGraph(false)}>
+        Back
+      </Button>
       <div>
-        <label className="graphName">{focusItem.text}</label>
-        <div className="graph">
-          <label className="graphHeader">Node Metrics</label>
-          <div className="infrastructureDropdown">
+        <label className={styles.graphName}>{focusItem.text}</label>
+        <div className={styles.graph}>
+          <label className={styles.graphHeader}>Node Metrics</label>
+          <div className={styles.infrastructureDropdown}>
             <DropdownComponent
               id="infrastructurMetrics"
               onChange={dropdownInfrastructureChange}
@@ -57,7 +58,13 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
             />
           </div>
         </div>
-        <div className="NodeGraph">
+        <div
+          className={css`
+            width: 100%;
+            display: flex;
+            justify-content: center;
+          `}
+        >
           <Graph
             width={width / 1.5}
             height={height / 1.5}

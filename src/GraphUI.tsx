@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Graph } from '@grafana/ui';
+import { Button, Graph, useStyles2 } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
+import { css } from '@emotion/css';
 import { DropdownComponent } from 'Menu/Dropdown';
 import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { dropdownInfrastructureOption } from './Menu/DropdownOptions';
 import { dropdownApplicationOption } from './Menu/DropdownOptions';
+import { getStyles } from 'styles/component/GraphStyle';
 
 type Props = {
   width: number;
@@ -39,6 +41,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
     level,
     applicationMetric
   );
+  const styles = useStyles2(getStyles);
 
   // is undefined if no application metrics are available
   if (seriesApplication === undefined) {
@@ -59,14 +62,14 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
 
   return (
     <div>
-      <button onClick={() => setShowGraph(false)} className="graphBack">
-        back
-      </button>
+      <Button variant="secondary" size="sm" icon="arrow-left" onClick={() => setShowGraph(false)}>
+        Back
+      </Button>
       <div>
-        <label className="graphName">{focusItem.text}</label>
-        <div className="graph">
-          <label className="graphHeader">Infrastructure Metrics</label>
-          <div className="infrastructureDropdown">
+        <label className={styles.graphName}>{focusItem.text}</label>
+        <div className={styles.graph}>
+          <label className={styles.graphHeader}>Infrastructure Metrics</label>
+          <div className={styles.infrastructureDropdown}>
             <DropdownComponent
               id="infrastructurMetrics"
               onChange={dropdownInfrastructureChange}
@@ -84,12 +87,17 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
             showLines={true}
           />
         </div>
-        <hr className="graphHr"></hr>
+        <hr
+          className={css`
+            border-top: 2px solid black;
+            width: 100%;
+          `}
+        ></hr>
       </div>
       <div>
-        <div className="graph">
-          <label className="graphHeader">Application Metrics</label>
-          <div className="infrastructureDropdown">
+        <div className={styles.graph}>
+          <label className={styles.graphHeader}>Application Metrics</label>
+          <div className={styles.infrastructureDropdown}>
             <DropdownComponent
               id="applicationMetrics"
               onChange={dropdownApplicationChange}
