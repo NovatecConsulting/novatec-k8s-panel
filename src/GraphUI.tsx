@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Graph, useStyles2 } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
-import { css } from '@emotion/css';
 import { DropdownComponent } from 'Menu/Dropdown';
 import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { dropdownInfrastructureOption } from './Menu/DropdownOptions';
 import { dropdownApplicationOption } from './Menu/DropdownOptions';
 import { getStyles } from 'styles/component/GraphStyle';
+import { getStyles as getGraphUIStyles } from 'styles/component/GraphUIStyle';
 
 type Props = {
   width: number;
@@ -42,6 +42,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
     applicationMetric
   );
   const styles = useStyles2(getStyles);
+  const graphUIStyles = useStyles2(getGraphUIStyles);
 
   // is undefined if no application metrics are available
   if (seriesApplication === undefined) {
@@ -87,12 +88,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
             showLines={true}
           />
         </div>
-        <hr
-          className={css`
-            border-top: 2px solid black;
-            width: 100%;
-          `}
-        ></hr>
+        <hr className={graphUIStyles.graphHr}></hr>
       </div>
       <div>
         <div className={styles.graph}>

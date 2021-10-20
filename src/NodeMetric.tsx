@@ -6,7 +6,7 @@ import { Element } from './types';
 import { dropdownNodeOption } from './Menu/DropdownOptions';
 import { getInfrastructureSeries } from './processMetric/ConvertGraphData';
 import { getStyles } from 'styles/component/GraphStyle';
-import { css } from '@emotion/css';
+import { getStyles as getNodeStyle } from 'styles/component/NodeMetricStyle';
 
 type Props = {
   width: number;
@@ -32,6 +32,7 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
     nodeMetric
   );
   const styles = useStyles2(getStyles);
+  const nodeStyles = useStyles2(getNodeStyle);
 
   const dropdownInfrastructureChange = (label: string | undefined) => {
     if (label !== undefined) {
@@ -58,13 +59,7 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
             />
           </div>
         </div>
-        <div
-          className={css`
-            width: 100%;
-            display: flex;
-            justify-content: center;
-          `}
-        >
+        <div className={nodeStyles.nodeGraph}>
           <Graph
             width={width / 1.5}
             height={height / 1.5}
