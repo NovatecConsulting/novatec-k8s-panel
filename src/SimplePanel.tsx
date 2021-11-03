@@ -137,7 +137,6 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
    * Is called to close the drilldown menu.
    */
   const closeDrilldown = () => {
-    console.log('hey');
     setShowDrilldown(false);
   };
 

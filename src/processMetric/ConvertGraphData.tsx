@@ -21,16 +21,6 @@ export function getInfrastructureSeries(
     for (let i = 0; i < pods.length; i++) {
       allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric, metricType));
     }
-    // Addition when deployment consists of multiple pods.
-    // let allData = allSeries[0][0].data;
-    // for (let i = 0; i < allSeries[0].length; i++) {
-    //   if (i !== 0) {
-    //     allData = allData[1].map(function (num: number, idx: number) {
-    //       return num + allSeries[0][i].data[1][idx];
-    //     });
-    //   }
-    // }
-    // allSeries[0][0].data = allData;
     return allSeries[0];
 
   } else {
