@@ -162,7 +162,9 @@ export function dropdownInfrastructureOption(value: string, level: string) {
   }
   return option;
 }
-
+/**
+ * Returns the list of options without the chosen option (which is the param value)
+ */
 export function dropdownApplicationOption(value: string) {
   let option: SelectableValue[] = [];
   const all = [
@@ -184,7 +186,9 @@ export function dropdownApplicationOption(value: string) {
   }
   return option;
 }
-
+/**
+ * Returns the list of options without the chosen option (which is the param value)
+ */
 export function dropdownNodeOption(value: string) {
   let option: SelectableValue[] = [];
   const all = [
@@ -205,3 +209,4 @@ export function dropdownNodeOption(value: string) {
   }
   return option;
 }
+

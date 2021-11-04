@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Graph, useStyles2 } from '@grafana/ui';
-import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
+import { Graph, useStyles2, Button } from '@grafana/ui';
+import { PanelData, GraphSeriesXY, TimeRange, SelectableValue } from '@grafana/data';
 import { DropdownComponent } from 'Menu/Dropdown';
 import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
-import { dropdownInfrastructureOption } from './Menu/DropdownOptions';
-import { dropdownApplicationOption } from './Menu/DropdownOptions';
 import { getStyles } from 'styles/component/GraphStyle';
 import { getStyles as getGraphUIStyles } from 'styles/component/GraphUIStyle';
 
@@ -23,8 +21,8 @@ type Props = {
  * Infrastructure and application metrics component.
  */
 export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusItem, level }: Props) => {
-  const [infrastructureMetric, setInfrastructureMetric] = useState('CPU Usage');
-  const [applicationMetric, setApplicationMetric] = useState('Service in count');
+  const [infrastructureMetric, setInfrastructureMetric] = useState('choose metric..');
+  const [applicationMetric, setApplicationMetric] = useState('choose metric..');
   let seriesInfrastructure: GraphSeriesXY[] = getInfrastructureSeries(
     width,
     data,
@@ -61,6 +59,29 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
     }
   };
 
+  function availableMetrics(data: PanelData, level: string, metricType: string) {
+    let options: SelectableValue[] = [];
+    for (let i = 0; i < data.series.length; i++) {
+      if (data.series[i].refId?.includes(metricType) && data.series[i].refId?.includes(level.toLowerCase())) {
+        if (data.series[i].refId !== undefined) {
+          let str: SelectableValue = { label: data.series[i].refId };
+          str.label = str.label?.substring(str.label?.indexOf("/") + 1, str.label?.lastIndexOf("/"));
+          let found = false;
+          for (let i = 0; i < options.length; i++) {
+            if (options[i].label === str.label) {
+              found = true;
+              break;
+            }
+          }
+          if (found === false) {
+            options.push(str);
+          }
+        }
+      }
+    }
+    return options;
+  }
+
   return (
     <div>
       <Button variant="secondary" size="sm" icon="arrow-left" onClick={() => setShowGraph(false)}>
@@ -74,7 +95,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
             <DropdownComponent
               id="infrastructurMetrics"
               onChange={dropdownInfrastructureChange}
-              options={dropdownInfrastructureOption(infrastructureMetric, level)}
+              options={availableMetrics(data, level, "infra")}
               value={infrastructureMetric}
               isDisabled={false}
             />
@@ -97,7 +118,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
             <DropdownComponent
               id="applicationMetrics"
               onChange={dropdownApplicationChange}
-              options={dropdownApplicationOption(applicationMetric)}
+              options={availableMetrics(data, level, "app")}
               value={applicationMetric}
               isDisabled={false}
             />
