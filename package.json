@@ -16,23 +16,25 @@
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
-    "@grafana/data": "^7.0.0",
-    "@grafana/toolkit": "^7.0.0",
-    "@grafana/ui": "^7.0.0",
+    "@grafana/data": "^8.2.2",
+    "@grafana/toolkit": "^7.5.11",
+    "@grafana/ui": "^8.2.2",
     "emotion": "10.0.27"
   },
   "engines": {
     "node": ">=12 <13"
   },
   "dependencies": {
-    "@types/react-portal": "^4.0.2",
-    "konva": "^7.1.4",
+    "@emotion/css": "^11.5.0",
+    "@types/react-portal": "^4.0.4",
+    "konva": "^7.2.5",
     "lodash": "^4.17.21",
-    "primereact": "^5.0.1",
+    "primereact": "^5.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-icons": "^4.2.0",
-    "react-konva": "^17.0.2-4",
-    "react-portal": "^4.2.1"
+    "react-icons": "^4.3.1",
+    "react-konva": "^17.0.2-5",
+    "react-portal": "^4.2.1",
+    "tslib": "^2.3.1"
   }
 }
