@@ -24,7 +24,7 @@ const metricOptions = [
   'Memory Requests',
 ];
 
-interface Props extends PanelProps<SimpleOptions> {}
+interface Props extends PanelProps<SimpleOptions> { }
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
   let firstFilterOption: SelectableValue = { label: '-', description: 'Overview' };

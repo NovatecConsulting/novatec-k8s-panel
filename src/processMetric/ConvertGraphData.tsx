@@ -12,32 +12,19 @@ export function getInfrastructureSeries(
   level: string,
   metric: string
 ) {
+  const metricType = "infra";
   if (level === 'Deployment') {
     const pods = findPod(data, name);
     name = pods[0];
     level = 'Pod';
     let allSeries: any = [];
-    // If deployment consists of one pod.
-    if (pods.length === 1) {
-      return getOneSeries(width, data, timeRange, pods[0], level, metric);
-    } else {
-      for (let i = 0; i < pods.length; i++) {
-        allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric));
-      }
-      // Addition when deployment consists of multiple pods.
-      let allData = allSeries[0][0].data;
-      for (let i = 0; i < allSeries[0].length; i++) {
-        if (i !== 0) {
-          allData = allData[1].map(function(num: number, idx: number) {
-            return num + allSeries[0][i].data[1][idx];
-          });
-        }
-      }
-      allSeries[0][0].data = allData;
-      return allSeries[0];
+    for (let i = 0; i < pods.length; i++) {
+      allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric, metricType));
     }
+    return allSeries[0];
+
   } else {
-    return getOneSeries(width, data, timeRange, name, level, metric);
+    return getOneSeries(width, data, timeRange, name, level, metric, metricType);
   }
 }
 
@@ -52,8 +39,9 @@ export function getApplicationSeries(
   level: string,
   metric: string
 ) {
+  const metricType = "app";
   if (level === 'Container') {
-    return getOneSeries(width, data, timeRange, name, level, metric);
+    return getOneSeries(width, data, timeRange, name, level, metric, metricType);
   } else {
     const allContainer = getAllContainer(data);
     let container = [];
@@ -79,7 +67,7 @@ export function getApplicationSeries(
 
     let allSeries = [];
     for (let i = 0; i < container.length; i++) {
-      allSeries.push(getOneSeries(width, data, timeRange, container[i], 'Container', metric));
+      allSeries.push(getOneSeries(width, data, timeRange, container[i], 'Container', metric, metricType));
     }
 
     let notEmpty: any = [];
@@ -109,52 +97,9 @@ export function getApplicationSeries(
   }
 }
 
-/**
- * Return the name of the metric.
- */
-function convertMetricName(metric: string) {
-  const infrastructureMetrics = [
-    ['CPU Usage', 'cpu_usage'],
-    ['Memory Usage', 'container_memory_working_set_bytes'],
-    ['Memory Saturation', 'memory_saturation'],
-    ['Network receive total', 'network_receive'],
-    ['Network transmit total', 'network_transmit'],
-    ['Network receive saturation', 'network_receive_dropped'],
-    ['Network transmit saturation', 'network_transmit_dropped'],
-    ['Network receive errors', 'network_receive_errors'],
-    ['Network transmit errors', 'network_transmit_errors'],
-  ];
-
-  const applicationMetrics = [
-    ['Service in count', 'service_in_count'],
-    ['Service out count', 'service_out_count'],
-    ['Service in responsetime sum', 'service_in_responsetime_sum'],
-    ['Service out responsetime sum', 'service_out_responsetime_sum'],
-    ['http in responsetime sum', 'http_in_responsetime_sum'],
-    ['http out responsetime sum', 'http_out_responsetime_sum'],
-    ['jvm memory heap', 'jvm_memory_used_heap'],
-    ['jvm memory non heap', 'jvm_memory_used_nonheap'],
-  ];
-
-  const nodeMetrics = [
-    ['Write total', 'container_fs_writes_total'],
-    ['Read total', 'container_fs_reads_total'],
-    ['Alloctable CPU Cores', 'kube_node_status_allocatable_cpu_cores'],
-    ['Alloctable Memory Bytes', 'kube_node_status_allocatable_memory_bytes'],
-    ['Active Memory', 'node_memory_Active_bytes'],
-    ['Inactive Memory', 'node_memory_Inactive_bytes'],
-  ];
-
-  const allMetrics = infrastructureMetrics.concat(applicationMetrics).concat(nodeMetrics);
-  for (let i = 0; i < allMetrics.length; i++) {
-    if (metric === allMetrics[i][0]) {
-      return allMetrics[i][1];
-    }
-  }
-  return '';
-}
 
 /**
+ * Returns an array of all pods in a given deployment
  * If the metrics are displayed from a deployment, the affected pods must be found.
  */
 function findPod(data: PanelData, name: string) {
@@ -176,31 +121,27 @@ function findPod(data: PanelData, name: string) {
 /**
  * Calculates one series.
  */
-function getOneSeries(
+
+
+export function getOneSeries(
   width: number,
   data: PanelData,
   timeRange: TimeRange,
   name: string,
   level: string,
-  metric: string
+  metric: string,
+  metricType: string
 ) {
   let ser_ind = 0;
   let series: GraphSeriesXY[] = [];
 
-  const metricName = convertMetricName(metric);
-  // convert metric to promql metric name
-
   let dataIndex = 0;
   for (let i = 0; i < data.series.length; i++) {
-    const temp = data.series[i].name?.split(' ');
-    if (temp !== undefined) {
-      if (temp[0] === name) {
-        if (temp[1] === level) {
-          if (temp[2] === metricName) {
-            dataIndex = i;
-          }
-        }
-      }
+    if (data.series[i].refId?.includes(metricType) &&
+      data.series[i].refId?.includes(metric) &&
+      data.series[i].refId?.includes(level.toLowerCase()) &&
+      data.series[i].name?.includes(name)) {
+      dataIndex = i;
     }
   }
 
@@ -228,3 +169,4 @@ function getOneSeries(
   series.push(ser);
   return series;
 }
+
