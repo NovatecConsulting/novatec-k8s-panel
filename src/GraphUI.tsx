@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Graph, useStyles2 } from '@grafana/ui';
+import { Graph, useStyles2, Button } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange, SelectableValue } from '@grafana/data';
 import { DropdownComponent } from 'Menu/Dropdown';
 import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
