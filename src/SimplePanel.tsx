@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
+import { useTheme2 } from '@grafana/ui';
+import { getStyles } from 'styles/component/SimplePanelStyle';
 import { SimpleOptions, Tuple, Types } from 'types';
 import { Canvas } from 'ObjectVisualisation/Canvas';
 import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
 import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
-import 'style/SimplePanel.css';
 import { handler, filterHandler, groupedWithFilterHandler, groupedHandler, metricHandler } from 'processMetric/Handler';
 import { Element } from 'types';
 import { Drilldown } from './Menu/Drilddown';
@@ -43,6 +44,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     elementInfo: { type: Types.Namespace },
   });
   const [showGraph, setShowGraph] = useState(false);
+  const theme = useTheme2();
+  const styles = getStyles(theme, height);
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -130,30 +133,19 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const itemSelectHandler = (item: Element) => {
     setShowDrilldown(!showDrilldown);
 
-
     if (levelOption !== 'Node') {
       setDrilldownItem(item);
-    }
-    else {
+    } else {
       setShowGraph(true);
-
     }
-
-  };
-
-  /**
-   * Is called to close the drilldown menu.
-   */
-  const closeDrilldown = () => {
-    setShowDrilldown(false);
   };
 
   return (
     <div>
       {!showGraph ? (
         <div>
-          <div className="header--simple">
-            <div className="dropdown--simple">
+          <div className={styles.header}>
+            <div className={styles.dropdown}>
               <label>Level:</label>
               <div>
                 <DropdownComponent
@@ -165,7 +157,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 />
               </div>
             </div>
-            <div className="dropdown--simple">
+            <div className={styles.dropdown}>
               <label>Filter:</label>
               <div>
                 <DropdownComponentFilter
@@ -177,7 +169,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 />
               </div>
             </div>
-            <div className="dropdown--simple">
+            <div className={styles.dropdown}>
               <label>Grouped by:</label>
               <div>
                 <DropdownComponent
@@ -189,7 +181,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                 />
               </div>
             </div>
-            <div className="dropdown--simple">
+            <div className={styles.dropdown}>
               <label>Metric:</label>
               <div>
                 <DropdownComponent
@@ -202,8 +194,12 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
               </div>
             </div>
             {showDrilldown ? (
-              <div className="drilldown--simple" style={{ height: height - 40 }}>
-                <Drilldown closeDrilldown={closeDrilldown} drilldownItem={drilldownItem} setShowGraph={setShowGraph} />
+              <div className={styles.drilldown}>
+                <Drilldown
+                  closeDrilldown={() => setShowDrilldown(false)}
+                  drilldownItem={drilldownItem}
+                  setShowGraph={setShowGraph}
+                />
               </div>
             ) : null}
           </div>
