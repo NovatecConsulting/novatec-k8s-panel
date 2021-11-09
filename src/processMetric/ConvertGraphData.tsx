@@ -12,33 +12,19 @@ export function getInfrastructureSeries(
   level: string,
   metric: string
 ) {
+  const metricType = "infra";
   if (level === 'Deployment') {
     const pods = findPod(data, name);
     name = pods[0];
     level = 'Pod';
     let allSeries: any = [];
-    // If deployment consists of one pod.
-    if (pods.length === 1) {
-      return getOneSeries(width, data, timeRange, pods[0], level, metric);
-    } else {
-      for (let i = 0; i < pods.length; i++) {
-        allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric));
-      }
-      // Addition when deployment consists of multiple pods.
-      let allData = allSeries[0][0].data;
-      for (let i = 0; i < allSeries[0].length; i++) {
-        if (i !== 0) {
-          allData = allData[1].map(function (num: number, idx: number) {
-            return num + allSeries[0][i].data[1][idx];
-          });
-        }
-      }
-      allSeries[0][0].data = allData;
-      return allSeries[0];
+    for (let i = 0; i < pods.length; i++) {
+      allSeries.push(getOneSeries(width, data, timeRange, pods[i], level, metric, metricType));
     }
-  } else {
+    return allSeries[0];
 
-    return getOneSeries(width, data, timeRange, name, level, metric);
+  } else {
+    return getOneSeries(width, data, timeRange, name, level, metric, metricType);
   }
 }
 
@@ -53,9 +39,9 @@ export function getApplicationSeries(
   level: string,
   metric: string
 ) {
+  const metricType = "app";
   if (level === 'Container') {
-
-    return getOneSeries(width, data, timeRange, name, level, metric);
+    return getOneSeries(width, data, timeRange, name, level, metric, metricType);
   } else {
     const allContainer = getAllContainer(data);
     let container = [];
@@ -81,7 +67,7 @@ export function getApplicationSeries(
 
     let allSeries = [];
     for (let i = 0; i < container.length; i++) {
-      allSeries.push(getOneSeries(width, data, timeRange, container[i], 'Container', metric));
+      allSeries.push(getOneSeries(width, data, timeRange, container[i], 'Container', metric, metricType));
     }
 
     let notEmpty: any = [];
@@ -111,52 +97,9 @@ export function getApplicationSeries(
   }
 }
 
-/**
- * Return the name of the metric.
- */
-function convertMetricName(metric: string) {
-  const infrastructureMetrics = [
-    ['CPU Usage', 'cpu_usage'],
-    ['Memory Usage', 'container_memory_working_set_bytes'],
-    ['Memory Saturation', 'memory_saturation'],
-    ['Network receive total', 'network_receive'],
-    ['Network transmit total', 'network_transmit'],
-    ['Network receive saturation', 'network_receive_dropped'],
-    ['Network transmit saturation', 'network_transmit_dropped'],
-    ['Network receive errors', 'network_receive_errors'],
-    ['Network transmit errors', 'network_transmit_errors'],
-  ];
-
-  const applicationMetrics = [
-    ['Service in count', 'service_in_count'],
-    ['Service out count', 'service_out_count'],
-    ['Service in responsetime sum', 'service_in_responsetime_sum'],
-    ['Service out responsetime sum', 'service_out_responsetime_sum'],
-    ['http in responsetime sum', 'http_in_responsetime_sum'],
-    ['http out responsetime sum', 'http_out_responsetime_sum'],
-    ['jvm memory heap', 'jvm_memory_used_heap'],
-    ['jvm memory non heap', 'jvm_memory_used_nonheap'],
-  ];
-
-  const nodeMetrics = [
-    ['Write total', 'container_fs_writes_total'],
-    ['Read total', 'container_fs_reads_total'],
-    ['Alloctable CPU Cores', 'kube_node_status_allocatable_cpu_cores'],
-    ['Alloctable Memory Bytes', 'kube_node_status_allocatable_memory_bytes'],
-    ['Active Memory', 'node_memory_Active_bytes'],
-    ['Inactive Memory', 'node_memory_Inactive_bytes'],
-  ];
-
-  const allMetrics = infrastructureMetrics.concat(applicationMetrics).concat(nodeMetrics);
-  for (let i = 0; i < allMetrics.length; i++) {
-    if (metric === allMetrics[i][0]) {
-      return allMetrics[i][1];
-    }
-  }
-  return '';
-}
 
 /**
+ * Returns an array of all pods in a given deployment
  * If the metrics are displayed from a deployment, the affected pods must be found.
  */
 function findPod(data: PanelData, name: string) {
@@ -178,31 +121,27 @@ function findPod(data: PanelData, name: string) {
 /**
  * Calculates one series.
  */
-function getOneSeries(
+
+
+export function getOneSeries(
   width: number,
   data: PanelData,
   timeRange: TimeRange,
   name: string,
   level: string,
-  metric: string
+  metric: string,
+  metricType: string
 ) {
   let ser_ind = 0;
   let series: GraphSeriesXY[] = [];
 
-  const metricName = convertMetricName(metric);
-  // convert metric to promql metric name
-
   let dataIndex = 0;
   for (let i = 0; i < data.series.length; i++) {
-    const temp = data.series[i].name?.split(' ');
-    if (temp !== undefined) {
-      if (temp[0] === name) {
-        if (temp[1] === level) {
-          if (temp[2] === metricName) {
-            dataIndex = i;
-          }
-        }
-      }
+    if (data.series[i].refId?.includes(metricType) &&
+      data.series[i].refId?.includes(metric) &&
+      data.series[i].refId?.includes(level.toLowerCase()) &&
+      data.series[i].name?.includes(name)) {
+      dataIndex = i;
     }
   }
 
@@ -230,63 +169,6 @@ function getOneSeries(
   series.push(ser);
   return series;
 }
-/**
-   * Return a boolean value weather an entity have an Application metric or not
-   */
-export function withAppMetric(
-  width: number,
-  data: PanelData,
-  timeRange: TimeRange,
-  name: string,
-  level: string,
-) {
-  const applicationMetrics = [
-    'Service in count',
-    'Service out count',
-    'Service in responsetime sum',
-    'Service out responsetime sum',
-    'http in responsetime sum',
-    'http out responsetime sum',
-    'jvm memory heap',
-    'jvm memory non heap',
-  ];
-  let withApp = false;
-  for (let i = 0; i < applicationMetrics.length; i++) {
-    if ((getApplicationSeries(width, data, timeRange, name, level, applicationMetrics[i]) !== undefined) === true) {
-      withApp = true;
-    };
-  }
-  return withApp;
-}
-/**
-   * Return a boolean value weather an entity have an infrastruture metric or not
-   */
-export function withInfMetric(
-  width: number,
-  data: PanelData,
-  timeRange: TimeRange,
-  name: string,
-  level: string
-) {
-  const infrastructureMetrics = [
-    'CPU Usage',
-    'Memory Usage',
-    'Memory Saturation',
-    'Network receive total',
-    'Network transmit total',
-    'Network receive saturation',
-    'Network transmit saturation',
-    'Network receive errors',
-    'Network transmit errors'
-  ];
-  let withInf = false;
-  for (let i = 0; i < infrastructureMetrics.length; i++) {
-    if ((getInfrastructureSeries(width, data, timeRange, name, level, infrastructureMetrics[i]) !== undefined) === true) {
-      withInf = true;
-    };
-  }
-  return withInf;
-}
 
 /**
    * Calculates the average of a specific given metric of an entity
@@ -295,35 +177,42 @@ export function calcMoy(
   data: PanelData,
   name: string,
   level: string,
-  metric: string
-) {
-
-  const metricName = convertMetricName(metric);
-  // convert metric to promql metric name
-
-  let dataIndex = 0;
+  metric: string) {
   for (let i = 0; i < data.series.length; i++) {
-    const temp = data.series[i].name?.split(' ');
-    if (temp !== undefined) {
-      if (temp[0] === name) {
-        if (temp[1] === level) {
-          if (temp[2] === metricName) {
-            dataIndex = i;
-          }
-        }
+    if (data.series[i].refId?.includes(level.toLowerCase())
+      && data.series[i].refId?.includes(metric)
+      && data.series[i].name?.includes(name)) {
+      let valueArray = data.series[i].fields[1].values.toArray();
+      let total = 0;
+      for (let i = 0; i < valueArray.length; i++) {
+        total += valueArray[i];
       }
+      return total / valueArray.length;
     }
   }
-
-  if (dataIndex === 0) {
-    return "";
+  return 0;
+}
+// /**
+//    * Return a boolean value weather an entity have an infrastruture metric or not
+//    */
+export function withInfMetric(data: PanelData, level: string, name: string) {
+  for (let i = 0; i < data.series.length; i++) {
+    if (data.series[i].refId?.includes("inf") && data.series[i].name?.includes(name)) {
+      return true;
+    }
   }
+  return false;
+}
 
-  let valueArray = data.series[dataIndex].fields[1].values.toArray();
-  let total = 0;
-  for (let i = 0; i < valueArray.length; i++) {
-    total += valueArray[i];
+/**
+   * Return a boolean value weather an entity have an Application metric or not
+   */
+
+export function withAppMetric(data: PanelData, level: string, name: string) {
+  for (let i = 0; i < data.series.length; i++) {
+    if (data.series[i].refId?.includes("app") && data.series[i].name?.includes(name)) {
+      return true;
+    }
   }
-  let avg = total / valueArray.length;
-  return avg;
+  return false;
 }

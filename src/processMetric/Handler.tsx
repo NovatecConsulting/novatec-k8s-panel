@@ -31,8 +31,8 @@ export function handler(width: number, height: number, levelOption: string, data
       allElements[i].elementInfo.pod = 'Count: ' + allElementInfo[i].Pod.length;
       allElements[i].elementInfo.type = Types.Namespace;
       allElements[i].elementInfo.deployment = 'Count: ' + allElementInfo[i].Deployment.length;
-      allElements[i].elementInfo.withAppMetrics = withAppMetric(width, data, timeRange, allElementInfo[i].Name, levelOption);
-      allElements[i].elementInfo.withInfMetrics = withInfMetric(width, data, timeRange, allElementInfo[i].Name, levelOption);
+      allElements[i].elementInfo.withAppMetrics = withAppMetric(data, levelOption, allElementInfo[i].Name);
+      allElements[i].elementInfo.withInfMetrics = withInfMetric(data, levelOption, allElementInfo[i].Name);
       let podcount = 0;
       let diffNodes = new Set();
       for (let l = 0; l < allElementInfo[i].Pod.length; l++) {
@@ -54,8 +54,8 @@ export function handler(width: number, height: number, levelOption: string, data
         allElements[temp].elementInfo.type = Types.Deployment;
         allElements[temp].elementInfo.deployment = allElementInfo[i].Deployment[l].Name;
         allElements[temp].elementInfo.container = 'Count: ' + allElementInfo[i].Deployment[l].Container.length;
-        allElements[temp].elementInfo.withAppMetrics = withAppMetric(width, data, timeRange, allElementInfo[i].Deployment[l].Name, levelOption);
-        allElements[temp].elementInfo.withInfMetrics = withInfMetric(width, data, timeRange, allElementInfo[i].Deployment[l].Name, levelOption);
+        allElements[temp].elementInfo.withAppMetrics = withAppMetric(data, levelOption, allElementInfo[i].Pod[l].Name);
+        allElements[temp].elementInfo.withInfMetrics = withInfMetric(data, levelOption, allElementInfo[i].Pod[l].Name);
         let diffNodes = new Set();
         for (let j = 0; j < allElementInfo[i].Deployment[l].Pod.length; j++) {
           diffNodes.add(allElementInfo[i].Deployment[l].Pod[j].Node);
@@ -78,8 +78,8 @@ export function handler(width: number, height: number, levelOption: string, data
         allElements[temp].elementInfo.type = Types.Pod;
         allElements[temp].elementInfo.deployment = allElementInfo[i].Pod[l].Deployment;
         allElements[temp].elementInfo.node = allElementInfo[i].Pod[l].Node;
-        allElements[temp].elementInfo.withAppMetrics = withAppMetric(width, data, timeRange, allElementInfo[i].Pod[l].Name, levelOption);
-        allElements[temp].elementInfo.withInfMetrics = withInfMetric(width, data, timeRange, allElementInfo[i].Pod[l].Name, levelOption);
+        allElements[temp].elementInfo.withAppMetrics = withAppMetric(data, levelOption, allElementInfo[i].Pod[l].Name);
+        allElements[temp].elementInfo.withInfMetrics = withInfMetric(data, levelOption, allElementInfo[i].Pod[l].Name);
         temp += 1;
       }
     }
@@ -98,8 +98,8 @@ export function handler(width: number, height: number, levelOption: string, data
           allElements[temp].elementInfo.type = Types.Container;
           allElements[temp].elementInfo.deployment = allElementInfo[i].Pod[l].Deployment;
           allElements[temp].elementInfo.node = allElementInfo[i].Pod[l].Node;
-          allElements[temp].elementInfo.withAppMetrics = withAppMetric(width, data, timeRange, allElementInfo[i].Pod[l].Container[j].Name, levelOption);
-          allElements[temp].elementInfo.withInfMetrics = withInfMetric(width, data, timeRange, allElementInfo[i].Pod[l].Container[j].Name, levelOption);
+          allElements[temp].elementInfo.withAppMetrics = withAppMetric(data, levelOption, allElementInfo[i].Pod[l].Name);
+          allElements[temp].elementInfo.withInfMetrics = withInfMetric(data, levelOption, allElementInfo[i].Pod[l].Name);
           temp += 1;
         }
       }
@@ -118,6 +118,7 @@ export function handler(width: number, height: number, levelOption: string, data
     }
   }
   const tuple: Tuple = { outside: undefined, inside: allElements };
+
   return tuple;
 }
 
@@ -552,17 +553,20 @@ export function metricHandler(
   const allElements = allInfo.inside;
   if (metric === chosenMetric) {
     for (let i = 0; i < allElements.length; i++) {
-      if (calcMoy(data, allElements[i].text, levelOption, metric) > red) {
-        allElements[i].color = "r";
-      }
-      else if (orange < calcMoy(data, allElements[i].text, levelOption, metric) && calcMoy(data, allElements[i].text, levelOption, metric) <= red) {
-        allElements[i].color = "y";
-      }
-      else if (green < calcMoy(data, allElements[i].text, levelOption, metric) && calcMoy(data, allElements[i].text, levelOption, metric) <= orange) {
-        allElements[i].color = "g";
-      }
-      else if (calcMoy(data, allElements[i].text, levelOption, metric) < green) {
-        allElements[i].color = "p";
+      if (calcMoy(data, allElements[i].text, levelOption, metric) !== undefined) {
+        const average = calcMoy(data, allElements[i].text, levelOption, metric) as number;
+        if (average > red) {
+          allElements[i].color = "r";
+        }
+        else if (orange < average && average <= red) {
+          allElements[i].color = "y";
+        }
+        else if (green < average && average <= orange) {
+          allElements[i].color = "g";
+        }
+        else if (average < green) {
+          allElements[i].color = "p";
+        }
       }
     }
   }

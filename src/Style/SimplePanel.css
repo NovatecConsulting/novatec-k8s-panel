@@ -41,6 +41,8 @@
 
 .datapoints-warning {
     margin-top: 9.8rem;
+    display: none;
+    visibility: hidden;
 }
 
 .graphHeader {

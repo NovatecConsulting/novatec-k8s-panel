@@ -15,12 +15,12 @@ const levelOptions = ['Overview', 'Namespace', 'Deployment', 'Pod', 'Container']
 const groupedOptions = ['Namespace', 'Deployment', 'Pod', 'Container'];
 export const metricOptions = [
   '-',
-  'CPU Usage',
-  'Memory Usage',
-  'CPU Limits',
-  'Memory Limits',
-  'CPU Requests',
-  'Memory Requests',
+  'cpu_usage',
+  'memory_usage',
+  'cpu_limits',
+  'memory_limits',
+  'cpu_requests',
+  'memory_requests',
 ];
 
 interface Props extends PanelProps<SimpleOptions> { }
