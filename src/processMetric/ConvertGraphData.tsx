@@ -170,3 +170,49 @@ export function getOneSeries(
   return series;
 }
 
+/**
+   * Calculates the average of a specific given metric of an entity
+   */
+export function calcMoy(
+  data: PanelData,
+  name: string,
+  level: string,
+  metric: string) {
+  for (let i = 0; i < data.series.length; i++) {
+    if (data.series[i].refId?.includes(level.toLowerCase())
+      && data.series[i].refId?.includes(metric)
+      && data.series[i].name?.includes(name)) {
+      let valueArray = data.series[i].fields[1].values.toArray();
+      let total = 0;
+      for (let i = 0; i < valueArray.length; i++) {
+        total += valueArray[i];
+      }
+      return total / valueArray.length;
+    }
+  }
+  return 0;
+}
+// /**
+//    * Return a boolean value weather an entity have an infrastruture metric or not
+//    */
+export function withInfMetric(data: PanelData, level: string, name: string) {
+  for (let i = 0; i < data.series.length; i++) {
+    if (data.series[i].refId?.includes("inf") && data.series[i].name?.includes(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+   * Return a boolean value weather an entity have an Application metric or not
+   */
+
+export function withAppMetric(data: PanelData, level: string, name: string) {
+  for (let i = 0; i < data.series.length; i++) {
+    if (data.series[i].refId?.includes("app") && data.series[i].name?.includes(name)) {
+      return true;
+    }
+  }
+  return false;
+}

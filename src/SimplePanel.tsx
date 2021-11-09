@@ -6,7 +6,7 @@ import { SimpleOptions, Tuple, Types } from 'types';
 import { Canvas } from 'ObjectVisualisation/Canvas';
 import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
 import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
-import { handler, filterHandler, groupedWithFilterHandler, groupedHandler } from 'processMetric/Handler';
+import { handler, filterHandler, groupedWithFilterHandler, groupedHandler, metricHandler } from 'processMetric/Handler';
 import { Element } from 'types';
 import { Drilldown } from './Menu/Drilddown';
 import { GraphUI } from './GraphUI';
@@ -14,25 +14,26 @@ import { NodeMetric } from './NodeMetric';
 
 const levelOptions = ['Overview', 'Namespace', 'Deployment', 'Pod', 'Container'];
 const groupedOptions = ['Namespace', 'Deployment', 'Pod', 'Container'];
-const metricOptions = [
+export const metricOptions = [
   '-',
-  'CPU Nutzung',
-  'Speicher Nutzung',
-  'CPU Limits',
-  'Memory Limits',
-  'CPU Requests',
-  'Memory Requests',
+  'cpu_usage',
+  'memory_usage',
+  'cpu_limits',
+  'memory_limits',
+  'cpu_requests',
+  'memory_requests',
 ];
 
 interface Props extends PanelProps<SimpleOptions> { }
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
+  const { theOptions } = options;
   let firstFilterOption: SelectableValue = { label: '-', description: 'Overview' };
   const [levelOption, setLevelOption] = useState('Overview');
   const [filterOption, setFilterOption] = useState(firstFilterOption);
   const [groupedOption, setGroupedOption] = useState('-');
   const [metricOption, setMetricOption] = useState('-');
-  const [showElements, setShowElements] = useState(handler(width, height, 'Overview', data));
+  const [showElements, setShowElements] = useState(handler(width, height, 'Overview', data, timeRange));
   const [showDrilldown, setShowDrilldown] = useState(false);
   const [drilldownItem, setDrilldownItem] = useState({
     position: { x: 0, y: 0 },
@@ -59,13 +60,13 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
         if (value === 'Overview') {
           setFilterOption({ label: '-' });
           setGroupedOption('-');
-          callHandlers(value, { label: '-' }, '-');
+          callHandlers(value, { label: '-' }, '-', metricOption);
         } else {
-          callHandlers(value, filterOption, groupedOption);
+          callHandlers(value, filterOption, groupedOption, metricOption);
         }
       } catch {
         setLevelOption(label);
-        callHandlers(label, filterOption, groupedOption);
+        callHandlers(label, filterOption, groupedOption, metricOption);
       }
     }
   };
@@ -77,7 +78,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
     if (option.label !== undefined && levelOption !== 'Node') {
       setFilterOption(option);
       setGroupedOption('-');
-      callHandlers(levelOption, option, '-');
+      callHandlers(levelOption, option, '-', metricOption);
       setShowDrilldown(false);
     }
   };
@@ -88,7 +89,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   const setGroupedOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       setGroupedOption(label);
-      callHandlers(levelOption, filterOption, label);
+      callHandlers(levelOption, filterOption, label, metricOption);
       setShowDrilldown(false);
     }
   };
@@ -98,7 +99,11 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
    */
   const setMetricOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
+      //not the final solution
+      setGroupedOption('-');
+      setFilterOption(firstFilterOption);
       setMetricOption(label);
+      callHandlers(levelOption, filterOption, groupedOption, label);
       setShowDrilldown(false);
     }
   };
@@ -106,16 +111,19 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
   /**
    * Calls the matching handlers.
    */
-  const callHandlers = (level: string, filter: SelectableValue, grouped: string) => {
-    let allElements: Tuple = handler(width, height, level, data);
+  const callHandlers = (level: string, filter: SelectableValue, grouped: string, metric: string) => {
+    let allElements: Tuple = handler(width, height, level, data, timeRange);
     setShowElements(allElements);
     if (filter.label !== '-') {
       setShowElements(filterHandler(width, height, allElements, level, filter, data));
     }
     if (grouped !== '-' && filter.label === '-') {
-      setShowElements(groupedHandler(data, showElements, level, filter, grouped, width, height, false));
+      setShowElements(groupedHandler(data, showElements, level, filter, grouped, width, height, false, timeRange));
     } else if (grouped !== '-') {
-      setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height));
+      setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height, timeRange));
+    }
+    if (metric !== '-') {
+      setShowElements(metricHandler(width, height, allElements, level, filter, data, metric, theOptions.dropdownOption, parseFloat(theOptions.red), parseFloat(theOptions.orange), parseFloat(theOptions.green)));
     }
   };
 
@@ -181,7 +189,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
                   options={dropdownOptions(metricOptions, metricOption)}
                   onChange={setMetricOptionHandler}
                   value={metricOption}
-                  isDisabled={true}
+                  isDisabled={false}
                 />
               </div>
             </div>
