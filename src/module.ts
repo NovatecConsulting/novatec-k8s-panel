@@ -1,40 +1,35 @@
 import { PanelPlugin } from '@grafana/data';
 import { SimpleOptions } from './types';
 import { SimplePanel } from './SimplePanel';
-
+import { InputOrangeEditor, InputGreenEditor, InputRedEditor } from 'InputNumberEditor';
+import { metricOptions } from 'SimplePanel';
 export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOptions(builder => {
   return builder
-    .addTextInput({
-      path: 'text',
-      name: 'Simple text option',
-      description: 'Description of panel option',
-      defaultValue: 'Default value of text input option',
-    })
-    .addBooleanSwitch({
-      path: 'showSeriesCount',
-      name: 'Show series counter',
-      defaultValue: false,
-    })
-    .addRadio({
-      path: 'seriesCountSize',
-      defaultValue: 'sm',
-      name: 'Series counter size',
+    .addSelect({
+      name: 'Threshold',
+      path: 'theOptions.dropdownOption',
       settings: {
-        options: [
-          {
-            value: 'sm',
-            label: 'Small',
-          },
-          {
-            value: 'md',
-            label: 'Medium',
-          },
-          {
-            value: 'lg',
-            label: 'Large',
-          },
-        ],
+        options: metricOptions.map(option => {
+          return { label: option, value: option };
+        }),
       },
-      showIf: config => config.showSeriesCount,
+    })
+    .addCustomEditor({
+      id: 'index1',
+      path: 'theOptions.red',
+      name: 'High:',
+      editor: InputRedEditor,
+    })
+    .addCustomEditor({
+      id: 'index2',
+      path: 'theOptions.orange',
+      name: 'Medium:',
+      editor: InputOrangeEditor,
+    })
+    .addCustomEditor({
+      id: 'index3',
+      path: 'theOptions.green',
+      name: 'Low:',
+      editor: InputGreenEditor,
     });
 });
