@@ -1,5 +1,6 @@
 import React from 'react';
 import { Element } from 'types';
+
 import { Layer } from 'react-konva';
 import { RectItem } from 'ObjectVisualisation/Item/RectItem';
 import { TextItem } from 'ObjectVisualisation/Item/TextItem';
@@ -18,7 +19,7 @@ export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: P
   const t = useTheme2();
   return (
     <Layer>
-      {allInfos.map(info => (
+      {allInfos.map((info) => (
         <RectItem
           position={info.position}
           width={info.width}
@@ -35,7 +36,7 @@ export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: P
           type={info.elementInfo?.type}
         />
       ))}
-      {allInfos.map(info => (
+      {allInfos.map((info) => (
         <TextItem
           position={info.position}
           text={info.text}
@@ -44,7 +45,7 @@ export const Item = ({ allInfos, setGroupedOptionHandler, itemSelectHandler }: P
           type={info.elementInfo?.type}
         />
       ))}
-      {allInfos.map(info => (
+      {allInfos.map((info) => (
         <MetricImage
           position={info.position}
           itemWidth={info.width}

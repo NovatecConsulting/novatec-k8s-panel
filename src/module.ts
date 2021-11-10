@@ -1,9 +1,10 @@
 import { PanelPlugin } from '@grafana/data';
-import { SimpleOptions } from './types';
-import { SimplePanel } from './SimplePanel';
+import { PanelOptions } from './types';
+import { NovatecK8SPanel } from './NovatecK8SPanel';
 import { InputOrangeEditor, InputGreenEditor, InputRedEditor } from 'InputNumberEditor';
-import { metricOptions } from 'SimplePanel';
-export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOptions(builder => {
+import { metricOptions } from './NovatecK8SPanel';
+
+export const plugin = new PanelPlugin<PanelOptions>(NovatecK8SPanel).setPanelOptions(builder => {
   return builder
     .addSelect({
       name: 'Threshold',

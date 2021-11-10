@@ -8,7 +8,7 @@ export enum DropdownOption {
   TimeDesc,
 }
 
-export interface SimpleOptions {
+export interface PanelOptions {
   text: string;
   showSeriesCount: boolean;
   seriesCountSize: SeriesSize;
