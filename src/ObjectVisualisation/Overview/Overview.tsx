@@ -1,7 +1,6 @@
 import React from 'react';
 import { Element } from 'types';
 
-// import { render } from 'react-dom';
 import { Layer } from 'react-konva';
 import { RectOverview } from 'ObjectVisualisation/Overview/RectOverview';
 import { TextOverview } from 'ObjectVisualisation/Overview/TextOverview';
@@ -18,7 +17,7 @@ type Props = {
 export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHandler }: Props) => {
   return (
     <Layer>
-      {allInfos.map(info => (
+      {allInfos.map((info) => (
         <RectOverview
           position={info.position}
           width={info.width}
@@ -28,7 +27,7 @@ export const Overview = ({ allInfos, setLevelOptionHandler, setGroupedOptionHand
           setLevelOptionHandler={setLevelOptionHandler}
         />
       ))}
-      {allInfos.map(info => (
+      {allInfos.map((info) => (
         <TextOverview
           position={info.position}
           text={info.text}

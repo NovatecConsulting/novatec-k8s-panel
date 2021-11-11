@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { useTheme2 } from '@grafana/ui';
 import { getStyles } from 'styles/component/SimplePanelStyle';
-import { SimpleOptions, Tuple, Types } from 'types';
+import { PanelOptions, Tuple, Types } from 'types';
 import { Canvas } from 'ObjectVisualisation/Canvas';
 import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
 import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
@@ -24,9 +24,9 @@ export const metricOptions = [
   'memory_requests',
 ];
 
-interface Props extends PanelProps<SimpleOptions> { }
+interface Props extends PanelProps<PanelOptions> {}
 
-export const SimplePanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
+export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
   const { theOptions } = options;
   let firstFilterOption: SelectableValue = { label: '-', description: 'Overview' };
   const [levelOption, setLevelOption] = useState('Overview');
@@ -123,7 +123,21 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, tim
       setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height, timeRange));
     }
     if (metric !== '-') {
-      setShowElements(metricHandler(width, height, allElements, level, filter, data, metric, theOptions.dropdownOption, parseFloat(theOptions.red), parseFloat(theOptions.orange), parseFloat(theOptions.green)));
+      setShowElements(
+        metricHandler(
+          width,
+          height,
+          allElements,
+          level,
+          filter,
+          data,
+          metric,
+          theOptions.dropdownOption,
+          parseFloat(theOptions.red),
+          parseFloat(theOptions.orange),
+          parseFloat(theOptions.green)
+        )
+      );
     }
   };
 

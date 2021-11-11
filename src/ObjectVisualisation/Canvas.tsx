@@ -7,7 +7,7 @@ import { Outside } from 'ObjectVisualisation/Outside/Outside';
 import { SelectableValue } from '@grafana/data';
 import { Element } from 'types';
 import { useTheme2 } from '@grafana/ui';
-import { css } from '@emotion/css';
+import { css } from 'emotion';
 
 interface StageProps {
   width: number;
