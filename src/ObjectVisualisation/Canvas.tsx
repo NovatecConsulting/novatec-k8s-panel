@@ -6,6 +6,8 @@ import { Item } from 'ObjectVisualisation/Item/Item';
 import { Outside } from 'ObjectVisualisation/Outside/Outside';
 import { SelectableValue } from '@grafana/data';
 import { Element } from 'types';
+import { useTheme2 } from '@grafana/ui';
+import { css } from 'emotion';
 
 interface StageProps {
   width: number;
@@ -32,12 +34,13 @@ export const Canvas = ({
   const [stageScale, setStageScale] = useState(1);
   const [stageX, setStageX] = useState(0);
   const [stageY, setStageY] = useState(0);
+  const theme = useTheme2();
 
   const resetZoom = () => {
     setStageX(0);
     setStageY(0);
     setStageScale(1);
-  }
+  };
   const handleWheel = (e: any) => {
     e.evt.preventDefault();
 
@@ -57,17 +60,20 @@ export const Canvas = ({
     }
   };
   return (
-    <div>
+    <div
+      className={css`
+        background-color: ${theme.colors.background.canvas};
+      `}
+    >
       <Stage
-        width={width - 20}
-        height={height - 40}
+        width={width}
+        height={height - 53}
         onWheel={handleWheel}
         scaleX={stageScale}
         scaleY={stageScale}
         x={stageX}
         y={stageY}
         draggable={true}
-        style={{ background: '#30343a' }}
         onClick={resetZoom}
       >
         {levelOption === 'Overview' ? (

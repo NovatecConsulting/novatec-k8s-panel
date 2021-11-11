@@ -49,6 +49,15 @@ export function dropdownOptionsFilter(data: PanelData, value: string | undefined
     firstElement.label = '-';
     option.push(firstElement);
   }
+  let metricElement1: SelectableValue = {};
+  metricElement1.label = 'Application metrics';
+  metricElement1.description = 'metrics';
+  option.push(metricElement1);
+  let metricElement2: SelectableValue = {};
+  metricElement2.label = 'Infrastructure metrics';
+  metricElement2.description = 'metrics';
+  option.push(metricElement2);
+
 
   if (levelOption !== 'Overview') {
     const allElement = getAllElementInfo(data);

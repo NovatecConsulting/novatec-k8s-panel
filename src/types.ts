@@ -1,9 +1,23 @@
 type SeriesSize = 'sm' | 'md' | 'lg';
 
-export interface SimpleOptions {
+export enum DropdownOption {
+  AlphaAsc = 1,
+  AlphaDesc,
+  Importance,
+  TimeAsc,
+  TimeDesc,
+}
+
+export interface PanelOptions {
   text: string;
   showSeriesCount: boolean;
   seriesCountSize: SeriesSize;
+  theOptions: {
+    red: string;
+    orange: string;
+    green: string;
+    dropdownOption: string;
+  };
 }
 
 export interface Element {
@@ -28,6 +42,8 @@ export interface ElementInfo {
   container?: string;
   node?: string;
   deployment?: string;
+  withAppMetrics?: boolean;
+  withInfMetrics?: boolean;
 }
 
 export enum Types {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { LegacyForms } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
-const { Select } = LegacyForms;
 
 interface SelectProps {
   id: string;
@@ -26,7 +25,7 @@ export const DropdownComponent = ({ id, options, onChange, value, isDisabled }: 
         options={options}
         onChange={item => onChange(item.label)}
         value={selectableValue}
-        isDisabled={isDisabled}
+        disabled={isDisabled}
       />
     </div>
   );
@@ -54,7 +53,7 @@ export const DropdownComponentFilter = ({ id, options, onChange, value, isDisabl
         options={options}
         onChange={item => onChange(item)}
         value={value}
-        isDisabled={isDisabled}
+        disabled={isDisabled}
       />
     </div>
   );
