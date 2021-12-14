@@ -20,6 +20,38 @@ export interface PanelOptions {
   };
 }
 
+/**
+ * stores root Nodes from treeshaped data and the layerLabels
+ */
+export interface ITree {
+  // root nodes from the tree
+  roots: INode[];
+  // stores the Labels of each layer/ depth (eg. [Namespace, Deployment,...])
+  layerLaybels: string[];
+}
+
+/**
+ * represents an element with links to its parent and childs
+ */
+export interface INode {
+  label: string;
+  // parent node this link can be used to figure out the layer of the Node
+  parent?: INode;
+  children?: INode[];
+  info: INodeInfo;
+}
+
+/**
+ * stores information about a Node
+ */
+interface INodeInfo {
+  hasAppMetric: boolean;
+  hasInfMetric: boolean;
+  // can store addition information to filter (e.g. Node)
+  properties?: Map<string, string>;
+}
+
+// ab hier alt
 export interface Element {
   position: Position;
   width: number;

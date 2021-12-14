@@ -8,7 +8,7 @@ export function getData(data: PanelData) {
 export function getDeploymentCount(data: PanelData) {
   let count = 0;
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].refId?.includes("deployment_info")) {
+    if (data.series[i].refId?.includes('deployment_info')) {
       count++;
     }
   }
@@ -21,7 +21,7 @@ export function getDeploymentCount(data: PanelData) {
 export function getDeploymentNames(data: PanelData) {
   let names = [];
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].refId?.includes("deployment_info")) {
+    if (data.series[i].refId?.includes('deployment_info')) {
       let name = data.series[i].name;
       if (name != undefined) {
         names.push(name.slice(name.indexOf('"') + 1, name.lastIndexOf('"')));
@@ -31,11 +31,10 @@ export function getDeploymentNames(data: PanelData) {
   return names;
 }
 
-
 /**
  * converts the prometheus querie to JSON
  */
-function fromPromtoJSON(str: any) {
+export function fromPromtoJSON(str: any) {
   let newStr = str.replaceAll('=', ':');
   let newNewStr = newStr.replaceAll(', ', ', "');
   let thirdOne = newNewStr.replaceAll(':"', '":"');
@@ -47,12 +46,12 @@ function fromPromtoJSON(str: any) {
 /**
  * Returns an array of all the object containers
  */
-export function getAllContainer( data: PanelData){
+export function getAllContainer(data: PanelData) {
   const allDeployment = getDeploymentInfo(data);
   let allContainers = [];
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].refId?.includes("namespace_pod_container_info")) {
-      let tempStr = data.series[i].name?.slice("kube_pod_container_info".length);
+    if (data.series[i].refId?.includes('namespace_pod_container_info')) {
+      let tempStr = data.series[i].name?.slice('kube_pod_container_info'.length);
       let smth = fromPromtoJSON(tempStr);
       let container = { type: Types.Container, container: '', pod: '', namespace: '', node: '', deployment: '' };
       container.container = smth.container;
@@ -155,7 +154,6 @@ export function getAllElementInfo(data: PanelData) {
   return allNamespaces;
 }
 
-
 /**
  * Returns the deployments with their specific namespace,name, and pod replicasets
  */
@@ -163,19 +161,19 @@ export function getDeploymentInfo(data: PanelData) {
   let kube_pod_ownerObject = {
     owner_name: new Array(),
     pod: new Array(),
-  }
+  };
   let kube_replicaset_ownerObject = {
     namespace: new Array(),
     deployment: new Array(),
     replicaset: new Array(),
   };
   for (let i = 0; i < data.series.length; i++) {
-    if (data.series[i].refId?.includes("pod_owner")) {
+    if (data.series[i].refId?.includes('pod_owner')) {
       let smth = fromPromtoJSON(data.series[i].name);
       kube_pod_ownerObject.owner_name.push(smth.owner_name);
       kube_pod_ownerObject.pod.push(smth.pod);
     }
-    if (data.series[i].refId?.includes("replicaset_owner")) {
+    if (data.series[i].refId?.includes('replicaset_owner')) {
       let smth = fromPromtoJSON(data.series[i].name);
       kube_replicaset_ownerObject.deployment.push(smth.owner_name);
       kube_replicaset_ownerObject.namespace.push(smth.namespace);
