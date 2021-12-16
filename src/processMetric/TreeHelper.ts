@@ -139,9 +139,10 @@ export function getFilterOptions(
   curFilter: SelectableValue<string>[]
 ): SelectableOptGroup<string>[] {
   let options: SelectableOptGroup<string>[] = [];
+  const level = t.layerLaybels.findIndex((x) => x == displayedLevel.value);
   if (!curFilter.length) {
     // if no filter is selected find all possible levels and items that can be filtered for
-    let availableLevels = t.layerLaybels.slice(0, t.layerLaybels.findIndex((x) => x == displayedLevel.value) + 1);
+    const availableLevels = t.layerLaybels.slice(0, level + 1);
     for (let [k, v] of availableLevels.entries()) {
       options.push({
         label: v,
@@ -156,16 +157,17 @@ export function getFilterOptions(
     }
   } else {
     // if a filter is already set only other options are items on the same level
+    const curFilterLevelLabel = curFilter[0].description;
     options.push({
-      label: curFilter[0].description ? curFilter[0].description : '',
+      label: curFilterLevelLabel ? curFilterLevelLabel : '',
       options: getLevel(
         t.roots,
-        t.layerLaybels.findIndex((x) => x == curFilter[0].description)
+        t.layerLaybels.findIndex((x) => x == curFilterLevelLabel)
       ).map(
         (node): SelectableValue => ({
           label: node.label,
           value: node.label,
-          description: curFilter[0].description,
+          description: curFilterLevelLabel,
         })
       ),
     });
@@ -174,12 +176,13 @@ export function getFilterOptions(
   return options;
 }
 
-export function getGroupOptions(
-  t: ITree,
-  displayedLevel: SelectableValue<string>,
-  filtered: SelectableValue<string>[]
-): SelectableValue<string>[] {
-  return [];
+export function getGroupOptions(t: ITree, displayedLevel: SelectableValue<string>): SelectableValue<string>[] {
+  return t.layerLaybels.slice(0, t.layerLaybels.findIndex((x) => x == displayedLevel.value) + 1).map(
+    (label): SelectableValue<string> => ({
+      label,
+      value: label,
+    })
+  );
 }
 
 export function getLevelOptions(t: ITree): SelectableValue<string>[] {

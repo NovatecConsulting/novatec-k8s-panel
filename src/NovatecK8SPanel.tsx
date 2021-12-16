@@ -44,7 +44,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
   const [metricOption, setMetricOption] = useState('-');
 
   const [showDrilldown, setShowDrilldown] = useState(false);
-  const [drilldownItem, setDrilldownItem] = useState({
+  const [drilldownItem, setDrilldownItem] = useState<Element>({
     position: { x: 0, y: 0 },
     width: 0,
     height: 0,
@@ -59,9 +59,9 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
   const dataTree = buildTree(data); // needs to be deleted manually (with `deleteTreeNodes`)
   // deleteTreeNodes(dataTree);
 
-  const [groupedOptions, setGroupedOptions] = useState<SelectOptions<string>[]>([]);
+  const [groupedOptions, setGroupedOptions] = useState<SelectableValue<string>[]>([]);
 
-  const [displayTree, setDisplayTree] = useState<ITree>(dataTree);
+  // const [displayTree, setDisplayTree] = useState<ITree>(dataTree);
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -76,63 +76,22 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
       const filteredLevel = dataTree.layerLaybels.findIndex((x) => x == filterOption[0].description);
       if (selectedLevel < filteredLevel) setFilterOption([]);
     }
-
-    // TODO filter Filteroption and Groupedoptions
-    if (v.value != 'Overview') {
-      // setGroupedOptions(getGroupOptions(dataTree, levelOption, filterOption));
-    }
-
-    /* 
-    if (label !== undefined) {
-      try {
-        setShowDrilldown(false);
-        let value = label.split(' ')[0];
-        setLevelOption(value);
-
-        if (value === 'Overview') {
-          setFilterOption({ label: '-' });
-          setGroupedOption('-');
-          callHandlers(value, { label: '-' }, '-', metricOption);
-        } else {
-          callHandlers(value, filterOption, groupedOption, metricOption);
-        }
-      } catch {
-        setLevelOption(label);
-        callHandlers(label, filterOption, groupedOption, metricOption);
-      }
-    }
-     */
+    // TODO check same for groupedOption
   };
 
   /**
-   * The value of the Filter dropdown is set. Then the appropriate handler is called.
-   */
-  const setFilterOptionHandler = (options: SelectableValue<string>[]) => {
-    if (options.length) {
-      options[0].description;
-    }
-    setFilterOption(options);
-    /* 
-    if (option.label !== undefined && levelOption.value !== 'Node') {
-      setFilterOption(option);
-      setGroupedOption('-');
-      callHandlers(levelOption, option, '-', metricOption);
-      setShowDrilldown(false);
-    }
-     */
-  };
-
-  /**
-   * The value of the Grouped by dropdown is set. Then the appropriate handler is called.
+   * the value of the Grouped by dropdown is set.
+   * values are sorted by hirachy
    */
   const setGroupedOptionHandler = (label: SelectableValue<string>[]) => {
-    /*  
-    if (label !== undefined) {
-      setGroupedOption(label);
-      callHandlers(levelOption, filterOption, label, metricOption);
-      setShowDrilldown(false);
-    }
-    */
+    setGroupedOption(
+      label
+        .map((l) => ({
+          l,
+          i: groupedOptions.findIndex((o) => o.label == l.label),
+        }))
+        .sort((a, b) => (a.i < b.i ? -1 : a.i == b.i ? 0 : 1))
+    );
   };
 
   /**
@@ -178,14 +137,14 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               <MultiSelect
                 options={getFilterOptions(dataTree, levelOption, filterOption)}
                 value={filterOption}
-                onChange={setFilterOptionHandler}
+                onChange={setFilterOption}
                 disabled={levelOption.label == 'Overview' ? true : false}
               />
             </div>
             <div className={styles.dropdown}>
               <label>Grouped by:</label>
               <MultiSelect
-                options={getGroupOptions(dataTree, levelOption, filterOption)}
+                options={getGroupOptions(dataTree, levelOption)}
                 value={groupedOption}
                 onChange={setGroupedOptionHandler}
                 disabled={levelOption.label == 'Overview' ? true : false}
@@ -219,7 +178,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
             allRect={showElements} // showElements state contained all items to be displayed this should be derived from states (dataTree, filterOption, groupOption)
             levelOption={levelOption}
             setLevelOptionHandler={setLevelOptionHandler}
-            setGroupedOptionHandler={setFilterOptionHandler}
+            setGroupedOptionHandler={setFilterOption}
             itemSelectHandler={itemSelectHandler}
           /> */}
         </div>
