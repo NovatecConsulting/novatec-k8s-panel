@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
 import { getStyles } from 'styles/component/SimplePanelStyle';
-import { ITree, PanelOptions, Tuple, Types } from 'types';
+import { PanelOptions, Types } from 'types';
 import { Canvas } from 'ObjectVisualisation/Canvas';
-import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
-import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
-import { handler, filterHandler, groupedWithFilterHandler, groupedHandler, metricHandler } from 'processMetric/Handler';
+import { dropdownOptions } from 'Menu/DropdownOptions';
 import { Element } from 'types';
 import { Drilldown } from './Menu/Drilddown';
 import { GraphUI } from './GraphUI';
@@ -17,11 +15,9 @@ import {
   getFilterOptions,
   getGroupOptions,
   getLevelOptions,
+  getShowTree,
 } from 'processMetric/TreeHelper';
-import { SelectOptions } from '@grafana/ui/components/Select/types';
 
-const levelOptions = ['Overview', 'Namespace', 'Deployment', 'Pod', 'Container'];
-const groupedOptions = ['Namespace', 'Deployment', 'Pod', 'Container'];
 export const metricOptions = [
   '-',
   'cpu_usage',
@@ -57,11 +53,8 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
   const styles = getStyles(theme, height);
 
   const dataTree = buildTree(data); // needs to be deleted manually (with `deleteTreeNodes`)
-  // deleteTreeNodes(dataTree);
 
   const [groupedOptions, setGroupedOptions] = useState<SelectableValue<string>[]>([]);
-
-  // const [displayTree, setDisplayTree] = useState<ITree>(dataTree);
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -76,27 +69,31 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
       const filteredLevel = dataTree.layerLaybels.findIndex((x) => x == filterOption[0].description);
       if (selectedLevel < filteredLevel) setFilterOption([]);
     }
-    // TODO check same for groupedOption
+    if (groupedOption.length) {
+      // filter 'groupedOption' to fit to selected level
+      setGroupedOption(
+        groupedOption.filter((opt) => dataTree.layerLaybels.findIndex((x) => x == opt.label) < selectedLevel)
+      );
+    }
   };
 
   /**
-   * the value of the Grouped by dropdown is set.
-   * values are sorted by hirachy
+   * called for setting the 'groupedOption'
+   * sorts the selected values hierarchical
    */
-  const setGroupedOptionHandler = (label: SelectableValue<string>[]) => {
+  const setGroupedOptionHandler = (v: SelectableValue<string>[]) => {
     setGroupedOption(
-      label
-        .map((l) => ({
-          l,
-          i: groupedOptions.findIndex((o) => o.label == l.label),
+      v
+        .map((v) => ({
+          v,
+          i: dataTree.layerLaybels.findIndex((label) => label == v.label),
         }))
         .sort((a, b) => (a.i < b.i ? -1 : a.i == b.i ? 0 : 1))
+        .map((x) => x.v)
     );
   };
 
-  /**
-   * ToDo
-   */
+  // TODO setMetricOptionHandler
   const setMetricOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       //not the final solution
@@ -114,6 +111,8 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
    * Is called to display the drilldown menu.
    */
   const itemSelectHandler = (item: Element) => {
+    // TODO to display full Drilldowninformation drilldownItem has to be from DataTree
+
     setShowDrilldown(!showDrilldown);
 
     if (levelOption.value !== 'Node') {
@@ -130,7 +129,12 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
           <div className={styles.header}>
             <div className={styles.dropdown}>
               <label>Level:</label>
-              <Select value={levelOption} options={getLevelOptions(dataTree)} onChange={setLevelOptionHandler} />
+              <Select
+                value={levelOption}
+                options={getLevelOptions(dataTree)}
+                onChange={setLevelOptionHandler}
+                menuShouldPortal={true}
+              />
             </div>
             <div className={styles.dropdown}>
               <label>Filter:</label>
@@ -139,6 +143,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
                 value={filterOption}
                 onChange={setFilterOption}
                 disabled={levelOption.label == 'Overview' ? true : false}
+                menuShouldPortal={true}
               />
             </div>
             <div className={styles.dropdown}>
@@ -148,17 +153,21 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
                 value={groupedOption}
                 onChange={setGroupedOptionHandler}
                 disabled={levelOption.label == 'Overview' ? true : false}
+                menuShouldPortal={true}
               />
             </div>
             <div className={styles.dropdown}>
               <label>Metric:</label>
               <div>
-                <DropdownComponent
-                  id={'right'}
+                <Select
+                  key={'right'}
+                  placeholder="-"
+                  isSearchable={true}
                   options={dropdownOptions(metricOptions, metricOption)}
-                  onChange={setMetricOptionHandler}
-                  value={metricOption}
-                  isDisabled={false}
+                  onChange={(item) => setMetricOptionHandler(item.label)}
+                  value={{ label: metricOption }}
+                  disabled={true}
+                  menuShouldPortal={true}
                 />
               </div>
             </div>

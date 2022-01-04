@@ -1,5 +1,6 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { SelectableOptGroup, SelectOptions } from '@grafana/ui/components/Select/types';
+import { Children } from 'react';
 import { ITree, INode } from 'types';
 import { fromPromtoJSON } from './ConvertData';
 
@@ -128,7 +129,7 @@ function linkParents(nodes: INode[]) {
 
 // TODO maybe use grafana asyncselect if calculating this takes to long (on larger scale)
 /**
- * returns selectoptions tha can be filtered for given a selected level
+ * returns selectoptions tha can be filtered for given a selected level for grafana select
  * @param t Tree
  * @param displayedLevel currently selected level
  * @returns possible filters
@@ -159,7 +160,7 @@ export function getFilterOptions(
     // if a filter is already set only other options are items on the same level
     const curFilterLevelLabel = curFilter[0].description;
     options.push({
-      label: curFilterLevelLabel ? curFilterLevelLabel : '',
+      label: curFilterLevelLabel || '', // should never be undefined but could
       options: getLevel(
         t.roots,
         t.layerLaybels.findIndex((x) => x == curFilterLevelLabel)
@@ -176,15 +177,31 @@ export function getFilterOptions(
   return options;
 }
 
+/**
+ * returns possible groupoptions based on a Tree and selected level for grafana select
+ * @param t Tree
+ * @param displayedLevel currently selected level
+ * @returns possible grouping options
+ */
 export function getGroupOptions(t: ITree, displayedLevel: SelectableValue<string>): SelectableValue<string>[] {
-  return t.layerLaybels.slice(0, t.layerLaybels.findIndex((x) => x == displayedLevel.value) + 1).map(
-    (label): SelectableValue<string> => ({
-      label,
-      value: label,
-    })
-  );
+  return t.layerLaybels
+    .slice(
+      0,
+      t.layerLaybels.findIndex((x) => x == displayedLevel.value)
+    )
+    .map(
+      (label): SelectableValue<string> => ({
+        label,
+        value: label,
+      })
+    );
 }
 
+/**
+ * gets the level of a tree and packs them with overview option as selectableValues
+ * @param t Tree
+ * @returns level of the tree for grafana select
+ */
 export function getLevelOptions(t: ITree): SelectableValue<string>[] {
   return [
     { label: 'Overview', value: 'Overview' },
@@ -192,10 +209,133 @@ export function getLevelOptions(t: ITree): SelectableValue<string>[] {
   ];
 }
 
+interface IIsCopied {
+  copy: INode;
+}
+const hasCopy = (n: INode): n is INode & IIsCopied => !!n.copy;
+
+/**
+ * this function should not change the original tree but creates an entirly new tree
+ * @param t Tree containing the original data
+ * @param level selected level
+ * @param filter selected filter options
+ * @param group selected group options
+ * @returns new Tree with copied objects
+ */
+export function getShowTree(
+  t: ITree,
+  level: SelectableValue<string>,
+  filter: SelectableValue<string>[],
+  group: SelectableValue<string>[]
+): ITree {
+  let nodes: INode[];
+  let newLayerLabels: string[] = [level.value || ''];
+  // selectedLevel can be -1 if no level is selected (Overview)
+  const selectedLevel = t.layerLaybels.indexOf(level.value || '');
+  let sourceNodes = t.roots;
+  let sourceLevel = 0;
+  if (filter.length && filter[0].description) {
+    const filterLabels = filter.map((v) => v.label);
+    sourceLevel = t.layerLaybels.indexOf(filter[0].description);
+    sourceNodes = getLevel(sourceNodes, sourceLevel).filter((node) => filterLabels.includes(node.label));
+  }
+  // get (filtered) nodes from the choosen level
+  const selectedLevelNodes = getLevel(sourceNodes, selectedLevel, sourceLevel).map((node) => Object.assign({}, node));
+  for (const node of selectedLevelNodes) {
+    delete node.children;
+  }
+  nodes = selectedLevelNodes;
+
+  // apply grouping if set
+  // this will result in the new tree having multiple layers
+  // one extra layer for each group connecting the selected layer with the choosen groups as parents
+  if (group.length) {
+    // how far up are the groups relative to their children
+    newLayerLabels = [];
+    for (let sv of group) {
+      if (sv.value) newLayerLabels.push(sv.value);
+    }
+
+    const groupLevels = newLayerLabels.map((v): number => t.layerLaybels.indexOf(v));
+    const diffToParentGroup = [...groupLevels.slice(1), selectedLevel].map((v, i) => v - groupLevels[i]);
+
+    for (let up of diffToParentGroup) {
+      // nodes stores the top level of nodes
+      /// stores referenz to the origninal nodes to delete temporary copy attribute, as soon as they are no longer needed
+      let originalParents: INode[] = [];
+      for (const node of nodes) {
+        if (node.parent) {
+          if (node.parent.copy) {
+            node.parent.copy.children?.push(node);
+          } else {
+            originalParents.push(node.parent);
+            node.parent.copy = Object.assign({}, node.parent, { children: [node] });
+          }
+          node.parent = node.parent.copy;
+        }
+      }
+      nodes = originalParents.filter(hasCopy).map((n) => n.copy);
+      for (const op of originalParents) delete op.copy;
+
+      // up should allways be >= 1
+      // collapsing layers between selected layer (or group) and group
+      while (1 < up) {
+        up = up - 1;
+        originalParents = [];
+        for (const node of nodes) {
+          if (node.parent) {
+            const parent = node.parent;
+            if (parent.copy) {
+              if (node.children) parent.copy.children?.push(...node.children);
+            } else {
+              originalParents.push(parent);
+              // at this point every node should have children ↓ this ↓ is just a typescript thing to ensure attribute is not set undefined
+              parent.copy = Object.assign({}, parent, node.children && { children: node.children });
+            }
+            node.children?.forEach((n) => (n.parent = parent.copy));
+          }
+        }
+        nodes = originalParents.filter(hasCopy).map((n) => n.copy);
+        for (const op of originalParents) delete op.copy;
+      }
+    }
+
+    newLayerLabels.push(level.value || ''); // adding the selected level itself to the newLayerLabels for later use
+  }
+
+  // remove link to parents as they are still referenzes to the original tree
+  for (const node of nodes) delete node.parent;
+
+  return {
+    roots: nodes,
+    layerLaybels: newLayerLabels,
+  };
+}
+
+/**
+ * get the height of a node within a tree based on .parent attribute
+ * @param node Node to get the hight from based on .parent attribute
+ * @returns number - height from the node within a tree
+ */
+function getHeight(node: INode): number {
+  let n = node,
+    h = 0;
+  while (n.parent) (h = h + 1), (n = n.parent);
+  return h;
+}
+
+/**
+ * get a different level from nodes in a tree over their children
+ * @param nodes array of nodes representing the entry point
+ * @param reqLevel requested level of nodes to return
+ * @param curLevel default = 0 define offset for param nodes in case they are not level 0
+ * @returns Array of Nodes on the reqLevel relativ to curLevel
+ */
 function getLevel(nodes: INode[], reqLevel: number, curLevel = 0): INode[] {
   let res: INode[] = [];
   function getLayer(nodes: INode[], reqLevel: number, curLevel = 0) {
-    if (reqLevel == curLevel) res.push(...nodes);
+    if (reqLevel < 0) return;
+    else if (reqLevel == curLevel) res.push(...nodes);
     else {
       nodes.forEach((n) => {
         if (n.children) getLayer(n.children, reqLevel, curLevel + 1);

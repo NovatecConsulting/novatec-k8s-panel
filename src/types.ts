@@ -38,6 +38,7 @@ export interface INode {
   // parent node this link can be used to figure out the layer of the Node
   parent?: INode;
   children?: INode[];
+  copy?: INode; // used temporarly in getShowTree
   info: INodeInfo;
 }
 
