@@ -34,7 +34,7 @@ export interface ITree {
  * represents an element with links to its parent and childs
  */
 export interface INode {
-  label: string;
+  name: string;
   // parent node this link can be used to figure out the layer of the Node
   parent?: INode;
   children?: INode[];

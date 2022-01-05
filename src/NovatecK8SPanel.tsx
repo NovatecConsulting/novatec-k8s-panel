@@ -17,6 +17,7 @@ import {
   getLevelOptions,
   getShowTree,
 } from 'processMetric/TreeHelper';
+import Treemap from 'ObjectVisualisation/Treemap';
 
 export const metricOptions = [
   '-',
@@ -190,6 +191,13 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
             setGroupedOptionHandler={setFilterOption}
             itemSelectHandler={itemSelectHandler}
           /> */}
+          {levelOption.value !== 'Overview' && (
+            <Treemap
+              width={width}
+              height={height - 53}
+              data={getShowTree(dataTree, levelOption, filterOption, groupedOption)}
+            />
+          )}
         </div>
       ) : levelOption.value !== 'Node' && showGraph ? (
         <GraphUI

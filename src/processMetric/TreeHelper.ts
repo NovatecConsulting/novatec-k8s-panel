@@ -26,7 +26,7 @@ export function buildTree(data: PanelData): ITree {
   // container can occur duplicated when the cluster was restarted recently
   const containers: INode[] = namespacePodContainerInfos.map((npci): INode => {
     return {
-      label: npci.container,
+      name: npci.container,
       info: {
         hasAppMetric: false, // TODO find in data
         hasInfMetric: false,
@@ -40,12 +40,12 @@ export function buildTree(data: PanelData): ITree {
       .filter((npci) => npci.pod == name)
       .map((npci): string => npci.container);
     return {
-      label: name,
+      name: name,
       info: {
         hasAppMetric: false, // TODO find in data
         hasInfMetric: false,
       },
-      children: containers.filter((cont) => childrenLabels.includes(cont.label)),
+      children: containers.filter((cont) => childrenLabels.includes(cont.name)),
     };
   });
 
@@ -59,12 +59,12 @@ export function buildTree(data: PanelData): ITree {
         .map((ro): string => ro.replicaset);
       const childrenLabels = pod_owner.filter((po) => replicaSets.includes(po.owner_name)).map((po): string => po.pod);
       return {
-        label: depl.deployment,
+        name: depl.deployment,
         info: {
           hasAppMetric: false, // TODO find in data
           hasInfMetric: false,
         },
-        children: pods.filter((pod) => childrenLabels.includes(pod.label)),
+        children: pods.filter((pod) => childrenLabels.includes(pod.name)),
       };
     });
 
@@ -73,12 +73,12 @@ export function buildTree(data: PanelData): ITree {
     (ns: string): INode => {
       const childrenLabels = replicaset_owner.filter((rso) => rso.namespace == ns).map((rso): string => rso.owner_name);
       return {
-        label: ns,
+        name: ns,
         info: {
           hasAppMetric: false, // TODO find in data
           hasInfMetric: false,
         },
-        children: deployments.filter((depl) => childrenLabels.includes(depl.label)),
+        children: deployments.filter((depl) => childrenLabels.includes(depl.name)),
       };
     }
   );
@@ -149,8 +149,8 @@ export function getFilterOptions(
         label: v,
         options: getLevel(t.roots, k).map(
           (node): SelectableValue => ({
-            label: node.label,
-            value: node.label,
+            label: node.name,
+            value: node.name,
             description: v,
           })
         ),
@@ -166,8 +166,8 @@ export function getFilterOptions(
         t.layerLaybels.findIndex((x) => x == curFilterLevelLabel)
       ).map(
         (node): SelectableValue => ({
-          label: node.label,
-          value: node.label,
+          label: node.name,
+          value: node.name,
           description: curFilterLevelLabel,
         })
       ),
@@ -214,6 +214,7 @@ interface IIsCopied {
 }
 const hasCopy = (n: INode): n is INode & IIsCopied => !!n.copy;
 
+// FIXME check ob deployments und pods vertauscht werden, wenn auch nach namespace gruppiert ist
 /**
  * this function should not change the original tree but creates an entirly new tree
  * @param t Tree containing the original data
@@ -237,7 +238,7 @@ export function getShowTree(
   if (filter.length && filter[0].description) {
     const filterLabels = filter.map((v) => v.label);
     sourceLevel = t.layerLaybels.indexOf(filter[0].description);
-    sourceNodes = getLevel(sourceNodes, sourceLevel).filter((node) => filterLabels.includes(node.label));
+    sourceNodes = getLevel(sourceNodes, sourceLevel).filter((node) => filterLabels.includes(node.name));
   }
   // get (filtered) nodes from the choosen level
   const selectedLevelNodes = getLevel(sourceNodes, selectedLevel, sourceLevel).map((node) => Object.assign({}, node));
