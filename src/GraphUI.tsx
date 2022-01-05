@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Graph, useStyles2, Button } from '@grafana/ui';
+import { Graph, useStyles2, Button, Select } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange, SelectableValue } from '@grafana/data';
-import { DropdownComponent } from 'Menu/Dropdown';
 import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
 import { getStyles } from 'styles/component/GraphStyle';
@@ -65,7 +64,7 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
       if (data.series[i].refId?.includes(metricType) && data.series[i].refId?.includes(level.toLowerCase())) {
         if (data.series[i].refId !== undefined) {
           let str: SelectableValue = { label: data.series[i].refId };
-          str.label = str.label?.substring(str.label?.indexOf("/") + 1, str.label?.lastIndexOf("/"));
+          str.label = str.label?.substring(str.label?.indexOf('/') + 1, str.label?.lastIndexOf('/'));
           let found = false;
           for (let i = 0; i < options.length; i++) {
             if (options[i].label === str.label) {
@@ -92,12 +91,12 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
         <div className={styles.graph}>
           <label className={styles.graphHeader}>Infrastructure Metrics</label>
           <div className={styles.infrastructureDropdown}>
-            <DropdownComponent
+            <Select
               id="infrastructurMetrics"
-              onChange={dropdownInfrastructureChange}
-              options={availableMetrics(data, level, "infra")}
-              value={infrastructureMetric}
-              isDisabled={false}
+              onChange={(item) => dropdownInfrastructureChange(item.value)}
+              options={availableMetrics(data, level, 'infra')}
+              value={{ label: infrastructureMetric }}
+              disabled={false}
             />
           </div>
 
@@ -115,12 +114,12 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, focusIte
         <div className={styles.graph}>
           <label className={styles.graphHeader}>Application Metrics</label>
           <div className={styles.infrastructureDropdown}>
-            <DropdownComponent
+            <Select
               id="applicationMetrics"
-              onChange={dropdownApplicationChange}
-              options={availableMetrics(data, level, "app")}
-              value={applicationMetric}
-              isDisabled={false}
+              onChange={(item) => dropdownApplicationChange(item.value)}
+              options={availableMetrics(data, level, 'app')}
+              value={{ label: applicationMetric }}
+              disabled={false}
             />
           </div>
           <Graph

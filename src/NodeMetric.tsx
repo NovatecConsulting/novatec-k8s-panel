@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Graph, useStyles2 } from '@grafana/ui';
+import { Button, Graph, Select, useStyles2 } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
-import { DropdownComponent } from 'Menu/Dropdown';
 import { Element } from './types';
 import { dropdownNodeOption } from './Menu/DropdownOptions';
 import { getInfrastructureSeries } from './processMetric/ConvertGraphData';
@@ -50,12 +49,12 @@ export const NodeMetric = ({ width, height, data, timeRange, setShowGraph, focus
         <div className={styles.graph}>
           <label className={styles.graphHeader}>Node Metrics</label>
           <div className={styles.infrastructureDropdown}>
-            <DropdownComponent
+            <Select
               id="infrastructurMetrics"
-              onChange={dropdownInfrastructureChange}
+              onChange={(item) => dropdownInfrastructureChange(item.value)}
               options={dropdownNodeOption(nodeMetric)}
-              value={nodeMetric}
-              isDisabled={false}
+              value={{ label: nodeMetric }}
+              disabled={false}
             />
           </div>
         </div>
