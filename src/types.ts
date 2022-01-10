@@ -31,6 +31,14 @@ export interface ITree {
 }
 
 /**
+ * nessesary information to identify a node
+ */
+export interface INodeID {
+  name: string;
+  layerLabel: string;
+}
+
+/**
  * represents an element with links to its parent and childs
  */
 export interface INode {

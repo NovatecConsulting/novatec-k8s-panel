@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
 import getStyles from 'styles/component/SimplePanelStyle';
-import { PanelOptions, Types } from 'types';
+import { INode, INodeID, PanelOptions, Types } from 'types';
 import { Canvas } from 'ObjectVisualisation/Canvas';
 import { dropdownOptions } from 'Menu/DropdownOptions';
 import { Element } from 'types';
@@ -12,6 +12,7 @@ import { NodeMetric } from './NodeMetric';
 import {
   buildTree,
   deleteTreeNodes,
+  getNode,
   getFilterOptions,
   getGroupOptions,
   getLevelOptions,
@@ -41,6 +42,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
   const [metricOption, setMetricOption] = useState('-');
 
   const [showDrilldown, setShowDrilldown] = useState(false);
+  // TODO replace me
   const [drilldownItem, setDrilldownItem] = useState<Element>({
     position: { x: 0, y: 0 },
     width: 0,
@@ -49,13 +51,15 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
     text: '-',
     elementInfo: { type: Types.Namespace },
   });
+  const [selectedNode, setSelectedNode] = useState<INode>();
+
   const [showGraph, setShowGraph] = useState(false);
   const theme = useTheme2();
   const styles = getStyles(theme, height);
 
+  // TODO buildTree could return undefined -> Panel has to show error
+  // maybe on level Overview
   const dataTree = buildTree(data); // needs to be deleted manually (with `deleteTreeNodes`)
-
-  const [groupedOptions, setGroupedOptions] = useState<SelectableValue<string>[]>([]);
 
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
@@ -121,6 +125,11 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
     } else {
       setShowGraph(true);
     }
+  };
+
+  const clickHandler = (id: INodeID) => {
+    setSelectedNode(getNode(dataTree, id));
+    setShowDrilldown(true);
   };
 
   return (
@@ -196,6 +205,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               width={width}
               height={height - 53}
               data={getShowTree(dataTree, levelOption, filterOption, groupedOption)}
+              onClick={clickHandler}
             />
           )}
         </div>

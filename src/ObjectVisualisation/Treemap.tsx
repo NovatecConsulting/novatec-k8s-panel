@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group } from '@visx/group';
 import { Treemap, treemapSquarify, hierarchy } from '@visx/hierarchy';
-import { INode, ITree } from 'types';
+import { INode, INodeID, ITree } from 'types';
 import { useTheme2 } from '@grafana/ui';
 import getStyles from '../styles/TreemapStyle';
 
@@ -9,11 +9,12 @@ export interface ITreemapProps {
   width: number;
   height: number;
   data: ITree;
+  onClick?: (id: INodeID) => void;
 }
 
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
-function CustomTreemap({ width, height, data }: ITreemapProps) {
+function CustomTreemap({ width, height, data, onClick }: ITreemapProps) {
   // TODO maybe use custom hook for width and heigth: https://stackoverflow.com/a/60978633/13590313
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
@@ -39,11 +40,16 @@ function CustomTreemap({ width, height, data }: ITreemapProps) {
             {treemap.descendants().map((node, i) => {
               // node can be element (leaves) or container
               const nodeIsElement = node.depth == data.layerLaybels.length;
+              const cb = () => {
+                if (onClick != undefined)
+                  onClick({ name: node.data.name, layerLabel: data.layerLaybels[node.depth - 1] });
+              };
               return (
                 <Group
                   key={`node-${i}`}
                   top={nodeIsElement ? node.y0 + margin.top : node.y0 + margin.top + textHeight}
                   left={node.x0 + margin.left}
+                  onClick={cb}
                 >
                   {nodeIsElement ? (
                     <rect className={s.element} width={node.x1 - node.x0} height={node.y1 - node.y0} />

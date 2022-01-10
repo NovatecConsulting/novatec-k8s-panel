@@ -1,7 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { SelectableOptGroup, SelectOptions } from '@grafana/ui/components/Select/types';
 import { Children } from 'react';
-import { ITree, INode } from 'types';
+import { ITree, INode, INodeID } from 'types';
 import { fromPromtoJSON } from './ConvertData';
 
 /**
@@ -321,6 +321,16 @@ function getHeight(node: INode): number {
     h = 0;
   while (n.parent) (h = h + 1), (n = n.parent);
   return h;
+}
+
+/**
+ * find a node by given identifier in a tree
+ * @param t tree
+ * @param id node identifier
+ * @returns INode if node is contained in t or undefined
+ */
+export function getNode(t: ITree, id: INodeID): INode | undefined {
+  return getLevel(t.roots, t.layerLaybels.indexOf(id.layerLabel)).find((n) => n.name == id.name);
 }
 
 /**
