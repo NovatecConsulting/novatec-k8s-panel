@@ -6,7 +6,7 @@ import { css } from 'emotion';
  * @param t GrafanaTheme2
  * @returns object of classNames for styling html components
  */
-export const getStyles = (t: GrafanaTheme2) => {
+const getStyles = (t: GrafanaTheme2) => {
   return {
     graphHr: css`
       border-top: 2px solid black;
@@ -14,3 +14,5 @@ export const getStyles = (t: GrafanaTheme2) => {
     `,
   };
 };
+
+export default getStyles;

@@ -3,8 +3,8 @@ import { Graph, useStyles2, Button, Select } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange, SelectableValue } from '@grafana/data';
 import { getInfrastructureSeries, getApplicationSeries } from './processMetric/ConvertGraphData';
 import { Element } from './types';
-import { getStyles } from 'styles/component/GraphStyle';
-import { getStyles as getGraphUIStyles } from 'styles/component/GraphUIStyle';
+import getStyles from 'styles/component/GraphStyle';
+import getGraphUIStyles from 'styles/component/GraphUIStyle';
 
 type Props = {
   width: number;

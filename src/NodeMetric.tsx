@@ -4,8 +4,8 @@ import { PanelData, GraphSeriesXY, TimeRange } from '@grafana/data';
 import { Element } from './types';
 import { dropdownNodeOption } from './Menu/DropdownOptions';
 import { getInfrastructureSeries } from './processMetric/ConvertGraphData';
-import { getStyles } from 'styles/component/GraphStyle';
-import { getStyles as getNodeStyle } from 'styles/component/NodeMetricStyle';
+import getStyles from 'styles/component/GraphStyle';
+import getNodeStyle from 'styles/component/NodeMetricStyle';
 
 type Props = {
   width: number;

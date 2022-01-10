@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
-import { getStyles } from 'styles/component/SimplePanelStyle';
+import getStyles from 'styles/component/SimplePanelStyle';
 import { PanelOptions, Types } from 'types';
 import { Canvas } from 'ObjectVisualisation/Canvas';
 import { dropdownOptions } from 'Menu/DropdownOptions';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Element } from '../types';
 import { BiStats } from 'react-icons/bi';
 import { Button, useTheme2 } from '@grafana/ui';
-import { getStyles } from 'styles/component/DrilldownStyle';
+import getStyles from 'styles/component/DrilldownStyle';
 
 type Props = {
   closeDrilldown: () => void;
