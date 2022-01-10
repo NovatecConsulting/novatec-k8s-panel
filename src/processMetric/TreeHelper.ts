@@ -214,7 +214,6 @@ interface IIsCopied {
 }
 const hasCopy = (n: INode): n is INode & IIsCopied => !!n.copy;
 
-// FIXME check ob deployments und pods vertauscht werden, wenn auch nach namespace gruppiert ist
 /**
  * this function should not change the original tree but creates an entirly new tree
  * @param t Tree containing the original data
@@ -260,7 +259,7 @@ export function getShowTree(
     const groupLevels = newLayerLabels.map((v): number => t.layerLaybels.indexOf(v));
     const diffToParentGroup = [...groupLevels.slice(1), selectedLevel].map((v, i) => v - groupLevels[i]);
 
-    for (let up of diffToParentGroup) {
+    for (let up of diffToParentGroup.reverse()) {
       // nodes stores the top level of nodes
       /// stores referenz to the origninal nodes to delete temporary copy attribute, as soon as they are no longer needed
       let originalParents: INode[] = [];
@@ -276,9 +275,8 @@ export function getShowTree(
         }
       }
       nodes = originalParents.filter(hasCopy).map((n) => n.copy);
-      for (const op of originalParents) delete op.copy;
+      for (const op of originalParents) delete op.copy; // this only delets the no longer needed referenz
 
-      // up should allways be >= 1
       // collapsing layers between selected layer (or group) and group
       while (1 < up) {
         up = up - 1;
