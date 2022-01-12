@@ -3,7 +3,6 @@ import { PanelProps, SelectableValue } from '@grafana/data';
 import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
 import getStyles from 'styles/component/SimplePanelStyle';
 import { INode, INodeID, PanelOptions, Types } from 'types';
-import { Canvas } from 'ObjectVisualisation/Canvas';
 import { dropdownOptions } from 'Menu/DropdownOptions';
 import { Element } from 'types';
 import { Drilldown } from './Menu/Drilddown';
@@ -192,15 +191,6 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               </div>
             ) : null}
           </div>
-          {/* <Canvas
-            width={width}
-            height={height}
-            allRect={showElements} // showElements state contained all items to be displayed this should be derived from states (dataTree, filterOption, groupOption)
-            levelOption={levelOption}
-            setLevelOptionHandler={setLevelOptionHandler}
-            setGroupedOptionHandler={setFilterOption}
-            itemSelectHandler={itemSelectHandler}
-          /> */}
           {levelOption.value !== 'Overview' && (
             <Treemap
               width={width}

@@ -25,7 +25,6 @@
     "node": ">=14"
   },
   "dependencies": {
-    "konva": "^7.2.5",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-icons": "^4.3.1",
