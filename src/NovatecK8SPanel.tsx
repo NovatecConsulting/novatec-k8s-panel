@@ -7,7 +7,6 @@ import { dropdownOptions } from 'Menu/DropdownOptions';
 import { Element } from 'types';
 import { Drilldown } from './Menu/Drilddown';
 import { GraphUI } from './GraphUI';
-import { NodeMetric } from './NodeMetric';
 import {
   buildTree,
   deleteTreeNodes,
@@ -200,18 +199,8 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
             />
           )}
         </div>
-      ) : levelOption.value !== 'Node' && showGraph ? (
-        <GraphUI
-          width={width}
-          height={height}
-          data={data}
-          timeRange={timeRange}
-          setShowGraph={setShowGraph}
-          focusItem={drilldownItem}
-          level={levelOption.value ? levelOption.value : ''}
-        />
       ) : (
-        <NodeMetric
+        <GraphUI
           width={width}
           height={height}
           data={data}
