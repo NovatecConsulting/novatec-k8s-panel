@@ -17,6 +17,7 @@ import {
   getGroupOptions,
   getLevelOptions,
   getShowTree,
+  getNodeInformation,
 } from 'processMetric/TreeHelper';
 import Treemap from 'ObjectVisualisation/Treemap';
 
@@ -185,7 +186,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               <div className={styles.drilldown}>
                 <Drilldown
                   closeDrilldown={() => setShowDrilldown(false)}
-                  drilldownItem={drilldownItem}
+                  drilldownItem={selectedNode && getNodeInformation(dataTree, selectedNode)}
                   setShowGraph={setShowGraph}
                 />
               </div>

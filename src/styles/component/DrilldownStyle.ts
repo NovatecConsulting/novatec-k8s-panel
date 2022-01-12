@@ -24,11 +24,19 @@ const getStyles = (t: GrafanaTheme2) => {
       width: 100%;
       justify-content: space-between;
     `,
+    title: css`
+      margin-right: 0.5em;
+    `,
+    subTitle: css`
+      color: ${t.colors.text.secondary};
+      font-size: ${t.typography.size.sm};
+    `,
     header: css`
       color: ${t.colors.text.primary};
       display: flex;
       align-items: center;
       font-size: ${t.typography.size.md};
+      margin-block-end: 0;
     `,
     table: css`
       display: block;

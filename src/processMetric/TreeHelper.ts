@@ -1,7 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { SelectableOptGroup, SelectOptions } from '@grafana/ui/components/Select/types';
 import { Children } from 'react';
-import { ITree, INode, INodeID } from 'types';
+import { ITree, INode, INodeID, INodeInfo } from 'types';
 import { fromPromtoJSON } from './ConvertData';
 
 /**
@@ -27,7 +27,7 @@ export function buildTree(data: PanelData): ITree {
   const containers: INode[] = namespacePodContainerInfos.map((npci): INode => {
     return {
       name: npci.container,
-      info: {
+      data: {
         hasAppMetric: false, // TODO find in data
         hasInfMetric: false,
       },
@@ -41,7 +41,7 @@ export function buildTree(data: PanelData): ITree {
       .map((npci): string => npci.container);
     return {
       name: name,
-      info: {
+      data: {
         hasAppMetric: false, // TODO find in data
         hasInfMetric: false,
       },
@@ -60,7 +60,7 @@ export function buildTree(data: PanelData): ITree {
       const childrenLabels = pod_owner.filter((po) => replicaSets.includes(po.owner_name)).map((po): string => po.pod);
       return {
         name: depl.deployment,
-        info: {
+        data: {
           hasAppMetric: false, // TODO find in data
           hasInfMetric: false,
         },
@@ -74,7 +74,7 @@ export function buildTree(data: PanelData): ITree {
       const childrenLabels = replicaset_owner.filter((rso) => rso.namespace == ns).map((rso): string => rso.owner_name);
       return {
         name: ns,
-        info: {
+        data: {
           hasAppMetric: false, // TODO find in data
           hasInfMetric: false,
         },
@@ -119,6 +119,7 @@ export function deleteTreeNodes(t: ITree): ITree {
  * @param nodes Array of Nodes
  */
 function linkParents(nodes: INode[]) {
+  // TODO change recursive to iterative with queue
   nodes.forEach((n) => {
     n.children?.forEach((c) => {
       c.parent = n;
@@ -173,7 +174,7 @@ export function getFilterOptions(
       ),
     });
   }
-  // TODO add advanced filterOptions (for INodeInfo: hasApp- Infmetric + dynamic properties)
+  // TODO add advanced filterOptions (for INodeData: hasApp- Infmetric + dynamic properties)
   return options;
 }
 
@@ -331,6 +332,50 @@ function getHeight(node: INode): number {
  */
 export function getNode(t: ITree, id: INodeID): INode | undefined {
   return getLevel(t.roots, t.layerLaybels.indexOf(id.layerLabel)).find((n) => n.name == id.name);
+}
+
+function getNodeID(t: ITree, n: INode): INodeID {
+  return {
+    name: n.name,
+    layerLabel: t.layerLaybels[getHeight(n)],
+  };
+}
+
+interface IHasChildren {
+  children: INode[];
+}
+const hasChildren = (n: INode): n is INode & IHasChildren => !!n.children;
+
+/**
+ * findes relatives from the node in the tree used to extraction information displayed by Drilldown
+ * @param t tree
+ * @param node node to get info from
+ * @returns INodeInfo containing information about the node relatives in the tree
+ */
+export function getNodeInformation(t: ITree, node: INode): INodeInfo {
+  const relations: (INodeID | INodeID[])[] = [];
+  // find relations to parents
+  for (let x = node.parent; x; x = x?.parent) {
+    relations.push(getNodeID(t, x));
+  }
+  relations.reverse();
+  // find relations to children
+  for (
+    let arr = node.children;
+    arr?.length;
+    arr = arr.filter(hasChildren).reduce((p: INode[], c) => {
+      p.push(...c.children);
+      return p;
+    }, [])
+  ) {
+    relations.push(arr.map((n: INode): INodeID => getNodeID(t, n)));
+  }
+
+  return {
+    id: getNodeID(t, node),
+    node,
+    relations,
+  };
 }
 
 /**

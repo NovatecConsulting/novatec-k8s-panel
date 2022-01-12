@@ -47,17 +47,26 @@ export interface INode {
   parent?: INode;
   children?: INode[];
   copy?: INode; // used temporarly in getShowTree
-  info: INodeInfo;
+  data: INodeData;
 }
 
 /**
  * stores information about a Node
  */
-interface INodeInfo {
+interface INodeData {
   hasAppMetric: boolean;
   hasInfMetric: boolean;
   // can store addition information to filter (e.g. Node)
   properties?: Map<string, string>;
+}
+
+/**
+ * Information to be displayed by drillDown
+ */
+export interface INodeInfo {
+  id: INodeID;
+  node: INode;
+  relations: Array<INodeID | Array<INodeID>>;
 }
 
 // ab hier alt

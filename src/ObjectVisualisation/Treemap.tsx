@@ -3,7 +3,7 @@ import { Group } from '@visx/group';
 import { Treemap, treemapSquarify, hierarchy } from '@visx/hierarchy';
 import { INode, INodeID, ITree } from 'types';
 import { useTheme2 } from '@grafana/ui';
-import getStyles from '../styles/TreemapStyle';
+import getStyles from '../styles/component/TreemapStyle';
 
 export interface ITreemapProps {
   width: number;
