@@ -19,5 +19,5 @@ export const TextItem = ({ position, text, option, setGroupedOption, type }: Pro
     optionValue = { label: option };
   }
 
-  return <Text x={position.x + 10} y={position.y + 10} text={text} onClick={e => setGroupedOption(optionValue)} />;
+  return <Text data-testid="text" x={position.x + 10} y={position.y + 10} text={text} onClick={e => setGroupedOption(optionValue)} />;
 };

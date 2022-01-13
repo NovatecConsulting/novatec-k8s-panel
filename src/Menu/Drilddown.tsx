@@ -21,7 +21,7 @@ export const Drilldown = ({ closeDrilldown, drilldownItem, setShowGraph }: Props
     <div className={styles.main}>
       <div className={styles.head}>
         <h1 className={styles.header}>{drilldownItem.text}</h1>
-        <Button variant="secondary" size="sm" icon="arrow-left" onClick={closeDrilldown}>
+        <Button data-testid={"drilldown-button"} variant="secondary" size="sm" icon="arrow-left" onClick={closeDrilldown}>
           Back
         </Button>
       </div>
