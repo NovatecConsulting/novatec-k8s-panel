@@ -25,6 +25,7 @@
     "node": ">=14"
   },
   "dependencies": {
+    "@visx/visx": "^2.5.0",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-icons": "^4.3.1",
