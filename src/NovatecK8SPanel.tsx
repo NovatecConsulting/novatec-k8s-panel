@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
-import { useTheme2 } from '@grafana/ui';
-import { getStyles } from 'styles/component/SimplePanelStyle';
-import { PanelOptions, Tuple, Types } from 'types';
-import { Canvas } from 'ObjectVisualisation/Canvas';
-import { DropdownComponent, DropdownComponentFilter } from 'Menu/Dropdown';
-import { dropdownGroupedOptions, dropdownOptions, dropdownOptionsFilter } from 'Menu/DropdownOptions';
-import { handler, filterHandler, groupedWithFilterHandler, groupedHandler, metricHandler } from 'processMetric/Handler';
-import { Element } from 'types';
+import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
+import getStyles from 'styles/component/SimplePanelStyle';
+import { INode, INodeID, PanelOptions } from 'types';
+import { dropdownOptions } from 'Menu/DropdownOptions';
 import { Drilldown } from './Menu/Drilddown';
 import { GraphUI } from './GraphUI';
-import { NodeMetric } from './NodeMetric';
+import {
+  buildTree,
+  getNode,
+  getFilterOptions,
+  getGroupOptions,
+  getLevelOptions,
+  getShowTree,
+  getNodeInformation,
+  getNodeID,
+} from 'processMetric/TreeHelper';
+import Treemap from 'ObjectVisualisation/Treemap';
 
-const levelOptions = ['Overview', 'Namespace', 'Deployment', 'Pod', 'Container'];
-const groupedOptions = ['Namespace', 'Deployment', 'Pod', 'Container'];
 export const metricOptions = [
   '-',
   'cpu_usage',
@@ -27,131 +31,81 @@ export const metricOptions = [
 interface Props extends PanelProps<PanelOptions> {}
 
 export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
+  // FIXME check `data.state` for 'Error' and show `data.state.error.message` instead of trying to render components
   const { theOptions } = options;
-  let firstFilterOption: SelectableValue = { label: '-', description: 'Overview' };
-  const [levelOption, setLevelOption] = useState('Overview');
-  const [filterOption, setFilterOption] = useState(firstFilterOption);
-  const [groupedOption, setGroupedOption] = useState('-');
+  const [levelOption, setLevelOption] = useState<SelectableValue<string>>({ label: 'Overview', value: 'Overview' });
+  const [filterOption, setFilterOption] = useState<SelectableValue<string>[]>([]);
+  const [groupedOption, setGroupedOption] = useState<SelectableValue<string>[]>([]);
   const [metricOption, setMetricOption] = useState('-');
-  const [showElements, setShowElements] = useState(handler(width, height, 'Overview', data, timeRange));
+
   const [showDrilldown, setShowDrilldown] = useState(false);
-  const [drilldownItem, setDrilldownItem] = useState({
-    position: { x: 0, y: 0 },
-    width: 0,
-    height: 0,
-    color: '',
-    text: '-',
-    elementInfo: { type: Types.Namespace },
-  });
+  const [selectedNode, setSelectedNode] = useState<INode>();
+
   const [showGraph, setShowGraph] = useState(false);
   const theme = useTheme2();
   const styles = getStyles(theme, height);
 
+  // TODO buildTree could return undefined -> Panel has to show error
+  // maybe on level Overview
+  const dataTree = buildTree(data); // needs to be deleted manually (with `deleteTreeNodes`)
+
   /**
    * The value of the Level dropdown is set. Then the appropriate handler is called.
    */
-  const setLevelOptionHandler = (label: string | undefined) => {
-    if (label !== undefined) {
-      try {
-        setShowDrilldown(false);
-        let value = label.split(' ')[0];
-        setLevelOption(value);
+  const setLevelOptionHandler = (v: SelectableValue<string>) => {
+    setLevelOption(v);
 
-        if (value === 'Overview') {
-          setFilterOption({ label: '-' });
-          setGroupedOption('-');
-          callHandlers(value, { label: '-' }, '-', metricOption);
-        } else {
-          callHandlers(value, filterOption, groupedOption, metricOption);
-        }
-      } catch {
-        setLevelOption(label);
-        callHandlers(label, filterOption, groupedOption, metricOption);
-      }
+    // selelctedLevel will be -1 for the 'Overview'
+    const selectedLevel = dataTree.layerLaybels.findIndex((x) => x == v.value);
+    if (filterOption.length) {
+      // reset filter options if level doens´t fit with set filter
+      const filteredLevel = dataTree.layerLaybels.findIndex((x) => x == filterOption[0].description);
+      if (selectedLevel < filteredLevel) setFilterOption([]);
+    }
+    if (groupedOption.length) {
+      // filter 'groupedOption' to fit to selected level
+      setGroupedOption(
+        groupedOption.filter((opt) => dataTree.layerLaybels.findIndex((x) => x == opt.label) < selectedLevel)
+      );
     }
   };
 
   /**
-   * The value of the Filter dropdown is set. Then the appropriate handler is called.
+   * called for setting the 'groupedOption'
+   * sorts the selected values hierarchical
    */
-  const setFilterOptionHandler = (option: SelectableValue) => {
-    if (option.label !== undefined && levelOption !== 'Node') {
-      setFilterOption(option);
-      setGroupedOption('-');
-      callHandlers(levelOption, option, '-', metricOption);
-      setShowDrilldown(false);
-    }
+  const setGroupedOptionHandler = (v: SelectableValue<string>[]) => {
+    setGroupedOption(
+      v
+        .map((v) => ({
+          v,
+          i: dataTree.layerLaybels.findIndex((label) => label == v.label),
+        }))
+        .sort((a, b) => (a.i < b.i ? -1 : a.i == b.i ? 0 : 1))
+        .map((x) => x.v)
+    );
   };
 
-  /**
-   * The value of the Grouped by dropdown is set. Then the appropriate handler is called.
-   */
-  const setGroupedOptionHandler = (label: string | undefined) => {
-    if (label !== undefined) {
-      setGroupedOption(label);
-      callHandlers(levelOption, filterOption, label, metricOption);
-      setShowDrilldown(false);
-    }
-  };
-
-  /**
-   * ToDo
-   */
+  // TODO setMetricOptionHandler
   const setMetricOptionHandler = (label: string | undefined) => {
     if (label !== undefined) {
       //not the final solution
+      /*
       setGroupedOption('-');
       setFilterOption(firstFilterOption);
       setMetricOption(label);
       callHandlers(levelOption, filterOption, groupedOption, label);
       setShowDrilldown(false);
-    }
-  };
-
-  /**
-   * Calls the matching handlers.
-   */
-  const callHandlers = (level: string, filter: SelectableValue, grouped: string, metric: string) => {
-    let allElements: Tuple = handler(width, height, level, data, timeRange);
-    setShowElements(allElements);
-    if (filter.label !== '-') {
-      setShowElements(filterHandler(width, height, allElements, level, filter, data));
-    }
-    if (grouped !== '-' && filter.label === '-') {
-      setShowElements(groupedHandler(data, showElements, level, filter, grouped, width, height, false, timeRange));
-    } else if (grouped !== '-') {
-      setShowElements(groupedWithFilterHandler(showElements, level, filter, grouped, data, width, height, timeRange));
-    }
-    if (metric !== '-') {
-      setShowElements(
-        metricHandler(
-          width,
-          height,
-          allElements,
-          level,
-          filter,
-          data,
-          metric,
-          theOptions.dropdownOption,
-          parseFloat(theOptions.red),
-          parseFloat(theOptions.orange),
-          parseFloat(theOptions.green)
-        )
-      );
+      */
     }
   };
 
   /**
    * Is called to display the drilldown menu.
    */
-  const itemSelectHandler = (item: Element) => {
-    setShowDrilldown(!showDrilldown);
-
-    if (levelOption !== 'Node') {
-      setDrilldownItem(item);
-    } else {
-      setShowGraph(true);
-    }
+  const clickHandler = (id: INodeID) => {
+    setSelectedNode(getNode(dataTree, id));
+    setShowDrilldown(true);
   };
 
   return (
@@ -161,49 +115,45 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
           <div className={styles.header}>
             <div className={styles.dropdown}>
               <label>Level:</label>
-              <div>
-                <DropdownComponent
-                  id={'left'}
-                  options={dropdownOptions(levelOptions, levelOption)}
-                  onChange={setLevelOptionHandler}
-                  value={levelOption}
-                  isDisabled={false}
-                />
-              </div>
+              <Select
+                value={levelOption}
+                options={getLevelOptions(dataTree)}
+                onChange={setLevelOptionHandler}
+                menuShouldPortal={true}
+              />
             </div>
             <div className={styles.dropdown}>
               <label>Filter:</label>
-              <div>
-                <DropdownComponentFilter
-                  id={'center-left'}
-                  options={dropdownOptionsFilter(data, filterOption.label, levelOption)}
-                  onChange={setFilterOptionHandler}
-                  value={filterOption}
-                  isDisabled={levelOption === 'Node'}
-                />
-              </div>
+              <MultiSelect
+                options={getFilterOptions(dataTree, levelOption, filterOption)}
+                value={filterOption}
+                onChange={setFilterOption}
+                disabled={levelOption.label == 'Overview' ? true : false}
+                menuShouldPortal={true}
+              />
             </div>
             <div className={styles.dropdown}>
               <label>Grouped by:</label>
-              <div>
-                <DropdownComponent
-                  id={'center-right'}
-                  options={dropdownGroupedOptions(groupedOptions, groupedOption, levelOption)}
-                  onChange={setGroupedOptionHandler}
-                  value={groupedOption}
-                  isDisabled={false}
-                />
-              </div>
+              <MultiSelect
+                options={getGroupOptions(dataTree, levelOption)}
+                value={groupedOption}
+                onChange={setGroupedOptionHandler}
+                disabled={levelOption.label == 'Overview' ? true : false}
+                menuShouldPortal={true}
+              />
             </div>
             <div className={styles.dropdown}>
               <label>Metric:</label>
               <div>
-                <DropdownComponent
-                  id={'right'}
+                <Select
+                  key={'right'}
+                  placeholder="-"
+                  isSearchable={true}
                   options={dropdownOptions(metricOptions, metricOption)}
-                  onChange={setMetricOptionHandler}
-                  value={metricOption}
-                  isDisabled={false}
+                  onChange={(item) => setMetricOptionHandler(item.label)}
+                  value={{ label: metricOption }}
+                  disabled={true}
+                  menuShouldPortal={true}
                 />
               </div>
             </div>
@@ -211,42 +161,32 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               <div className={styles.drilldown}>
                 <Drilldown
                   closeDrilldown={() => setShowDrilldown(false)}
-                  drilldownItem={drilldownItem}
+                  drilldownItem={selectedNode && getNodeInformation(dataTree, selectedNode)}
                   setShowGraph={setShowGraph}
                 />
               </div>
             ) : null}
           </div>
-          <Canvas
+          {levelOption.value !== 'Overview' && (
+            <Treemap
+              width={width}
+              height={height - 53}
+              data={getShowTree(dataTree, levelOption, filterOption, groupedOption)}
+              onClick={clickHandler}
+            />
+          )}
+        </div>
+      ) : (
+        selectedNode && (
+          <GraphUI
             width={width}
             height={height}
-            allRect={showElements}
-            levelOption={levelOption}
-            setLevelOptionHandler={setLevelOptionHandler}
-            setGroupedOptionHandler={setFilterOptionHandler}
-            itemSelectHandler={itemSelectHandler}
+            data={data}
+            timeRange={timeRange}
+            setShowGraph={setShowGraph}
+            nodeId={getNodeID(dataTree, selectedNode)}
           />
-        </div>
-      ) : levelOption !== 'Node' && showGraph ? (
-        <GraphUI
-          width={width}
-          height={height}
-          data={data}
-          timeRange={timeRange}
-          setShowGraph={setShowGraph}
-          focusItem={drilldownItem}
-          level={levelOption}
-        />
-      ) : (
-        <NodeMetric
-          width={width}
-          height={height}
-          data={data}
-          timeRange={timeRange}
-          setShowGraph={setShowGraph}
-          focusItem={drilldownItem}
-          level={levelOption}
-        />
+        )
       )}
     </div>
   );
