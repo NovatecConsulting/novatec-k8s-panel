@@ -1,8 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
-import { SelectableOptGroup, SelectOptions } from '@grafana/ui/components/Select/types';
-import { Children } from 'react';
+import { SelectableOptGroup } from '@grafana/ui/components/Select/types';
 import { ITree, INode, INodeID, INodeInfo } from 'types';
-import { fromPromtoJSON } from './ConvertData';
+import { fromPromtoJSON, hasMetricType } from './ConvertData';
 
 /**
  * build up tree structured data from panel data
@@ -13,6 +12,9 @@ export function buildTree(data: PanelData): ITree {
   const t: ITree = { roots: [], layerLaybels: [] };
 
   // *** ----- still hardcoded for our queries from here ----- ***
+
+  const app = 'application',
+    inf = 'infrastructure';
 
   const namespacePodContainerInfos = data.series
     .filter((df) => df.refId?.includes('namespace_pod_container_info'))
@@ -28,8 +30,8 @@ export function buildTree(data: PanelData): ITree {
     return {
       name: npci.container,
       data: {
-        hasAppMetric: false, // TODO find in data
-        hasInfMetric: false,
+        hasAppMetric: hasMetricType(data, { name: npci.container, layerLabel: 'container' }, app),
+        hasInfMetric: hasMetricType(data, { name: npci.container, layerLabel: 'container' }, inf),
       },
     };
   });
@@ -40,10 +42,10 @@ export function buildTree(data: PanelData): ITree {
       .filter((npci) => npci.pod == name)
       .map((npci): string => npci.container);
     return {
-      name: name,
+      name,
       data: {
-        hasAppMetric: false, // TODO find in data
-        hasInfMetric: false,
+        hasAppMetric: hasMetricType(data, { name, layerLabel: 'pod' }, app),
+        hasInfMetric: hasMetricType(data, { name, layerLabel: 'pod' }, inf),
       },
       children: containers.filter((cont) => childrenLabels.includes(cont.name)),
     };
@@ -61,8 +63,8 @@ export function buildTree(data: PanelData): ITree {
       return {
         name: depl.deployment,
         data: {
-          hasAppMetric: false, // TODO find in data
-          hasInfMetric: false,
+          hasAppMetric: hasMetricType(data, { name: depl.deployment, layerLabel: 'deployment' }, app),
+          hasInfMetric: hasMetricType(data, { name: depl.deployment, layerLabel: 'deployment' }, inf),
         },
         children: pods.filter((pod) => childrenLabels.includes(pod.name)),
       };
@@ -75,8 +77,8 @@ export function buildTree(data: PanelData): ITree {
       return {
         name: ns,
         data: {
-          hasAppMetric: false, // TODO find in data
-          hasInfMetric: false,
+          hasAppMetric: hasMetricType(data, { name: ns, layerLabel: 'namespace' }, app),
+          hasInfMetric: hasMetricType(data, { name: ns, layerLabel: 'namespace' }, inf),
         },
         children: deployments.filter((depl) => childrenLabels.includes(depl.name)),
       };
@@ -334,7 +336,7 @@ export function getNode(t: ITree, id: INodeID): INode | undefined {
   return getLevel(t.roots, t.layerLaybels.indexOf(id.layerLabel)).find((n) => n.name == id.name);
 }
 
-function getNodeID(t: ITree, n: INode): INodeID {
+export function getNodeID(t: ITree, n: INode): INodeID {
   return {
     name: n.name,
     layerLabel: t.layerLaybels[getHeight(n)],

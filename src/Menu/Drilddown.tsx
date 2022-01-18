@@ -1,5 +1,5 @@
 import React from 'react';
-import { Element, INodeInfo } from '../types';
+import { INodeInfo } from '../types';
 import { BiStats } from 'react-icons/bi';
 import { Button, useTheme2 } from '@grafana/ui';
 import getStyles from 'styles/component/DrilldownStyle';
@@ -46,11 +46,11 @@ export const Drilldown = ({ closeDrilldown, drilldownItem, setShowGraph }: Props
               ))}
               <tr className={styles.tr}>
                 <td className={styles.td}>{'hasAppMetric'}</td>
-                <td className={styles.td}>{drilldownItem.node.data.hasAppMetric}</td>
+                <td className={styles.td}>{drilldownItem.node.data.hasAppMetric.toString()}</td>
               </tr>
               <tr className={styles.tr}>
                 <td className={styles.td}>{'hasInfMetric'}</td>
-                <td className={styles.td}>{drilldownItem.node.data.hasInfMetric}</td>
+                <td className={styles.td}>{drilldownItem.node.data.hasInfMetric.toString()}</td>
               </tr>
               {drilldownItem.node.data.properties &&
                 drilldownItem.node.data.properties.forEach((v, k) => (

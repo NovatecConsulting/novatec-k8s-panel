@@ -1,5 +1,6 @@
 import { SelectableValue } from '@grafana/data';
 
+// FIXME replace this Function with general purpose one in convertData
 export function dropdownOptions(allOptions: string[], value: string) {
   var copy = allOptions.slice(0);
   for (let i = 0; i < copy.length; i++) {

@@ -2,20 +2,19 @@ import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
 import getStyles from 'styles/component/SimplePanelStyle';
-import { INode, INodeID, PanelOptions, Types } from 'types';
+import { INode, INodeID, PanelOptions } from 'types';
 import { dropdownOptions } from 'Menu/DropdownOptions';
-import { Element } from 'types';
 import { Drilldown } from './Menu/Drilddown';
 import { GraphUI } from './GraphUI';
 import {
   buildTree,
-  deleteTreeNodes,
   getNode,
   getFilterOptions,
   getGroupOptions,
   getLevelOptions,
   getShowTree,
   getNodeInformation,
+  getNodeID,
 } from 'processMetric/TreeHelper';
 import Treemap from 'ObjectVisualisation/Treemap';
 
@@ -33,7 +32,6 @@ interface Props extends PanelProps<PanelOptions> {}
 
 export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height, timeRange }) => {
   // FIXME check `data.state` for 'Error' and show `data.state.error.message` instead of trying to render components
-
   const { theOptions } = options;
   const [levelOption, setLevelOption] = useState<SelectableValue<string>>({ label: 'Overview', value: 'Overview' });
   const [filterOption, setFilterOption] = useState<SelectableValue<string>[]>([]);
@@ -41,15 +39,6 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
   const [metricOption, setMetricOption] = useState('-');
 
   const [showDrilldown, setShowDrilldown] = useState(false);
-  // TODO replace me
-  const [drilldownItem, setDrilldownItem] = useState<Element>({
-    position: { x: 0, y: 0 },
-    width: 0,
-    height: 0,
-    color: '',
-    text: '-',
-    elementInfo: { type: Types.Namespace },
-  });
   const [selectedNode, setSelectedNode] = useState<INode>();
 
   const [showGraph, setShowGraph] = useState(false);
@@ -114,18 +103,6 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
   /**
    * Is called to display the drilldown menu.
    */
-  const itemSelectHandler = (item: Element) => {
-    // TODO to display full Drilldowninformation drilldownItem has to be from DataTree
-
-    setShowDrilldown(!showDrilldown);
-
-    if (levelOption.value !== 'Node') {
-      setDrilldownItem(item);
-    } else {
-      setShowGraph(true);
-    }
-  };
-
   const clickHandler = (id: INodeID) => {
     setSelectedNode(getNode(dataTree, id));
     setShowDrilldown(true);
@@ -200,15 +177,16 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
           )}
         </div>
       ) : (
-        <GraphUI
-          width={width}
-          height={height}
-          data={data}
-          timeRange={timeRange}
-          setShowGraph={setShowGraph}
-          focusItem={drilldownItem}
-          level={levelOption.value ? levelOption.value : ''}
-        />
+        selectedNode && (
+          <GraphUI
+            width={width}
+            height={height}
+            data={data}
+            timeRange={timeRange}
+            setShowGraph={setShowGraph}
+            nodeId={getNodeID(dataTree, selectedNode)}
+          />
+        )
       )}
     </div>
   );
