@@ -37,8 +37,8 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, nodeId }
       : [];
 
   return (
-    <div>
-      <Button variant="secondary" size="sm" icon="arrow-left" onClick={() => setShowGraph(false)}>
+    <div data-testid="graphUI">
+      <Button data-testid="graphUI-button" variant="secondary" size="sm" icon="arrow-left" onClick={() => setShowGraph(false)}>
         Back
       </Button>
       <div>

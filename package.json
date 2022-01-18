@@ -16,10 +16,16 @@
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
-    "@grafana/data": "^8.2.3",
-    "@grafana/toolkit": "^7.5.11",
-    "@grafana/ui": "^8.2.2",
-    "emotion": "10.0.27"
+    "@grafana/data": "^8.3.2",
+    "@grafana/toolkit": "^8.3.2",
+    "@grafana/ui": "8.2.2",
+    "@testing-library/react": "^12.1.2",
+    "@types/react-dom": "^17.0.11",
+    "emotion": "10.0.27",
+    "jest": "^27.4.5",
+    "jest-dom": "^4.0.0",
+    "react-dom": "^17.0.2",
+    "react-test-renderer": "^17.0.2"
   },
   "engines": {
     "node": ">=14"
