@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Graph, useStyles2, Button, Select } from '@grafana/ui';
 import { PanelData, GraphSeriesXY, TimeRange, SelectableValue } from '@grafana/data';
-import { getOneSeries, getMetricOptions } from './processMetric/ConvertData';
-import getStyles from 'styles/component/GraphStyle';
-import getGraphUIStyles from 'styles/component/GraphUIStyle';
-import { INodeID } from 'types';
+import { getOneSeries, getMetricOptions } from '../utils';
+import getStyles from 'styles/components/GraphStyle';
+import getGraphUIStyles from 'styles/components/GraphUIStyle';
+import { EMetricType, INodeID } from 'types';
 
 type Props = {
   width: number;
@@ -24,21 +24,27 @@ export const GraphUI = ({ width, height, data, timeRange, setShowGraph, nodeId }
   const [infrastructureMetric, setInfrastructureMetric] = useState<SelectableValue<string>>();
   const [applicationMetric, setApplicationMetric] = useState<SelectableValue<string>>();
 
-  const infraMetricOptions = getMetricOptions(data, nodeId, 'infrastructure');
-  const appMetricOptions = getMetricOptions(data, nodeId, 'application');
+  const infraMetricOptions = getMetricOptions(data, nodeId, EMetricType.inf);
+  const appMetricOptions = getMetricOptions(data, nodeId, EMetricType.app);
 
   let seriesInfrastructure: GraphSeriesXY[] =
     infrastructureMetric && infrastructureMetric.label
-      ? getOneSeries(width, data, timeRange, nodeId, infrastructureMetric.label, 'infrastructure')
+      ? getOneSeries(width, data, timeRange, nodeId, infrastructureMetric.label, EMetricType.inf)
       : [];
   let seriesApplication: GraphSeriesXY[] =
     applicationMetric && applicationMetric.label
-      ? getOneSeries(width, data, timeRange, nodeId, applicationMetric.label, 'application')
+      ? getOneSeries(width, data, timeRange, nodeId, applicationMetric.label, EMetricType.app)
       : [];
 
   return (
     <div data-testid="graphUI">
-      <Button data-testid="graphUI-button" variant="secondary" size="sm" icon="arrow-left" onClick={() => setShowGraph(false)}>
+      <Button
+        data-testid="graphUI-button"
+        variant="secondary"
+        size="sm"
+        icon="arrow-left"
+        onClick={() => setShowGraph(false)}
+      >
         Back
       </Button>
       <div>

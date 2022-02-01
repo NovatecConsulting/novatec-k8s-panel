@@ -5,6 +5,5 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "typeRoots": ["./node_modules/@types"],
-    "noUnusedLocals": false // FIXME delete this and fix unused later
   }
 }
