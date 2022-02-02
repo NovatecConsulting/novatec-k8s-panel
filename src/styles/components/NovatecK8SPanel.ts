@@ -7,7 +7,7 @@ import { css } from 'emotion';
  * @param height height of the Panel
  * @returns object of classNames for styling html components
  */
-const getStyles = (t: GrafanaTheme2, height: number) => {
+const getStyles = (t: GrafanaTheme2, width: number, height: number) => {
   return {
     header: css`
       display: flex;
@@ -21,6 +21,16 @@ const getStyles = (t: GrafanaTheme2, height: number) => {
       height: ${height - 53}px;
       margin-top: 3.8rem;
       z-index: 9;
+    `,
+    placeholder: css`
+      display: flex;
+      width: ${width};
+      height: ${height - 53}px;
+      justify-content: center;
+      align-items: center;
+    `,
+    placeholderText: css`
+      color: ${t.colors.text.disabled};
     `,
   };
 };

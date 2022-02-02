@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
 import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
-import getStyles from './styles/components/SimplePanelStyle';
+import getStyles from './styles/components/NovatecK8SPanel';
 import { INode, INodeID, PanelOptions } from './types';
 import { getMetricOptionsForLevel } from './utils';
 import { Drilldown, GraphUI, Treemap } from './components';
@@ -32,7 +32,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
 
   const [showGraph, setShowGraph] = useState(false);
   const theme = useTheme2();
-  const styles = getStyles(theme, height);
+  const styles = getStyles(theme, width, height);
 
   // TODO buildTree could return undefined -> Panel has to show error
   // maybe on level Overview
@@ -146,7 +146,7 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               </div>
             ) : null}
           </div>
-          {levelOption.value !== 'Overview' && (
+          {levelOption.value !== 'Overview' ? (
             <Treemap
               data={data}
               width={width}
@@ -155,6 +155,10 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
               onClick={clickHandler}
               metric={metricOption || undefined}
             />
+          ) : (
+            <div className={styles.placeholder}>
+              <span className={styles.placeholderText}>select a level to get started</span>
+            </div>
           )}
         </div>
       ) : (
