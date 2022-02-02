@@ -1,7 +1,7 @@
 import { PanelData, SelectableValue } from '@grafana/data';
 import { SelectableOptGroup } from '@grafana/ui/components/Select/types';
-import { ITree, INode, INodeID, INodeInfo } from 'types';
-import { fromPromtoJSON, hasMetricType } from './ConvertData';
+import { ITree, INode, INodeID, INodeInfo, EMetricType } from './types';
+import { fromPromtoJSON, hasMetricType } from './utils';
 
 /**
  * build up tree structured data from panel data
@@ -11,10 +11,8 @@ import { fromPromtoJSON, hasMetricType } from './ConvertData';
 export function buildTree(data: PanelData): ITree {
   const t: ITree = { roots: [], layerLaybels: [] };
 
+  // TODO find a dynamic way to build the tree from different queries that supply the information about the tree in a general manner
   // *** ----- still hardcoded for our queries from here ----- ***
-
-  const app = 'application',
-    inf = 'infrastructure';
 
   const namespacePodContainerInfos = data.series
     .filter((df) => df.refId?.includes('namespace_pod_container_info'))
@@ -30,8 +28,8 @@ export function buildTree(data: PanelData): ITree {
     return {
       name: npci.container,
       data: {
-        hasAppMetric: hasMetricType(data, { name: npci.container, layerLabel: 'container' }, app),
-        hasInfMetric: hasMetricType(data, { name: npci.container, layerLabel: 'container' }, inf),
+        hasAppMetric: hasMetricType(data, { name: npci.container, layerLabel: 'container' }, EMetricType.app),
+        hasInfMetric: hasMetricType(data, { name: npci.container, layerLabel: 'container' }, EMetricType.inf),
       },
     };
   });
@@ -44,8 +42,8 @@ export function buildTree(data: PanelData): ITree {
     return {
       name,
       data: {
-        hasAppMetric: hasMetricType(data, { name, layerLabel: 'pod' }, app),
-        hasInfMetric: hasMetricType(data, { name, layerLabel: 'pod' }, inf),
+        hasAppMetric: hasMetricType(data, { name, layerLabel: 'pod' }, EMetricType.app),
+        hasInfMetric: hasMetricType(data, { name, layerLabel: 'pod' }, EMetricType.inf),
       },
       children: containers.filter((cont) => childrenLabels.includes(cont.name)),
     };
@@ -63,8 +61,8 @@ export function buildTree(data: PanelData): ITree {
       return {
         name: depl.deployment,
         data: {
-          hasAppMetric: hasMetricType(data, { name: depl.deployment, layerLabel: 'deployment' }, app),
-          hasInfMetric: hasMetricType(data, { name: depl.deployment, layerLabel: 'deployment' }, inf),
+          hasAppMetric: hasMetricType(data, { name: depl.deployment, layerLabel: 'deployment' }, EMetricType.app),
+          hasInfMetric: hasMetricType(data, { name: depl.deployment, layerLabel: 'deployment' }, EMetricType.inf),
         },
         children: pods.filter((pod) => childrenLabels.includes(pod.name)),
       };
@@ -77,8 +75,8 @@ export function buildTree(data: PanelData): ITree {
       return {
         name: ns,
         data: {
-          hasAppMetric: hasMetricType(data, { name: ns, layerLabel: 'namespace' }, app),
-          hasInfMetric: hasMetricType(data, { name: ns, layerLabel: 'namespace' }, inf),
+          hasAppMetric: hasMetricType(data, { name: ns, layerLabel: 'namespace' }, EMetricType.app),
+          hasInfMetric: hasMetricType(data, { name: ns, layerLabel: 'namespace' }, EMetricType.inf),
         },
         children: deployments.filter((depl) => childrenLabels.includes(depl.name)),
       };
@@ -93,6 +91,7 @@ export function buildTree(data: PanelData): ITree {
   return t;
 }
 
+// TODO doesn´t appear to be nessasary, check for memory leaks with larger structures than our demo (sockshop)
 /**
  * function to delete all references between Tree Nodes
  * needs to be called on tree for disposal to prevent memory leak due to circular references
@@ -212,9 +211,17 @@ export function getLevelOptions(t: ITree): SelectableValue<string>[] {
   ];
 }
 
+/**
+ * copy trait for node
+ */
 interface IIsCopied {
   copy: INode;
 }
+/**
+ * type guard for copy trait
+ * @param n INode
+ * @returns boolean
+ */
 const hasCopy = (n: INode): n is INode & IIsCopied => !!n.copy;
 
 /**
@@ -343,9 +350,17 @@ export function getNodeID(t: ITree, n: INode): INodeID {
   };
 }
 
+/**
+ * child trait
+ */
 interface IHasChildren {
   children: INode[];
 }
+/**
+ * type guard for children trait
+ * @param n INode
+ * @returns boolean
+ */
 const hasChildren = (n: INode): n is INode & IHasChildren => !!n.children;
 
 /**
@@ -389,6 +404,7 @@ export function getNodeInformation(t: ITree, node: INode): INodeInfo {
  */
 function getLevel(nodes: INode[], reqLevel: number, curLevel = 0): INode[] {
   let res: INode[] = [];
+  // TODO solve this in an iterative manner rather than recursive
   function getLayer(nodes: INode[], reqLevel: number, curLevel = 0) {
     if (reqLevel < 0) return;
     else if (reqLevel == curLevel) res.push(...nodes);

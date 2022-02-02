@@ -7,15 +7,17 @@ import { css } from 'emotion';
  * @returns object of classNames for styling html components
  */
 const getStyles = (t: GrafanaTheme2) => {
-  const transition = `fill ${t.transitions.easing.easeInOut} ${t.transitions.duration.short}ms`;
+  const transition = `
+    fill ${t.transitions.easing.easeInOut} ${t.transitions.duration.short}ms,
+    fill-opacity ${t.transitions.easing.easeInOut} ${t.transitions.duration.short}ms
+  `;
   return {
     element: css({
-      fill: t.colors.background.secondary,
       stroke: t.colors.border.weak,
       strokeWidth: 1,
       transition,
       ':hover': {
-        fill: t.colors.action.hover,
+        fillOpacity: 0.84,
         stroke: t.colors.primary.border,
         transition,
       },

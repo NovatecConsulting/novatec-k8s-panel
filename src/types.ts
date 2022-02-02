@@ -1,16 +1,8 @@
-type SeriesSize = 'sm' | 'md' | 'lg';
-
-export interface PanelOptions {
-  text: string;
-  showSeriesCount: boolean;
-  seriesCountSize: SeriesSize;
-  theOptions: {
-    red: string;
-    orange: string;
-    green: string;
-    dropdownOption: string;
-  };
-}
+/**
+ * PanelOptions
+ * currently no Options are passed to our panel so this is empty
+ */
+export interface PanelOptions {}
 
 /**
  * stores root Nodes from treeshaped data and the layerLabels
@@ -60,3 +52,20 @@ export interface INodeInfo {
   node: INode;
   relations: Array<INodeID | Array<INodeID>>;
 }
+
+/**
+ * the possible metric types. Also used to search for in grafana query refIds.
+ * if this should be changed to accept shortcuts 'app' or 'inf' the values can be changed here.
+ */
+export enum EMetricType {
+  inf = 'infrastructure',
+  app = 'application',
+}
+
+/**
+ * computed type from EmetricType keys. Used to find what metric(name)s are availabe for each metric
+ * [metricType]: metricNames[]
+ */
+export type TAvailableMetrics = {
+  [key in EMetricType]?: string[];
+};
