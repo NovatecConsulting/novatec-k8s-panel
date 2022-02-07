@@ -16,6 +16,9 @@ For more information about panels, refer to the official Grafana documentation o
 
 This Panel Plugin offers a visual representation of a Kubernetes cluster. It also gives quick access to the infrastructure metrics of the cluster and the application metrics of the services running on it.
 
+![Example image 1 from the plugin](/src/img/example_1.jpg "Sample Image 1")
+![Example image 2 from the plugin](/src/img/example_2.jpg "Sample Image 2")
+
 ## Requirement to use this plugin
 
 - Kubernetes cluster
