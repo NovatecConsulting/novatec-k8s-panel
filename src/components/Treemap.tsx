@@ -22,6 +22,7 @@ function CustomTreemap({ data, width, height, tree, onClick, metric }: ITreemapP
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
   const textHeight = 15;
+  const gradId = 'lgrad';
   const t = useTheme2();
   const s = getStyles(t);
   const root = hierarchy({ name: 'root', children: tree.roots }).sum((_) => 1);
@@ -56,6 +57,12 @@ function CustomTreemap({ data, width, height, tree, onClick, metric }: ITreemapP
 
   return (
     <svg width={width} height={height}>
+      <defs>
+        <linearGradient id={gradId}>
+          <stop offset="80%" stop-color="white" />
+          <stop offset="100%" stop-color="black" />
+        </linearGradient>
+      </defs>
       <rect width={width} height={height} fill={t.colors.background.canvas || ''}></rect>
       <Treemap
         root={root}
@@ -77,6 +84,10 @@ function CustomTreemap({ data, width, height, tree, onClick, metric }: ITreemapP
                 if (onClick != undefined && nodeId.layerLabel) onClick(nodeId);
               };
               const display = nodeIsElement && nodeId.layerLabel ? getDisplay(nodeId) : undefined;
+              const w = node.x1 - node.x0;
+              const h = node.y1 - node.y0;
+              const clipId = `clip-${i}`;
+              const maskId = `mask-${i}`;
               return (
                 <Group
                   key={`node-${i}`}
@@ -94,14 +105,23 @@ function CustomTreemap({ data, width, height, tree, onClick, metric }: ITreemapP
                   ) : (
                     node.depth !== 0 && (
                       <>
-                        <text className={s.containerText} transform={`translate(0, ${-3})`}>
+                        <clipPath id={clipId}>
+                          <rect x={0} y={-textHeight} width={w} height={h} />
+                        </clipPath>
+                        <defs>
+                          <mask id={maskId} x={0} y={-textHeight} width={w} height={h}>
+                            <rect x={0} y={-textHeight} width={w} height={h} fill={`url(#${gradId})`} />
+                          </mask>
+                        </defs>
+                        <text
+                          className={s.containerText}
+                          transform={`translate(0, ${-3})`}
+                          clipPath={`url(#${clipId})`}
+                          mask={`url(#${maskId})`}
+                        >
                           {node.data.name}
                         </text>
-                        <rect
-                          className={s.container}
-                          width={node.x1 - node.x0}
-                          height={node.y1 - node.y0 - textHeight}
-                        />
+                        <rect className={s.container} width={w} height={h - textHeight} />
                       </>
                     )
                   )}
