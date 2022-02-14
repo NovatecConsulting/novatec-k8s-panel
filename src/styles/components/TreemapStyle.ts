@@ -33,8 +33,11 @@ const getStyles = (t: GrafanaTheme2) => {
         transition,
       },
     }),
-    containerText: css({
+    label: css({
       fill: t.colors.text.primary,
+    }),
+    elementLabel: css({
+      fontSize: t.typography.bodySmall.fontSize,
     }),
   };
 };

@@ -27,8 +27,9 @@ This Panel Plugin offers a visual representation of a Kubernetes cluster. It als
 ## Getting started
 
 0. Download and extract the release to `%installationpath%/Grafana/grafana/plugins`
-1. Setup Prometheus Data Source in Grafana
-2. Setup Panel in Grafana with following Prometheus Queries
+1. Since the Plugin currently is not signed [add exception](https://grafana.com/docs/grafana/latest/plugins/plugin-signatures/#allow-unsigned-plugins)
+2. Setup Prometheus Data Source in Grafana
+3. Setup Panel in Grafana with following Prometheus Queries
 
 |Queryname|Query|
 |--|--|
