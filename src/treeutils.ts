@@ -16,7 +16,7 @@ export function buildTree(data: PanelData): ITree {
 
   const namespacePodContainerInfos = data.series
     .filter((df) => df.refId?.includes('namespace_pod_container_info'))
-    .map((df) => fromPromtoJSON(df.name?.slice('kube_pod_container_info'.length)));
+    .map((df) => fromPromtoJSON(df.name));
   const pod_owner = data.series.filter((df) => df.refId?.includes('pod_owner')).map((df) => fromPromtoJSON(df.name));
   const replicaset_owner = data.series
     .filter((df) => df.refId?.includes('replicaset_owner'))
