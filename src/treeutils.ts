@@ -120,13 +120,16 @@ export function deleteTreeNodes(t: ITree): ITree {
  * @param nodes Array of Nodes
  */
 function linkParents(nodes: INode[]) {
-  // TODO change recursive to iterative with queue
-  nodes.forEach((n) => {
-    n.children?.forEach((c) => {
-      c.parent = n;
-    });
-    if (n.children != undefined) linkParents(n.children);
-  });
+  let queue: INode[] = Array.from(nodes);
+  while (queue.length) {
+    const n = queue.shift();
+    if (n?.children) {
+      for (const child of n.children) {
+        child.parent = n;
+        queue.push(child);
+      }
+    }
+  }
 }
 
 // TODO maybe use grafana asyncselect if calculating this takes to long (on larger scale)
@@ -402,18 +405,20 @@ export function getNodeInformation(t: ITree, node: INode): INodeInfo {
  * @param curLevel default = 0 define offset for param nodes in case they are not level 0
  * @returns Array of Nodes on the reqLevel relativ to curLevel
  */
-function getLevel(nodes: INode[], reqLevel: number, curLevel = 0): INode[] {
-  let res: INode[] = [];
-  // TODO solve this in an iterative manner rather than recursive
-  function getLayer(nodes: INode[], reqLevel: number, curLevel = 0) {
-    if (reqLevel < 0) return;
-    else if (reqLevel == curLevel) res.push(...nodes);
-    else {
-      nodes.forEach((n) => {
-        if (n.children) getLayer(n.children, reqLevel, curLevel + 1);
-      });
+function getLevel(nodes: INode[], reqLevel: number, curLevel: number = 0): INode[] {
+  if (reqLevel < 0) throw new Error('reqLevel < 0');
+
+  let obj: { level: number; nodes: INode[] } | undefined = { level: curLevel, nodes };
+  while (obj != undefined) {
+    if (reqLevel == obj.level) {
+      return obj.nodes;
+    } else {
+      const temp: { level: number; nodes: INode[] } = { level: obj.level + 1, nodes: [] };
+      for (const n of obj.nodes) {
+        if (n.children) temp.nodes.push(...n.children);
+      }
+      obj = temp.nodes.length ? temp : undefined;
     }
   }
-  getLayer(nodes, reqLevel, curLevel);
-  return res;
+  return [];
 }
