@@ -132,11 +132,28 @@ function linkParents(nodes: INode[]) {
   }
 }
 
-// TODO maybe use grafana asyncselect if calculating this takes to long (on larger scale)
 /**
- * returns selectoptions tha can be filtered for given a selected level for grafana select
+ * returns selectoptions that can be filtered for grafana async select
  * @param t Tree
  * @param displayedLevel currently selected level
+ * @param curFilter currently set filter
+ * @returns possible filters
+ */
+export async function loadFilterOptions(
+  t: ITree,
+  displayedLevel: SelectableValue<string>,
+  curFilter: SelectableValue<string>[]
+): Promise<SelectableOptGroup<string>[]> {
+  return new Promise((res) => {
+    res(getFilterOptions(t, displayedLevel, curFilter));
+  });
+}
+
+/**
+ * returns selectoptions that can be filtered for given a selected level for grafana select
+ * @param t Tree
+ * @param displayedLevel currently selected level
+ * @param curFilter currently set filter
  * @returns possible filters
  */
 export function getFilterOptions(
