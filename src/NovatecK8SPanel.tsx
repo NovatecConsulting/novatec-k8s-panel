@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PanelProps, SelectableValue } from '@grafana/data';
-import { MultiSelect, Select, useTheme2 } from '@grafana/ui';
+import { AsyncMultiSelect, MultiSelect, Select, useTheme2 } from '@grafana/ui';
 import getStyles from './styles/components/NovatecK8SPanel';
 import { INode, INodeID, PanelOptions } from './types';
 import { getMetricOptionsForLevel } from './utils';
@@ -8,7 +8,7 @@ import { Drilldown, GraphUI, Treemap } from './components';
 import {
   buildTree,
   getNode,
-  getFilterOptions,
+  loadFilterOptions,
   getGroupOptions,
   getLevelOptions,
   getShowTree,
@@ -102,8 +102,12 @@ export const NovatecK8SPanel: React.FC<Props> = ({ options, data, width, height,
             </div>
             <div className={styles.dropdown}>
               <label>Filter:</label>
-              <MultiSelect
-                options={getFilterOptions(dataTree, levelOption, filterOption)}
+              <AsyncMultiSelect
+                key={`filter-${levelOption.value}-${filterOption}`}
+                loadOptions={() => loadFilterOptions(dataTree, levelOption, filterOption)}
+                defaultOptions
+                loadingMessage={'loading...'}
+                cacheOptions={false}
                 value={filterOption}
                 onChange={setFilterOption}
                 disabled={levelOption.label == 'Overview' ? true : false}

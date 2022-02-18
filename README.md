@@ -33,7 +33,7 @@ This Panel Plugin offers a visual representation of a Kubernetes cluster. It als
 
 |Queryname|Query|
 |--|--|
-|namespace_pod_container_info|`kube_pod_container_info`|
+|namespace_pod_container_info|`sum(kube_pod_container_info) by (container, pod, namespace)`|
 |deployment_info|`sum(kube_deployment_labels) by (deployment)`|
 |pod_owner|`sum(kube_pod_owner) by (owner_name, pod)`|
 |replicaset_owner|`sum(kube_replicaset_owner) by (owner_name, replicaset, namespace)`|
